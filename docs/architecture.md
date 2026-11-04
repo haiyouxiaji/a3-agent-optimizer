@@ -187,11 +187,12 @@ runs/<run_id>/
 ## 14. Honest limitations
 
 - The `local_sim_v2` policy is a compact multi-camera behavior-cloning baseline, not a SmolVLA or
-  ACT reproduction. Measured outcome: 20 recorded episodes (8178 frames, three 128x128 cameras),
-  6000 training steps, training loss 0.651 -> 0.023, and a real closed-loop score of 2/10 and 5/10
-  on held-out seeds 2000/2001 (mean 3.5/10 at 500 steps). It places cookies but does not finish the
-  ten-cookie task. The scripted expert scores 10/10 at about 410 steps on the same task, so the gap
-  is policy competence, not a broken pipeline.
+  ACT reproduction. Measured outcome: 40 recorded episodes (16379 frames, three 128x128 cameras),
+  10000 training steps, training loss 0.770 -> 0.017, execution horizon 12 and a 600-step budget
+  give 5, 10 (success), 5, 5, 5, 5 cookies on development seeds 2000-2005 (mean 5.83/10), with
+  5, 0 on the reserved confirmation seeds 3000-3001. It places cookies and occasionally completes
+  the task, but it is not uniformly reliable. The scripted expert scores 10/10 at about 410 steps,
+  so the remaining gap is policy competence, not a broken pipeline.
 - The `a3_sim_cli` backend is command-tested but was not executed end-to-end here because the
   upstream training stack (`lerobot`) is not vendored in this environment.
 - Six expert episodes are enough to test the pipeline and the acceptance gate, not to claim a

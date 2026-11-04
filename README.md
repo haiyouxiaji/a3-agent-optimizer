@@ -130,6 +130,7 @@ Windows workstation (Python 3.13.12, torch 2.15.0+cpu, MuJoCo 3.16.0):
 | Agent loop against the real backend | 3 experiments (baseline + 2 staged candidates), 1200 training steps, 268.98 s; all scored 0/10, both candidates rejected by the paired-seed gate |
 | Second-stage: multi-camera BC2 | 20 expert episodes (8178 frames, 128x128, three cameras), 6000-step behavior cloning; real closed-loop **2/10 and 5/10** on seeds 2000/2001 (mean 3.5) |
 | Agent loop with the BC2 backend | 3 experiments, 12000 training steps, 693.04 s; best = multi-camera concat candidate, real closed-loop **5/10 and 2/10 (mean 3.5/10)**; film and state-only variants rejected |
+| Third stage: 40-episode data + inference tuning | 40 expert episodes (16379 frames), 10000-step training, execution horizon 12; dev seeds 2000-2005: 5, 10 (success), 5, 5, 5, 5 -> **mean 5.83/10**; reserved confirmation seeds 3000-3001: 5, 0 |
 | Backend / plugin verification | `backend.run` status ok and round-trip; upstream CLI via policy plugin returncode 0 |
 
 The zero closed-loop scores are reported honestly: the compact behavior-cloning baseline learns the

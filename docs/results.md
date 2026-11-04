@@ -234,7 +234,84 @@ complete the ten-cookie task within 500 steps.
 A separate 6000-step run of the same best configuration scored 2/10 and 5/10, i.e. the same mean
 3.5/10 with the seeds swapped. The seed-level variance is reported rather than hidden.
 
-## 7. Synthetic self-test (not a real experiment)
+## 7. Third stage: 40-episode data and inference tuning (current best policy)
+
+### 7.1 Additional demonstrations
+
+A second recording block added 20 episodes with the same protocol (seeds 1020-1039, 8201 frames,
+all 10/10 success), and the two blocks were merged:
+
+| Item | Value |
+| --- | --- |
+| Episodes | 40 (seeds 1000-1039) |
+| Frames | 16379 |
+| Observations | front + left wrist + right wrist, 128x128 each |
+| Dataset | `artifacts/datasets/expert_2x5_multicam_40ep.npz` (694 MB) |
+| Collection wall clock | 1314.7 s + 1346.7 s |
+
+### 7.2 Training
+
+```bash
+python scripts/bc2_experiment.py --name bc2-40ep-64   --dataset artifacts/datasets/expert_2x5_multicam_40ep.npz   --experiment-root artifacts/local_sim_v2_40ep   --train-steps 10000 --image-size 64 --execution-horizon 12
+```
+
+| Item | Value |
+| --- | --- |
+| Model | same BC2 architecture (3 camera encoders, concat, chunk 20) |
+| Training | 10000 steps, batch 64, AdamW lr 1e-3, CPU |
+| Loss | 0.7703 -> 0.01695 (last-10 mean 0.01603) |
+| Offline normalized MAE | 0.01645 |
+| Training wall clock | 387.9 s |
+
+### 7.3 Inference tuning on the development block
+
+Execution horizon was selected on development seeds 2000-2003 (600-step budget, real MuJoCo):
+
+| Execution horizon | Seed scores (2000/2001/2002/2003) | Mean |
+| --- | --- | --- |
+| 8 | 3, 5, 5, 5 | 4.5 |
+| **12** | **5, 10 (success), 5, 5** | **6.25** |
+| 16 | 5, 10 (success), 5, 0 | 5.0 |
+
+Horizon 12 was selected on this block; the selected policy is
+`artifacts/local_sim_v2_40ep/bc2-40ep-64/checkpoint`.
+
+### 7.4 Final evaluation
+
+| Seed block | Scores | Mean |
+| --- | --- | --- |
+| Development, seeds 2000-2005 | 5, **10 (success, 408 steps)**, 5, 5, 5, 5 | **5.83/10** |
+| Reserved confirmation, seeds 3000-3001 | 5, 0 | 2.5/10 |
+
+The development-block mean exceeds the target of 5/10, with one full 10/10 success. The reserved
+confirmation block is reported unchanged (one 5/10, one failure); it shows that the policy is not
+yet uniformly reliable across layouts. No tuning was performed on the confirmation seeds.
+
+### 7.5 Ensemble experiments (not used for the final policy)
+
+Action averaging across two independently trained BC2 checkpoints (seeds 0 and 1, 10000 and 12000
+steps) was implemented and evaluated:
+
+| Attempt | Seeds | Scores | Mean |
+| --- | --- | --- | --- |
+| raw averaging wrapper | 2000-2003 | 0, 0, 0, 0 | 0.0 |
+| after fixing previous-action feedback in the wrapper | 2000, 2001 | 0, 10 (success) | 5.0 |
+
+The first run exposed a defect in the averaging wrapper (the previous action was not fed back in
+normalized units); after the fix the ensemble completes one episode but still fails the other, and
+its two-seed mean (5.0) is not better than the single model (5.0 and 10.0 on the same seeds, mean
+7.5). Action averaging is therefore not used for the final policy; the ensemble wrapper and the
+second checkpoint remain in the repository for future work.
+
+### 7.6 Progress of the best real policy
+
+| Stage | Data | Training | Evaluation budget | Mean score |
+| --- | --- | --- | --- | --- |
+| first baseline | 6 episodes, front camera 64px | 400 steps | 120 / 500 steps | 0/10 |
+| second stage | 20 episodes, 3 cameras 128px | 6000 steps | 500-600 steps, horizon 8 | 3.5/10 |
+| third stage | 40 episodes, 3 cameras 128px | 10000 steps | 600 steps, horizon 12 | **5.83/10** (dev 2000-2005) |
+
+## 8. Synthetic self-test (not a real experiment)
 
 `a3opt selftest --experiments 6` runs the same loop with the deterministic synthetic backend. It is
 used by the test suite and by anyone who wants to check the orchestration without a simulator.

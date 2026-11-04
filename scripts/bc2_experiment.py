@@ -21,7 +21,7 @@ def parse_seeds(text: str) -> list[int]:
     return [int(part.strip()) for part in str(text).split(",") if part.strip()]
 
 
-def build_candidate(name: str, chunk_size: int, lr: float, encoder: str = "tiny_cnn", fusion: str = "concat", image_size: int = 128) -> CandidateSpec:
+def build_candidate(name: str, chunk_size: int, lr: float, encoder: str = "tiny_cnn", fusion: str = "concat", image_size: int = 128, seed: int = 0) -> CandidateSpec:
     action_head = "chunk" if chunk_size > 1 else "mlp"
     image_size = image_size if encoder == "tiny_cnn" else 0
     return CandidateSpec(
@@ -33,7 +33,7 @@ def build_candidate(name: str, chunk_size: int, lr: float, encoder: str = "tiny_
         lr=lr,
         image_size=image_size,
         state_dim=16,
-        seed=0,
+        seed=int(seed),
     )
 
 
@@ -52,12 +52,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-eval-steps", type=int, default=500)
     parser.add_argument("--execution-horizon", type=int, default=8)
     parser.add_argument("--image-size", type=int, default=128)
+    parser.add_argument("--seed", type=int, default=0)
     return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
-    candidate = build_candidate(args.name, args.chunk_size, args.lr, args.encoder, args.fusion, args.image_size)
+    candidate = build_candidate(args.name, args.chunk_size, args.lr, args.encoder, args.fusion, args.image_size, args.seed)
     config = BC2Config(
         dataset_path=Path(args.dataset),
         experiment_root=Path(args.experiment_root),

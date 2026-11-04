@@ -257,6 +257,17 @@ def _step_fraction(seeds: np.ndarray) -> np.ndarray:
     return fraction
 
 
+def _configure_threads() -> None:
+    import os
+
+    value = os.environ.get("A3OPT_TORCH_THREADS", "").strip()
+    if value:
+        try:
+            torch.set_num_threads(max(1, int(value)))
+        except ValueError:
+            pass
+
+
 def train_candidate(
     candidate: CandidateSpec,
     dataset_path: str | Path,
@@ -266,6 +277,7 @@ def train_candidate(
 ) -> TrainResult:
     started = time.perf_counter()
     cfg = config or BC2Config()
+    _configure_threads()
     try:
         payload = _load_dataset(Path(dataset_path))
         actions = payload["action"]
@@ -438,7 +450,10 @@ class BC2Policy:
         self._step += 1
         return action
 
-    def _predict(self, observation: Mapping[str, Any]) -> list[np.ndarray]:
+    def predict_chunk(self, observation: Mapping[str, Any]) -> np.ndarray:
+        return self._chunk(observation)
+
+    def _chunk(self, observation: Mapping[str, Any]) -> np.ndarray:
         state = np.asarray(observation[STATE], dtype=np.float32)
         state_normalized = (state - self.state_mean) / self.state_std
         state_tensor = torch.from_numpy(state_normalized[None]).to(self.device)
@@ -458,7 +473,102 @@ class BC2Policy:
         actions = normalized * self.action_std[None, :] + self.action_mean[None, :]
         actions = np.nan_to_num(actions, nan=0.0, posinf=4.0, neginf=-4.0)
         actions = np.clip(actions, -4.0, 4.0)
-        return [np.ascontiguousarray(row) for row in actions[: self.execution_horizon]]
+        return np.ascontiguousarray(actions)
+
+    def _predict(self, observation: Mapping[str, Any]) -> list[np.ndarray]:
+        chunk = self._chunk(observation)
+        return [np.ascontiguousarray(row) for row in chunk[: self.execution_horizon]]
+class EnsemblePolicy:
+    name = "a3opt_bc2_ensemble_avg"
+
+    def __init__(
+        self,
+        checkpoint_dirs: Sequence[str | Path],
+        device: str | None = "cpu",
+        execution_horizon: int = EXECUTION_HORIZON,
+    ) -> None:
+        self.policies = [BC2Policy(path, device=device, execution_horizon=execution_horizon) for path in checkpoint_dirs]
+        self.action_mode = "joint_position"
+        self.execution_horizon = int(execution_horizon)
+        self._queue: list[np.ndarray] = []
+
+    @property
+    def finished(self) -> bool:
+        return False
+
+    def reset(self, context: Any | None = None) -> None:
+        for policy in self.policies:
+            policy.reset(context)
+        self._queue.clear()
+
+    def close(self) -> None:
+        for policy in self.policies:
+            policy.close()
+        self._queue.clear()
+
+    def act(self, observation: Mapping[str, Any], task: str = "") -> np.ndarray:
+        if not self._queue:
+            chunks = []
+            for policy in self.policies:
+                chunks.append(policy.predict_chunk(observation))
+            averaged = np.mean(np.stack(chunks, axis=0), axis=0)
+            averaged = np.nan_to_num(averaged, nan=0.0, posinf=4.0, neginf=-4.0)
+            averaged = np.clip(averaged, -4.0, 4.0)
+            self._queue = [np.ascontiguousarray(row) for row in averaged[: self.execution_horizon]]
+        action = self._queue.pop(0)
+        reference = self.policies[0]
+        normalized = ((np.asarray(action, dtype=np.float32) - reference.action_mean) / reference.action_std).astype(np.float32)
+        for policy in self.policies:
+            policy._previous = normalized.copy()
+            policy._step += 1
+        return action
+
+
+class TemporalEnsemblePolicy:
+    name = "a3opt_bc2_ensemble"
+
+    def __init__(
+        self,
+        checkpoint_dir: str | Path,
+        device: str | None = "cpu",
+        execution_horizon: int = EXECUTION_HORIZON,
+        coefficient: float = 0.01,
+    ) -> None:
+        self.base = BC2Policy(checkpoint_dir, device=device, execution_horizon=execution_horizon)
+        self.action_mode = "joint_position"
+        self.coefficient = float(coefficient)
+        self._pending: dict[int, list[tuple[float, np.ndarray]]] = {}
+        self._step = 0
+
+    @property
+    def finished(self) -> bool:
+        return False
+
+    def reset(self, context: Any | None = None) -> None:
+        self.base.reset(context)
+        self._pending.clear()
+        self._step = 0
+
+    def close(self) -> None:
+        self.base.close()
+        self._pending.clear()
+
+    def act(self, observation: Mapping[str, Any], task: str = "") -> np.ndarray:
+        self.base._step = self._step
+        chunk = self.base.predict_chunk(observation)
+        for offset, row in enumerate(chunk):
+            weight = float(np.exp(-self.coefficient * offset))
+            self._pending.setdefault(self._step + offset, []).append((weight, row))
+        entries = self._pending.pop(self._step, [])
+        if entries:
+            total = sum(weight for weight, _ in entries)
+            action = sum(weight * row for weight, row in entries) / max(total, 1e-8)
+        else:
+            action = chunk[0]
+        action = np.asarray(action, dtype=np.float64)
+        self.base._previous = ((action.astype(np.float32) - self.base.action_mean) / self.base.action_std).astype(np.float32)
+        self._step += 1
+        return np.ascontiguousarray(action)
 
 
 def evaluate_checkpoint(
@@ -615,6 +725,8 @@ __all__ = [
     "BC2Model",
     "BC2Policy",
     "LocalSimV2Backend",
+    "EnsemblePolicy",
+    "TemporalEnsemblePolicy",
     "downsample",
     "evaluate_checkpoint",
     "train_candidate",
