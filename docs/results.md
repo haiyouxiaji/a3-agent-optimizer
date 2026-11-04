@@ -149,7 +149,92 @@ python -m a3_dual_arm_sim.workflows.benchmark_cookie_batch_cli \
 Result: returncode 0, one episode, score 0/10, 40 steps, 2.73 s wall clock. The checkpoint loads and
 the upstream benchmark drives it end to end.
 
-## 6. Synthetic self-test (not a real experiment)
+## 6. Second stage: multi-camera BC2 backend (best policy so far)
+
+The first-stage policy used one front camera, 64x64 observations, 400 training steps, and six
+episodes. Its closed-loop score was zero. The second stage adds observations and fixes a policy
+inference defect.
+
+### 6.1 Additional demonstrations
+
+```bash
+python scripts/record_multicam.py --episodes 20 --seed-start 1000 --image-size 128
+```
+
+| Item | Value |
+| --- | --- |
+| Episodes | 20 (seeds 1000-1019) |
+| Frames | 8178 |
+| Observations | front + left wrist + right wrist, 128x128 each |
+| Labels | 16D joint state, 16D applied joint target |
+| Collection wall clock | 1314.7 s |
+| Dataset | `artifacts/datasets/expert_2x5_multicam_20ep.npz` |
+| Expert outcomes | 10/10, success, all twenty episodes |
+
+### 6.2 Training
+
+`python scripts/bc2_experiment.py --name bc2-baseline-64 --train-steps 6000 --image-size 64 ...`
+
+| Item | Value |
+| --- | --- |
+| Model | 3 camera encoders + state/previous-action/step MLP, concat fusion, 20-action chunk head |
+| Training | 6000 steps, batch 64, AdamW lr 1e-3, CPU |
+| Loss | 0.651 -> 0.02295 (last-10 mean 0.01959) |
+| Offline normalized MAE | 0.0185 |
+| Training wall clock | 221.5 s |
+
+### 6.3 Closed-loop result
+
+Protocol: seeds 2000 and 2001, `max_eval_steps = 500`, execution horizon 8 of 20 predicted actions.
+
+| Seed | Score | Steps | Success |
+| --- | --- | --- | --- |
+| 2000 | 2/10 | 500 | false |
+| 2001 | 5/10 | 500 | false |
+| Mean | 3.5/10 | 500 | false |
+
+This is the first non-zero real closed-loop result of the project. The policy places two and five
+cookies respectively; it does not complete the full ten-cookie task within 500 steps, so the
+acceptance gate still treats it as a baseline rather than as a solved task.
+
+### 6.4 Defect found and fixed during this stage
+
+The first BC2 attempt scored zero on both seeds even though offline MAE was ~0.018. Diagnosis
+showed the deployed policy fed the previous action back in raw joint units while the training data
+used normalized units, so every prediction after the first chunk was out of distribution and the
+policy collapsed to a fixed pose without touching a cookie. The fix normalizes the stored previous
+action; after retraining, the same architecture scores 2/10 and 5/10. The defect is covered by
+`tests/test_bc2.py`.
+
+### 6.5 Agent loop with the BC2 backend
+
+Command:
+
+```bash
+a3opt run --backend local_sim_v2 --experiments 3 --train-steps 4000   --eval-seeds 2000,2001 --max-eval-steps 500 --run-id bc2-loop-500
+```
+
+Protocol: 4000 training steps per candidate, seeds 2000/2001, `max_eval_steps = 500`, acceptance at
+its defaults (gain >= 1 cookie, non-worse >= 70%, cost <= 3x baseline).
+
+| Node | Candidate | Parent | Final loss | Scores (seed 2000, 2001) | Mean | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| root | tiny_cnn / concat / chunk-k20 | - | 0.0201 | 5, 2 | **3.5/10** | baseline |
+| n001 | tiny_cnn / film / chunk-k20 | root | 0.0234 | 5, 0 | 2.5/10 | reject |
+| n002 | state_mlp / concat / chunk-k20 | n001 | 0.0227 | 0, 5 | 2.5/10 | reject |
+
+Budget actually spent: 3 experiments, 12000 training steps, 693.04 s wall clock. Artifacts:
+`runs/bc2-loop-500/{run.json,tree.json,memory.jsonl,report.md,outcomes/}`.
+
+The framework found the multi-camera concat candidate to be the best; the film variant and the
+state-only variant each scored 2.5/10 and were rejected by the paired-seed gate. The best model
+places cookies in the target box on both held-out seeds (5/10 and 2/10, mean 3.5/10), but does not
+complete the ten-cookie task within 500 steps.
+
+A separate 6000-step run of the same best configuration scored 2/10 and 5/10, i.e. the same mean
+3.5/10 with the seeds swapped. The seed-level variance is reported rather than hidden.
+
+## 7. Synthetic self-test (not a real experiment)
 
 `a3opt selftest --experiments 6` runs the same loop with the deterministic synthetic backend. It is
 used by the test suite and by anyone who wants to check the orchestration without a simulator.

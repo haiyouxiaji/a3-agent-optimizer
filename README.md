@@ -112,7 +112,8 @@ The verdict is one of `accept`, `reject`, or `insufficient` (fewer than two pair
 | Backend | Real training | Requirements |
 | --- | --- | --- |
 | `stub` | synthetic scores only | nothing |
-| `local_sim` | torch behavior cloning on recorded MuJoCo demonstrations, closed-loop MuJoCo evaluation | `torch` + A3 simulation checkout |
+| `local_sim` | single-camera torch behavior cloning on recorded MuJoCo demonstrations, closed-loop MuJoCo evaluation | `torch` + A3 simulation checkout |
+| `local_sim_v2` | multi-camera torch behavior cloning with action normalization and previous-action conditioning; current best real policy (3.5/10 mean) | `torch` + A3 simulation checkout |
 | `a3_sim_cli` | upstream ACT training and benchmark commands (dry-run by default) | `lerobot` + A3 simulation checkout |
 
 ## Real experiments
@@ -127,6 +128,8 @@ Windows workstation (Python 3.13.12, torch 2.15.0+cpu, MuJoCo 3.16.0):
 | Closed-loop evaluation (real MuJoCo) | seeds 2100/2101: 0/10 for all three candidates at 120 and 500 steps |
 | Expert reference on the same seeds | 0/10 at 120 steps, 5/10 at 200 steps, 10/10 at 500 steps |
 | Agent loop against the real backend | 3 experiments (baseline + 2 staged candidates), 1200 training steps, 268.98 s; all scored 0/10, both candidates rejected by the paired-seed gate |
+| Second-stage: multi-camera BC2 | 20 expert episodes (8178 frames, 128x128, three cameras), 6000-step behavior cloning; real closed-loop **2/10 and 5/10** on seeds 2000/2001 (mean 3.5) |
+| Agent loop with the BC2 backend | 3 experiments, 12000 training steps, 693.04 s; best = multi-camera concat candidate, real closed-loop **5/10 and 2/10 (mean 3.5/10)**; film and state-only variants rejected |
 | Backend / plugin verification | `backend.run` status ok and round-trip; upstream CLI via policy plugin returncode 0 |
 
 The zero closed-loop scores are reported honestly: the compact behavior-cloning baseline learns the

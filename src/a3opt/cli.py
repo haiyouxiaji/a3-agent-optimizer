@@ -144,7 +144,7 @@ def build_parser() -> argparse.ArgumentParser:
     plan.set_defaults(func=_cmd_plan)
 
     run = sub.add_parser("run", help="run the optimization loop")
-    run.add_argument("--backend", default="stub", choices=["stub", "local", "local_sim", "a3_sim", "a3_sim_cli"])
+    run.add_argument("--backend", default="stub", choices=["stub", "local", "local_sim", "local_sim_v2", "a3_sim", "a3_sim_cli"])
     run.add_argument("--experiments", type=int, default=6)
     run.add_argument("--out", default="runs")
     run.add_argument("--run-id", default="")

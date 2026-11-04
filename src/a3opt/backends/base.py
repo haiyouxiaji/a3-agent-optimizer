@@ -13,6 +13,10 @@ def make_backend(name: str, **kwargs: Any) -> Any:
         from a3opt.backends.local_sim import LocalSimBackend
 
         return LocalSimBackend(**kwargs)
+    if key in ("local_sim_v2", "local2", "v2"):
+        from a3opt.backends.bc2 import LocalSimV2Backend
+
+        return LocalSimV2Backend(**kwargs)
     if key in ("a3", "a3_sim_cli"):
         from a3opt.backends.a3_sim import A3SimCliBackend
 

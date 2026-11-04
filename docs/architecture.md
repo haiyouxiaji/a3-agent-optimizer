@@ -109,6 +109,7 @@ records the measured cost of every executed experiment.
 | --- | --- | --- |
 | `stub` | deterministic synthetic experiments for tests and dry runs | nothing |
 | `local_sim` | real closed-loop experiments: record expert data, train a torch behavior-cloning policy, evaluate it in MuJoCo | `torch`, the A3 simulation repository |
+| `local_sim_v2` | multi-camera variant with 128x128 front and wrist observations, action normalization, previous-action conditioning; used for the best real policy | `torch`, the A3 simulation repository |
 | `a3_sim_cli` | adapter that shells out to the upstream ACT/SmolVLA training and benchmark commands | `lerobot`, the A3 simulation repository |
 
 `local_sim` is the end-to-end demonstration backend: it records expert demonstrations from the real
@@ -185,12 +186,12 @@ runs/<run_id>/
 
 ## 14. Honest limitations
 
-- The `local_sim` policy is a compact behavior-cloning baseline, not a SmolVLA or ACT reproduction;
-  it exists to run the full loop cheaply and reproducibly on one workstation. Measured outcome: six
-  recorded episodes and 400 training steps lower the training loss from about 1.01 to about 0.01,
-  but the learned policy still scores 0/10 on the 2x5 benchmark at both 120 and 500 steps. The
-  scripted expert scores 0/10 at 120 steps and 10/10 at about 410 steps on the same seeds, so the
-  zero result is a competence gap of the small baseline, not a broken pipeline.
+- The `local_sim_v2` policy is a compact multi-camera behavior-cloning baseline, not a SmolVLA or
+  ACT reproduction. Measured outcome: 20 recorded episodes (8178 frames, three 128x128 cameras),
+  6000 training steps, training loss 0.651 -> 0.023, and a real closed-loop score of 2/10 and 5/10
+  on held-out seeds 2000/2001 (mean 3.5/10 at 500 steps). It places cookies but does not finish the
+  ten-cookie task. The scripted expert scores 10/10 at about 410 steps on the same task, so the gap
+  is policy competence, not a broken pipeline.
 - The `a3_sim_cli` backend is command-tested but was not executed end-to-end here because the
   upstream training stack (`lerobot`) is not vendored in this environment.
 - Six expert episodes are enough to test the pipeline and the acceptance gate, not to claim a
