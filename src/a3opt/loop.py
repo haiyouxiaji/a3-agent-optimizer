@@ -126,7 +126,17 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
         child = tree.add_child(parent, candidate, stage=space.stage_of(candidate))
         run_node(child, candidate)
 
-    best = tree.best()
+    best_node_id = ""
+    best_normalized = -1.0
+    for node_id, outcome in outcomes.items():
+        node = tree.get(node_id)
+        if node.candidate is None:
+            continue
+        score = outcome.normalized_score()
+        if score > best_normalized:
+            best_normalized = score
+            best_node_id = node_id
+    best = tree.get(best_node_id) if best_node_id else tree.best()
     accepted = [cid for cid, report in verdicts.items() if report.get("verdict") == "accept"]
     rejected = [cid for cid, report in verdicts.items() if report.get("verdict") == "reject"]
     summary = OptimizationSummary(
@@ -135,7 +145,7 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
         space_name=space.name,
         root_candidate_id=root_candidate.candidate_id,
         best_candidate_id=best.candidate.candidate_id if best.candidate is not None else "",
-        best_mean_score=float(best.mean_value),
+        best_mean_score=float(max(best_normalized, 0.0)),
         experiments=int(state["executed"]),
         accepted=accepted,
         rejected=rejected,

@@ -243,11 +243,11 @@ all 10/10 success), and the two blocks were merged:
 
 | Item | Value |
 | --- | --- |
-| Episodes | 40 (seeds 1000-1039) |
-| Frames | 16379 |
+| Episodes | 40 (seeds 1000-1039); later extended to 60 (adds seeds 1040-1059, +8174 frames) |
+| Frames | 16379 (60-episode set: 24553) |
 | Observations | front + left wrist + right wrist, 128x128 each |
 | Dataset | `artifacts/datasets/expert_2x5_multicam_40ep.npz` (694 MB) |
-| Collection wall clock | 1314.7 s + 1346.7 s |
+| Collection wall clock | 1314.7 s + 1346.7 s + 1540.1 s |
 
 ### 7.2 Training
 
@@ -311,7 +311,50 @@ second checkpoint remain in the repository for future work.
 | second stage | 20 episodes, 3 cameras 128px | 6000 steps | 500-600 steps, horizon 8 | 3.5/10 |
 | third stage | 40 episodes, 3 cameras 128px | 10000 steps | 600 steps, horizon 12 | **5.83/10** (dev 2000-2005) |
 
-## 8. Synthetic self-test (not a real experiment)
+## 8. Search tree run (60 episodes) and final tuned model
+
+### 8.1 Search tree execution
+
+```bash
+a3opt run --backend local_sim_v2 \
+  --dataset artifacts/datasets/expert_2x5_multicam_60ep.npz \
+  --experiment-root artifacts/local_sim_v2_60ep \
+  --experiments 3 --train-steps 8000 --batch-size 64 \
+  --eval-seeds 2000,2001 --max-eval-steps 600 --run-id final-tree-60ep
+```
+
+Protocol: 60-episode dataset (24553 frames), 8000 training steps per candidate, seeds 2000/2001,
+600-step budget, acceptance at defaults.
+
+| Node | Candidate | Parent | Stage | Train steps | Final loss | Seed scores | Mean | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| root | tiny_cnn / concat / chunk-k20 / lr 1e-3 | - | baseline | 8000 | 0.01576 | 5, 5 | **5.0/10** | baseline |
+| n001 | tiny_cnn / film / chunk-k20 / lr 1e-3 | root | encoder_fusion | 8000 | 0.01581 | 5, 4 | 4.5/10 | reject |
+| n002 | state_mlp / concat / chunk-k20 / lr 1e-3 | n001 | encoder_fusion | 8000 | 0.02417 | 0, 5 | 2.5/10 | reject |
+
+Budget actually spent: 3 experiments, 24000 training steps, 1201.8 s wall clock. The tree is saved in
+`runs/final-tree-60ep/tree.json`; each node carries the candidate specification, train metrics,
+per-seed evaluation rows, cost, and the acceptance verdict, and the loop-written `run.json` records
+the best node and the paired verdicts. The generated PDF report is
+`docs/A3_Agent_优化框架_架构与实验树报告.pdf`.
+
+Best combination found by the search: **tiny_cnn / concat fusion / chunk-20 / lr 1e-3**, mean
+5.0/10 on seeds 2000-2001. The film-fusion variant is 4.5/10 and the state-only variant 2.5/10;
+both fail the paired-seed gate against the baseline.
+
+### 8.2 Larger-budget 60-episode model (regression check)
+
+A larger-budget run trained the same best combination on the 60-episode dataset for 16000 steps
+(final loss 0.0124, offline normalized MAE 0.0148, 599.5 s) and was independently evaluated on the
+six development seeds:
+
+| Seeds | 2000 | 2001 | 2002 | 2003 | 2004 | 2005 | Mean |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Score | 5 | 5 | 5 | 5 | 0 | 0 | 3.33 |
+
+Checkpoint: `artifacts/local_sim_v2_60ep/bc2-60ep-64-16k/checkpoint`. This larger-budget model is worse than the 40-episode, 10000-step model in section 7.4 (5.83/10); extra data and training steps did not help at this budget, so the best overall policy remains the section 7.4 model. The negative result is reported rather than hidden.
+
+## 9. Synthetic self-test (not a real experiment)
 
 `a3opt selftest --experiments 6` runs the same loop with the deterministic synthetic backend. It is
 used by the test suite and by anyone who wants to check the orchestration without a simulator.

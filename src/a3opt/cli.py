@@ -56,7 +56,17 @@ def _cmd_plan(args: argparse.Namespace) -> int:
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
-    backend = make_backend(args.backend)
+    dataset = str(getattr(args, "dataset", "") or "").strip()
+    experiment_root = str(getattr(args, "experiment_root", "") or "").strip()
+    if args.backend in ("local", "local_sim", "local_sim_v2"):
+        backend_kwargs = {}
+        if dataset:
+            backend_kwargs["dataset_path"] = Path(dataset)
+        if experiment_root:
+            backend_kwargs["experiment_root"] = Path(experiment_root)
+        backend = make_backend(args.backend, **backend_kwargs)
+    else:
+        backend = make_backend(args.backend)
     available, reason = backend.available()
     if not available:
         print(f"backend unavailable: {reason}", file=sys.stderr)
@@ -149,6 +159,8 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--out", default="runs")
     run.add_argument("--run-id", default="")
     run.add_argument("--eval-seeds", default="2000,2001")
+    run.add_argument("--dataset", default="")
+    run.add_argument("--experiment-root", default="")
     run.add_argument("--max-eval-steps", type=int, default=120)
     run.add_argument("--train-steps", type=int, default=400)
     run.add_argument("--batch-size", type=int, default=64)

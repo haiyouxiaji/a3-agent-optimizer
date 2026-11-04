@@ -357,6 +357,8 @@ def train_candidate(
             "architecture": model.architecture(),
             "cameras": list(CAMERAS),
             "data_image_size": int(payload["front"].shape[1]),
+            "dataset_path": str(Path(dataset_path).resolve()),
+            "execution_horizon": int(cfg.execution_horizon),
             "action_mean": action_mean.tolist(),
             "action_std": action_std.tolist(),
             "state_mean": payload["state"].mean(axis=0).tolist(),
