@@ -188,6 +188,12 @@ docs/                 architecture, results, protocol
   reproducible on one workstation; it is not a SmolVLA or ACT reproduction.
 - The `a3_sim_cli` backend is command-tested, not executed end-to-end here, because the upstream
   training stack (`lerobot`) is not vendored.
+- ACT and SmolVLA were attempted but the official pipeline cannot run on this workstation:
+  `lerobot==0.5.1` needs Python 3.12+ and torch 2.7+, the only GPU environment here is Python 3.10
+  with torch 2.5.1, and the 4.1 GB A3 dataset plus multi-GB SmolVLA weights are not reachable at the
+  measured 0.5 MB/s HuggingFace throughput. An ACT-style reimplementation (ResNet18 backbones,
+  transformer encoder/decoder, CVAE latent, 50-step chunks) was trained on the local A3 data and
+  scored 1.5/10 on seeds 2000/2001, well below the compact BC model (5.83/10).
 - Six expert episodes validate the pipeline and the acceptance gate, not a general performance
   claim about the search itself.
 

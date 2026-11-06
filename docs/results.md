@@ -354,7 +354,77 @@ six development seeds:
 
 Checkpoint: `artifacts/local_sim_v2_60ep/bc2-60ep-64-16k/checkpoint`. This larger-budget model is worse than the 40-episode, 10000-step model in section 7.4 (5.83/10); extra data and training steps did not help at this budget, so the best overall policy remains the section 7.4 model. The negative result is reported rather than hidden.
 
-## 9. Synthetic self-test (not a real experiment)
+## 9. ACT and SmolVLA attempts
+
+### 9.1 Why the official pipelines were not executed end-to-end
+
+The report's candidate stack is ACT and SmolVLA, both trained through the upstream `a3-sim` CLI,
+which depends on `lerobot==0.5.1`. The environment of this workstation does not satisfy that
+pipeline, and the blockers were measured rather than assumed:
+
+| Requirement | Status on this machine |
+| --- | --- |
+| `lerobot==0.5.1` Python | requires `>=3.12`; the only GPU-capable environment is conda Python 3.10 with `torch 2.5.1+cu124`, and `lerobot 0.5.1` fails to import on 3.10 (`class Backtrackable[T]:` SyntaxError, PEP 695) |
+| `lerobot` torch | requires `torch>=2.7,<2.11`; the Python 3.13 environment has `torch 2.15.0+cpu` only, so ACT training would run on CPU |
+| A3 ACT dataset `Eter0109/a3-front-close-left-100` | 4.1 GB (60 files); measured HuggingFace throughput 0.5 MB/s, about 2.3 h for the download |
+| CUDA torch for Python 3.13 | the cu128 wheel is 2.7 GB; measured mirror throughput 1.2 MB/s, about 38 min, plus a downgrade that conflicts with the existing CPU setup |
+| SmolVLA | additionally needs `lerobot/smolvla_base` and the VLM weights (multi-GB); a 450M-parameter model cannot be trained on CPU in reasonable time |
+
+Rather than claim a pipeline that could not be run here, the ACT architecture itself was implemented
+inside this repository and trained on the A3 data that is already available locally.
+
+### 9.2 ACT-style implementation
+
+`src/a3opt/backends/act_style.py` implements the ACT decomposition from the report:
+
+- three ResNet18 backbones (one per camera) producing image tokens;
+- state/previous-action/step tokens and a learned latent token;
+- a 4-layer transformer encoder and a 4-layer transformer decoder over 50 learned action queries;
+- a CVAE branch that predicts the latent from the action chunk during training (`z = 0` at inference);
+- chunk size 50, executed for 8 steps before re-planning, L1 reconstruction loss plus KL weight 10.
+
+Training uses the 60-episode, 24553-frame multi-camera dataset. The 4090 GPU was used through the
+conda environment that has CUDA torch; checkpoints are plain state dictionaries and are evaluated in
+the A3 benchmark with the CPU torch environment.
+
+```bash
+python scripts/train_act_style.py --dataset artifacts/datasets/expert_2x5_multicam_60ep.npz \
+  --output artifacts/act_style/act_60ep_20k --steps 20000 --batch-size 16 --device cuda \
+  --pretrained-backbone
+python scripts/eval_act_style.py --checkpoint artifacts/act_style/act_60ep_20k/model.pt \
+  --seeds 2000,2001 --max-steps 600
+```
+
+### 9.3 Results
+
+| Run | Backbone init | Steps | Train loss (first -> final) | Wall | Scores (2000/2001) | Mean |
+| --- | --- | --- | --- | --- | --- | --- |
+| ACT-style random init | random | 8000 | 1.2227 -> 0.0419 | 706.9 s | 3, 0 | 1.5/10 |
+| ACT-style pretrained | ImageNet ResNet18 | 20000 | aborted | - | - | - |
+
+The 20k-step pretrained run was aborted: the ResNet18 ImageNet weights download from
+`download.pytorch.org` ran at roughly 24 kB/s and the truncated file failed the hash check after
+about five minutes (a second attempt would take tens of minutes for a 44.7 MB file). The reported
+ACT-style number therefore comes from the random-init 8k-step run. Even so, the ACT-style policy is
+clearly weaker than the compact multi-camera behavior-cloning model (section 7.4: 5.83/10 on six
+development seeds). That is consistent with the report's warning that ACT needs the official
+pipeline, a much larger demonstration budget and the full 20k-step recipe; the local ACT-style
+stand-in is a real trained policy, not a credible replacement.
+
+The official path was probed directly: `a3-sim train-act --root datasets/a3_front_close_left_100
+--dry-run` stops at the dataset audit with `FileNotFoundError: Missing LeRobot metadata`, i.e. the
+4.1 GB A3 dataset has to be downloaded first, which is the blocker measured above.
+
+### 9.4 SmolVLA
+
+SmolVLA was not executed. Its training requires the same `lerobot==0.5.1` stack plus the SmolVLA
+base checkpoint and VLM weights (multi-GB downloads at the measured 0.5 MB/s), and a 450M-parameter
+model cannot be trained on CPU. The next attempt needs a machine with a working Python 3.12 +
+CUDA torch >= 2.7 environment and a fast path to the 4.1 GB dataset; with that, the exact commands
+are `a3-sim download-smolvla`, `a3-sim train-act` / `a3-sim train-smolvla`, and
+`a3-sim`-driven benchmark evaluation.
+
+## 10. Synthetic self-test (not a real experiment)
 
 `a3opt selftest --experiments 6` runs the same loop with the deterministic synthetic backend. It is
 used by the test suite and by anyone who wants to check the orchestration without a simulator.
