@@ -138,6 +138,15 @@ mean pose but not yet the task, and a 120-step budget cannot score even for the 
 The framework, the data collection, the training, and the evaluation are real; policy competence is
 the documented limitation, not a hidden failure.
 
+## Handover
+
+A detailed handover document for a new AI or human maintainer is at
+[docs/AI_HANDOVER.md](docs/AI_HANDOVER.md) with a PDF version at
+[docs/AI_HANDOVER.pdf](docs/AI_HANDOVER.pdf). It covers the current status, file map, environment
+matrix (three Python environments), datasets and checkpoints, the architecture and experiment-tree
+format, verified results, exact reproduction commands, known blockers (official ACT/SmolVLA,
+Windows SSH, network speed), open tasks, and GitHub instructions.
+
 ## Reports
 
 - Experiment log: [docs/results.md](docs/results.md)
