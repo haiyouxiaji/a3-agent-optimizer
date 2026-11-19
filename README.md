@@ -12,6 +12,7 @@ It drives an existing A3 simulation checkout and keeps the runtime chain
 - Design document: [docs/architecture.md](docs/architecture.md)
 - Refinement and measured results: [docs/A3_REFINEMENT_REPORT.md](docs/A3_REFINEMENT_REPORT.md)
 - Advanced randomization, autonomous follow-up, and replay verification: [docs/A3_ADVANCED_AGENT.md](docs/A3_ADVANCED_AGENT.md)
+- Phase-aware grasp and placement search with paired confirmation: [docs/A3_ADAPTIVE_AGENT.md](docs/A3_ADAPTIVE_AGENT.md)
 - Upstream simulation project: `a3_dual_arm_sim` (course-provided checkout, not vendored here)
 
 ## What it implements
