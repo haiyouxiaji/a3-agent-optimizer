@@ -161,7 +161,7 @@ def render_report(
         "",
         "## Protocol notes",
         "",
-        "- Development seeds are used for search; acceptance seeds are reserved and never reused for tuning.",
+        "- Paired acceptance in this report uses the development seeds. The confirmation command runs the reserved seed block after policy selection.",
         "- A candidate is retained only when the paired comparison passes the gain, non-inferiority, and cost-ratio thresholds.",
         "- Every record stores the candidate specification, training metrics, per-seed evaluation scores, and measured cost.",
         "",

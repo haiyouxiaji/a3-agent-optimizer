@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 
 from a3opt.cli import main
+from a3opt.contracts import EpisodeRow, EvalResult, ExperimentOutcome, TrainResult
+from a3opt.loop import LoopConfig, run_optimization
 
 
 def test_stub_run_end_to_end(tmp_path) -> None:
@@ -79,3 +81,24 @@ def test_run_reports_unavailable_backend(tmp_path, capsys, monkeypatch) -> None:
     code = main(["run", "--backend", "stub", "--out", str(tmp_path), "--experiments", "1"])
     assert code == 2
     assert "not installed" in capsys.readouterr().err
+
+
+def test_summary_does_not_select_an_incomplete_or_rejected_candidate(tmp_path) -> None:
+    class Backend:
+        name = "test"
+        calls = 0
+
+        def run(self, candidate, budget, eval_seeds, max_eval_steps):
+            self.calls += 1
+            score = 4 if self.calls == 1 else 10
+            seeds = eval_seeds[:1] if self.calls == 2 else eval_seeds
+            cost = 10.0 if self.calls == 3 else 1.0
+            return ExperimentOutcome(candidate, TrainResult(wall_seconds=cost), EvalResult(
+                episodes=[EpisodeRow(seed, score, score == 10, 100) for seed in seeds],
+            ))
+
+    summary = run_optimization(LoopConfig(tmp_path, Backend(), experiments=3))["summary"]
+    assert summary["best_candidate_id"] == summary["root_candidate_id"]
+    assert summary["best_mean_score"] == 0.4
+    verdicts = {report["verdict"] for report in summary["config"]["verdicts"].values()}
+    assert verdicts == {"insufficient", "reject"}

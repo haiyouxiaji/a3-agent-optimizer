@@ -73,21 +73,20 @@ def compare_paired(
     baseline = _as_score_map(baseline_scores)
     candidate = _as_score_map(candidate_scores)
     cost_ratio = _cost_ratio(baseline_cost, candidate_cost)
-    paired = sorted(set(baseline) & set(candidate))
-    if not paired:
-        reasons = ["insufficient data: no paired evaluation seeds"]
-        if not baseline:
-            reasons.append("baseline scores are empty")
-        if not candidate:
-            reasons.append("candidate scores are empty")
+    if not baseline or set(baseline) != set(candidate):
         return AcceptanceReport(
             verdict=VERDICT_INSUFFICIENT,
-            mean_gain=0.0,
-            non_worse_fraction=0.0,
             cost_ratio=cost_ratio,
-            paired_seeds=[],
-            reasons=reasons,
+            reasons=[f"complete identical seed lists required: missing={sorted(set(baseline) - set(candidate))}, "
+                     f"unexpected={sorted(set(candidate) - set(baseline))}"],
         )
+    if not all(math.isfinite(value) for value in (*baseline.values(), *candidate.values())) or not all(
+        math.isfinite(value) and value >= 0 for value in (baseline_cost, candidate_cost)
+    ):
+        return AcceptanceReport(
+            verdict=VERDICT_INSUFFICIENT, reasons=["scores and costs must be finite, with nonnegative costs"],
+        )
+    paired = sorted(baseline)
     gains = np.asarray(
         [candidate[seed] - baseline[seed] for seed in paired],
         dtype=float,

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import sqlite3
 import sys
 import tempfile
+from contextlib import closing, contextmanager
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -77,7 +79,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
         backend=backend,
         experiments=int(args.experiments),
         eval_seeds=_parse_seeds(args.eval_seeds),
-        max_eval_steps=int(args.max_eval_steps),
+        max_eval_steps=args.max_eval_steps if args.max_eval_steps is not None else (120 if backend.name == "stub" else 600),
         experiment_budget=ExperimentBudget(
             max_train_steps=int(args.train_steps),
             batch_size=int(args.batch_size),
@@ -143,6 +145,77 @@ def _cmd_selftest(args: argparse.Namespace) -> int:
     return 0
 
 
+@contextmanager
+def _run_lock(directory: Path):
+    directory.mkdir(parents=True, exist_ok=True)
+    with closing(sqlite3.connect(directory / ".run-lock.sqlite3", timeout=0)) as connection:
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+        except sqlite3.OperationalError as exc:
+            raise RuntimeError(f"cannot acquire run lock in {directory}") from exc
+        yield
+
+
+def _cmd_refine(args: argparse.Namespace) -> int:
+    from a3opt.refinement import RefinementConfig, develop
+
+    config = RefinementConfig(
+        dataset=Path(args.dataset), reference=Path(args.reference), out=Path(args.out),
+        initial_episodes=args.initial_episodes, sample_episodes=args.sample_episodes,
+        pool_size=args.pool_size, rounds=args.rounds, workers=args.workers,
+    )
+    with _run_lock(config.out):
+        result = develop(config)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
+def _cmd_freeze_confirmation(args: argparse.Namespace) -> int:
+    from a3opt.refinement_eval import freeze_confirmation, read_json
+
+    evidence = read_json(Path(args.selection))
+    with _run_lock(Path(args.out)):
+        lock = freeze_confirmation(Path(args.out), Path(evidence["development_dir"]),
+                                   evidence["reference_name"], evidence["selected_policy"])
+    print(lock.resolve())
+    return 0
+
+
+def _cmd_confirm(args: argparse.Namespace) -> int:
+    from a3opt.refinement_eval import confirm, read_json
+
+    lock = Path(args.lock)
+    with _run_lock(lock.parent):
+        verdict = confirm(lock, args.workers)
+        if args.eager_replay:
+            from a3opt.refinement_replay import replay_candidate
+
+            replay = replay_candidate(lock, args.workers, read_json(lock.parent / "confirmation/results.json")["candidate"])
+            verdict["eager_replay_exact_matches"] = len(replay)
+    print(json.dumps(verdict, indent=2, ensure_ascii=False))
+    return 0
+
+
+def _cmd_advanced(args: argparse.Namespace) -> int:
+    from a3opt.advanced_agent import AdvancedBudget, run_agent
+
+    budget = AdvancedBudget(args.seed_block, args.calibration, args.initial_attempts, args.feedback_attempts, args.rounds)
+    with _run_lock(Path(args.out).resolve()):
+        result = run_agent(Path(args.out), budget, args.workers, args.recover_from)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result.get("milestone_met") else 2
+
+
+def _cmd_advanced_followup(args: argparse.Namespace) -> int:
+    from a3opt.advanced_followup import FollowupBudget, run_followup
+
+    budget = FollowupBudget(args.seed_block, args.calibration, args.initial_attempts, args.feedback_attempts, args.rounds)
+    with _run_lock(args.out.resolve()):
+        result = run_followup(args.out, args.reference, budget, args.workers)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result.get("milestone_met") else 2
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="a3opt",
@@ -161,7 +234,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--eval-seeds", default="2000,2001")
     run.add_argument("--dataset", default="")
     run.add_argument("--experiment-root", default="")
-    run.add_argument("--max-eval-steps", type=int, default=120)
+    run.add_argument("--max-eval-steps", type=int)
     run.add_argument("--train-steps", type=int, default=400)
     run.add_argument("--batch-size", type=int, default=64)
     run.add_argument("--experiment-wall-limit", type=float, default=1800.0)
@@ -183,6 +256,50 @@ def build_parser() -> argparse.ArgumentParser:
     selftest.add_argument("--train-steps", type=int, default=100)
     selftest.add_argument("--work-dir", default=str(Path(tempfile.gettempdir()) / "a3opt-selftest"))
     selftest.set_defaults(func=_cmd_selftest)
+
+    refine = sub.add_parser("refine", help="collect and compare feedback-guided and uniform training data")
+    refine.add_argument("--dataset", required=True)
+    refine.add_argument("--reference", required=True)
+    refine.add_argument("--out", required=True)
+    refine.add_argument("--initial-episodes", type=int)
+    refine.add_argument("--sample-episodes", type=int, default=8)
+    refine.add_argument("--pool-size", type=int, default=48)
+    refine.add_argument("--rounds", type=int, default=1)
+    refine.add_argument("--workers", type=int, default=8)
+    refine.set_defaults(func=_cmd_refine)
+
+    freeze = sub.add_parser("freeze-confirmation", help="bind a development selection to the confirmation protocol")
+    freeze.add_argument("--selection", required=True)
+    freeze.add_argument("--out", required=True)
+    freeze.set_defaults(func=_cmd_freeze_confirmation)
+
+    confirm = sub.add_parser("confirm", help="evaluate one frozen policy pair on the reserved seed block")
+    confirm.add_argument("--lock", required=True)
+    confirm.add_argument("--workers", type=int, default=8)
+    confirm.add_argument("--eager-replay", action="store_true", help="repeat the locked candidate with upstream camera rendering")
+    confirm.set_defaults(func=_cmd_confirm)
+
+    advanced = sub.add_parser("advanced", help="autonomous search and confirmation on the 2x5 advanced protocol")
+    advanced.add_argument("--out", required=True)
+    advanced.add_argument("--workers", type=int, default=8)
+    advanced.add_argument("--seed-block", type=int, default=40000)
+    advanced.add_argument("--calibration", type=int, default=640)
+    advanced.add_argument("--initial-attempts", type=int, default=40)
+    advanced.add_argument("--feedback-attempts", type=int, default=24)
+    advanced.add_argument("--rounds", type=int, default=4)
+    advanced.add_argument("--recover-from", type=Path, help="recover training artifacts from an interrupted run")
+    advanced.set_defaults(func=_cmd_advanced)
+
+    followup = sub.add_parser("advanced-followup", help="compare fine-grained trajectories on a fresh advanced split")
+    followup.add_argument("--out", type=Path, required=True)
+    followup.add_argument("--reference", type=Path, required=True)
+    followup.add_argument("--workers", type=int, default=8)
+    followup.add_argument("--seed-block", type=int, default=44000)
+    followup.add_argument("--calibration", type=int, default=920)
+    followup.add_argument("--initial-attempts", type=int, default=72)
+    followup.add_argument("--feedback-attempts", type=int, default=32)
+    followup.add_argument("--rounds", type=int, default=2)
+    followup.set_defaults(func=_cmd_advanced_followup)
     return parser
 
 

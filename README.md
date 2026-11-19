@@ -10,6 +10,8 @@ It drives an existing A3 simulation checkout and keeps the runtime chain
 `Observation -> Policy -> Action -> Environment -> Evaluation` unchanged.
 
 - Design document: [docs/architecture.md](docs/architecture.md)
+- Refinement and measured results: [docs/A3_REFINEMENT_REPORT.md](docs/A3_REFINEMENT_REPORT.md)
+- Advanced randomization, autonomous follow-up, and replay verification: [docs/A3_ADVANCED_AGENT.md](docs/A3_ADVANCED_AGENT.md)
 - Upstream simulation project: `a3_dual_arm_sim` (course-provided checkout, not vendored here)
 
 ## What it implements
@@ -48,6 +50,24 @@ a3opt selftest --experiments 6
 
 A self-test run writes `runs/<run-id>/` with `run.json`, `tree.json`, `memory.jsonl`,
 `outcomes/`, and `report.md`.
+
+### Feedback-guided data collection and confirmation
+
+With the simulator checkout at `5fa2497`, run the following from the optimizer root with
+the real simulation environment active. The dataset must have its `.meta.json` sidecar.
+
+```bash
+a3opt refine --dataset artifacts/datasets/expert_2x5_multicam_60ep.npz --reference artifacts/local_sim_v2_40ep/bc2-40ep-64/checkpoint --out artifacts/refinement
+a3opt freeze-confirmation --selection artifacts/refinement/development-summary.json --out artifacts/refinement
+a3opt confirm --lock artifacts/refinement/confirmation-lock.json --eager-replay
+```
+
+The refinement loop scouts training layouts, collects matched-budget expert demonstrations for
+feedback and uniform branches, checks the shards, and fits a layout-conditioned trajectory model.
+Use `--initial-episodes 8` for the limited-data ablation and a separate output directory for
+each run configuration. The confirmation command binds the simulator, checkpoints, seed block,
+and evaluator to the development selection. `--eager-replay` repeats the candidate with the
+upstream per-step camera rendering and checks action digests.
 
 ### Real closed-loop experiments
 
@@ -185,9 +205,9 @@ docs/                 architecture, results, protocol
 ## Evaluation protocol
 
 - Task: 2x5 cookie transfer, `basic` randomization profile, source column 1.
-- Expert demonstration seeds: 1000-1005.
-- Screening seeds: 2000-2019, `max_eval_steps = 120`.
-- Confirmation seeds: 3000-3019 are reserved and never used for tuning.
+- The refinement workflow uses expert seed IDs 1000–1059, a separate sampling pool starting at
+  1200, and development seeds 2000–2005. The confirmation block is 3100–3119.
+- Real CLI runs default to 600 evaluation steps. The 120-step budget is for synthetic or smoke runs.
 - Success conditions follow the upstream repository defaults: ten cookies in the target slots,
   seventy in the source box, five-step hold, slot tolerance 0.015/0.005 m, wall tolerance 0.03 m.
 

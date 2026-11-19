@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -60,6 +61,11 @@ def _failed_outcome(candidate: CandidateSpec, error: str) -> ExperimentOutcome:
 
 
 def run_optimization(config: LoopConfig) -> dict[str, Any]:
+    expected_seeds = set(config.eval_seeds)
+    if not expected_seeds or len(expected_seeds) != len(config.eval_seeds):
+        raise ValueError("development evaluation seeds must be nonempty and unique")
+    if config.max_eval_steps < 1:
+        raise ValueError("the evaluation step budget must be positive")
     layout = RunLayout(run_dir=Path(config.run_dir)).ensure()
     run_id = config.run_id or layout.run_dir.name
     space = config.space
@@ -91,6 +97,18 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
         elapsed = time.perf_counter() - started
         if outcome.train.wall_seconds <= 0.0:
             outcome.train.wall_seconds = elapsed
+        if outcome.status == STATUS_OK:
+            rows = outcome.eval.episodes
+            valid = (
+                outcome.eval.status == STATUS_OK and len(rows) == len(expected_seeds)
+                and {row.seed for row in rows} == expected_seeds
+                and math.isfinite(outcome.eval.max_score) and outcome.eval.max_score > 0
+                and all(0 <= row.score <= outcome.eval.max_score and 1 <= row.steps <= config.max_eval_steps
+                        for row in rows)
+            )
+            if not valid:
+                outcome.status = outcome.eval.status = STATUS_FAILED
+                outcome.error = outcome.eval.error = "evaluation did not satisfy the complete development protocol"
         node.status = outcome.status
         node.error = outcome.error
         tree.backpropagate(node, outcome.normalized_score())
@@ -103,15 +121,14 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
             state["baseline"] = outcome
         else:
             baseline = state["baseline"]
-            if baseline is not None and baseline.status == STATUS_OK:
-                report = compare_paired(
-                    baseline.scores_by_seed(),
-                    outcome.scores_by_seed(),
-                    baseline.cost_wall_seconds,
-                    outcome.cost_wall_seconds,
-                    config.criteria,
-                )
-                verdicts[candidate.candidate_id] = report.to_dict()
+            report = compare_paired(
+                baseline.scores_by_seed() if baseline is not None and baseline.status == STATUS_OK else None,
+                outcome.scores_by_seed() if outcome.status == STATUS_OK else None,
+                baseline.cost_wall_seconds if baseline is not None else 0.0,
+                outcome.cost_wall_seconds,
+                config.criteria,
+            )
+            verdicts[candidate.candidate_id] = report.to_dict()
         return outcome
 
     root = tree.root
@@ -126,17 +143,18 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
         child = tree.add_child(parent, candidate, stage=space.stage_of(candidate))
         run_node(child, candidate)
 
-    best_node_id = ""
+    best_candidate_id = ""
     best_normalized = -1.0
     for node_id, outcome in outcomes.items():
         node = tree.get(node_id)
-        if node.candidate is None:
+        if node.candidate is None or outcome.status != STATUS_OK:
+            continue
+        if node_id != tree.root_id and verdicts[node.candidate.candidate_id]["verdict"] != "accept":
             continue
         score = outcome.normalized_score()
         if score > best_normalized:
             best_normalized = score
-            best_node_id = node_id
-    best = tree.get(best_node_id) if best_node_id else tree.best()
+            best_candidate_id = node.candidate.candidate_id
     accepted = [cid for cid, report in verdicts.items() if report.get("verdict") == "accept"]
     rejected = [cid for cid, report in verdicts.items() if report.get("verdict") == "reject"]
     summary = OptimizationSummary(
@@ -144,7 +162,7 @@ def run_optimization(config: LoopConfig) -> dict[str, Any]:
         backend=config.backend.name,
         space_name=space.name,
         root_candidate_id=root_candidate.candidate_id,
-        best_candidate_id=best.candidate.candidate_id if best.candidate is not None else "",
+        best_candidate_id=best_candidate_id,
         best_mean_score=float(max(best_normalized, 0.0)),
         experiments=int(state["executed"]),
         accepted=accepted,

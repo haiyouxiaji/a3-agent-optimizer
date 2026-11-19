@@ -1,5 +1,9 @@
 # Architecture
 
+The [refinement report](A3_REFINEMENT_REPORT.md) describes the executable data collection loop,
+the layout-conditioned policy, and the held-out confirmation protocol. This document records the
+original experiment tree design.
+
 This repository implements the agent-driven optimization layer described in the midterm report
 (`project/期中汇报最终版/midterm_report_merged.pdf`, Section 3) as runnable code. The layer sits on
 top of an existing robot-policy stack: it never re-implements the simulator, the task success rules,

@@ -92,13 +92,12 @@ def test_insufficient_when_one_side_empty():
     assert compare_paired(None, None).verdict == VERDICT_INSUFFICIENT
 
 
-def test_paired_seed_intersection_ignores_unpaired_seeds():
+def test_incomplete_seed_lists_are_insufficient():
     baseline = {100: 1.0, 101: 2.0}
     candidate = {101: 4.0, 200: 99.0}
     report = compare_paired(baseline, candidate)
-    assert report.paired_seeds == [101]
-    assert report.mean_gain == pytest.approx(2.0)
-    assert report.verdict == VERDICT_ACCEPT
+    assert report.paired_seeds == []
+    assert report.verdict == VERDICT_INSUFFICIENT
 
 
 def test_non_worse_counts_equal_scores_as_non_worse():

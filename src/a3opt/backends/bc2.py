@@ -436,6 +436,10 @@ class BC2Policy:
     def finished(self) -> bool:
         return False
 
+    @property
+    def camera_names(self) -> tuple[str, ...]:
+        return self.cameras if self.model.use_images and not self._queue else ()
+
     def reset(self, context: Any | None = None) -> None:
         self._queue.clear()
         self._previous = np.zeros(ACTION_DIM, dtype=np.float32)
