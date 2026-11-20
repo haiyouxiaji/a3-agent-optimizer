@@ -1,0 +1,220 @@
+{
+  "folds": {
+    "routed-confirmation": {
+      "route": [
+        [
+          2,
+          1,
+          "raise-then-outward",
+          2,
+          0.0010316189812705212
+        ],
+        [
+          "outward-24",
+          "descent_x",
+          1,
+          -0.020898813256201028
+        ]
+      ],
+      "effects": {
+        "gain": 0,
+        "helped": 0,
+        "harmed": 0,
+        "worst": 0,
+        "complete_gain": 0,
+        "unsafe": 0,
+        "switched": 4
+      },
+      "always_hold": {
+        "planned-18": {
+          "gain": -4,
+          "helped": 0,
+          "harmed": 1,
+          "worst": -4,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 5
+        },
+        "anchored-24": {
+          "gain": -10,
+          "helped": 0,
+          "harmed": 2,
+          "worst": -5,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 5
+        },
+        "outward-24": {
+          "gain": 0,
+          "helped": 0,
+          "harmed": 0,
+          "worst": 0,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 5
+        }
+      }
+    },
+    "routed-replication": {
+      "route": null,
+      "effects": {
+        "gain": 0,
+        "helped": 0,
+        "harmed": 0,
+        "worst": 0,
+        "complete_gain": 0,
+        "unsafe": 0,
+        "switched": 0
+      },
+      "always_hold": {
+        "planned-18": {
+          "gain": -7,
+          "helped": 0,
+          "harmed": 3,
+          "worst": -3,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        },
+        "anchored-24": {
+          "gain": -7,
+          "helped": 0,
+          "harmed": 3,
+          "worst": -3,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        },
+        "outward-24": {
+          "gain": 6,
+          "helped": 3,
+          "harmed": 0,
+          "worst": 0,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        }
+      }
+    },
+    "release-confirmation": {
+      "route": null,
+      "effects": {
+        "gain": 0,
+        "helped": 0,
+        "harmed": 0,
+        "worst": 0,
+        "complete_gain": 0,
+        "unsafe": 0,
+        "switched": 0
+      },
+      "always_hold": {
+        "planned-18": {
+          "gain": -3,
+          "helped": 0,
+          "harmed": 1,
+          "worst": -3,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 4
+        },
+        "anchored-24": {
+          "gain": -2,
+          "helped": 0,
+          "harmed": 1,
+          "worst": -2,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 4
+        },
+        "outward-24": {
+          "gain": 1,
+          "helped": 1,
+          "harmed": 0,
+          "worst": 0,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 4
+        }
+      }
+    },
+    "release-replication": {
+      "route": [
+        [
+          2,
+          1,
+          "raise-then-outward",
+          2,
+          0.0010421552195019612
+        ],
+        [
+          "outward-24",
+          "transfer_x",
+          -1,
+          -0.019315410790949693
+        ]
+      ],
+      "effects": {
+        "gain": -1,
+        "helped": 0,
+        "harmed": 1,
+        "worst": -1,
+        "complete_gain": 0,
+        "unsafe": 0,
+        "switched": 3
+      },
+      "always_hold": {
+        "planned-18": {
+          "gain": -16,
+          "helped": 0,
+          "harmed": 4,
+          "worst": -5,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        },
+        "anchored-24": {
+          "gain": -14,
+          "helped": 0,
+          "harmed": 4,
+          "worst": -5,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        },
+        "outward-24": {
+          "gain": -1,
+          "helped": 0,
+          "harmed": 1,
+          "worst": -1,
+          "complete_gain": 0,
+          "unsafe": 0,
+          "switched": 7
+        }
+      }
+    }
+  },
+  "fold_gain": -1,
+  "always_hold_gain": {
+    "planned-18": -30,
+    "anchored-24": -33,
+    "outward-24": 6
+  },
+  "full_fit": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ],
+    [
+      "outward-24",
+      "descent_x",
+      1,
+      -0.020898813256201028
+    ]
+  ],
+  "admitted": false,
+  "corrections": [],
+  "dataset_sha256": "db6b17913abb9c113575d2a64f10d384fd60136d050981f67f1066a31d42520d"
+}

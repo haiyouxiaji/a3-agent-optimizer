@@ -1,0 +1,252 @@
+{
+  "stage": "confirmation",
+  "results_sha256": "e874009b292e7574f87cf7fb9eb146a8a40886489c0ee64128b19a1261ace15f",
+  "videos": [
+    {
+      "arm": "reference",
+      "seed": 159428,
+      "video": "159428-reference.mp4",
+      "sha256": "b17c91234d86736c1ab72042675afc245babcca3dab813a84b7e51adb0e6ff13",
+      "frames": 541,
+      "control_frames": 501,
+      "fps": 20,
+      "matched_fields": [
+        "action_sha256",
+        "applied_action_sha256",
+        "cameras",
+        "color",
+        "initial_pose",
+        "light_diffuse",
+        "requested_score",
+        "safety_reason",
+        "score",
+        "source_remaining",
+        "steps",
+        "success",
+        "target_cookie_ids",
+        "terminal"
+      ],
+      "episode": {
+        "steps": 500,
+        "score": 0,
+        "requested_score": 0,
+        "success": false,
+        "target_cookie_ids": [],
+        "source_remaining": 70,
+        "safety_reason": null,
+        "terminal": {
+          "slot_occupancy": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "touches_all_walls": false,
+          "hold_steps": 0,
+          "exact_fill": false
+        },
+        "initial_pose": [
+          0.1921174870363344,
+          0.33226097974351926,
+          0.09543769788862716,
+          0.11441270083166456,
+          0.07787239889292243
+        ],
+        "color": "golden",
+        "cameras": {
+          "front": {
+            "position": [
+              0.49181705640846396,
+              -0.1772885398104499,
+              1.2559073886833692
+            ],
+            "quaternion": [
+              0.8573187219773771,
+              0.376963776708142,
+              0.13335283950307913,
+              0.3242220538357572
+            ],
+            "fovy": 47.118372537207485,
+            "mode": 0
+          },
+          "left_wrist": {
+            "position": [
+              0.0021172299951212155,
+              0.04421300474154384,
+              0.08413559650178687
+            ],
+            "quaternion": [
+              0.8997546085333237,
+              0.43633757026588327,
+              0.006904716135609111,
+              0.00186924920694464
+            ],
+            "fovy": 70.88029637410402,
+            "mode": 0
+          },
+          "right_wrist": {
+            "position": [
+              0.0029576722332560253,
+              -0.04689832657298569,
+              0.08515667155386368
+            ],
+            "quaternion": [
+              -0.005257571840356379,
+              0.008139154593046677,
+              0.4240146275088523,
+              0.9056035047190263
+            ],
+            "fovy": 70.64537969202574,
+            "mode": 0
+          }
+        },
+        "light_diffuse": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.4892970621585846,
+            0.4892970621585846,
+            0.4892970621585846
+          ]
+        ],
+        "action_sha256": "90902d4450be48a176df381b2ac425a65e40ad1f46ef76d6cec9f2de88a36c7f",
+        "applied_action_sha256": "508959da5e636a7fe2198740ca7067812568bb08a847ab88fe7cbefd9fc311bb"
+      }
+    },
+    {
+      "arm": "selected",
+      "seed": 159428,
+      "video": "159428-selected.mp4",
+      "sha256": "0e344fe8f4948f10a297b9d949032155c3f5fd3fa1126bf8bab04911ddce69a6",
+      "frames": 541,
+      "control_frames": 501,
+      "fps": 20,
+      "matched_fields": [
+        "action_sha256",
+        "applied_action_sha256",
+        "cameras",
+        "color",
+        "initial_pose",
+        "light_diffuse",
+        "requested_score",
+        "safety_reason",
+        "score",
+        "source_remaining",
+        "steps",
+        "success",
+        "target_cookie_ids",
+        "terminal"
+      ],
+      "episode": {
+        "steps": 500,
+        "score": 5,
+        "requested_score": 5,
+        "success": false,
+        "target_cookie_ids": [
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "source_remaining": 70,
+        "safety_reason": null,
+        "terminal": {
+          "slot_occupancy": [
+            25,
+            -1,
+            26,
+            -1,
+            27,
+            -1,
+            28,
+            -1,
+            29,
+            -1
+          ],
+          "touches_all_walls": false,
+          "hold_steps": 0,
+          "exact_fill": false
+        },
+        "initial_pose": [
+          0.1921174870363344,
+          0.33226097974351926,
+          0.09543769788862716,
+          0.11441270083166456,
+          0.07787239889292243
+        ],
+        "color": "golden",
+        "cameras": {
+          "front": {
+            "position": [
+              0.49181705640846396,
+              -0.1772885398104499,
+              1.2559073886833692
+            ],
+            "quaternion": [
+              0.8573187219773771,
+              0.376963776708142,
+              0.13335283950307913,
+              0.3242220538357572
+            ],
+            "fovy": 47.118372537207485,
+            "mode": 0
+          },
+          "left_wrist": {
+            "position": [
+              0.0021172299951212155,
+              0.04421300474154384,
+              0.08413559650178687
+            ],
+            "quaternion": [
+              0.8997546085333237,
+              0.43633757026588327,
+              0.006904716135609111,
+              0.00186924920694464
+            ],
+            "fovy": 70.88029637410402,
+            "mode": 0
+          },
+          "right_wrist": {
+            "position": [
+              0.0029576722332560253,
+              -0.04689832657298569,
+              0.08515667155386368
+            ],
+            "quaternion": [
+              -0.005257571840356379,
+              0.008139154593046677,
+              0.4240146275088523,
+              0.9056035047190263
+            ],
+            "fovy": 70.64537969202574,
+            "mode": 0
+          }
+        },
+        "light_diffuse": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.4892970621585846,
+            0.4892970621585846,
+            0.4892970621585846
+          ]
+        ],
+        "action_sha256": "785e82de95aa0fa140f36dbbb16043f404433beb5488b9ddc219d5ead3f94990",
+        "applied_action_sha256": "317bd1758281ced06b02057017ae2ee0a9ed092b60ec578e9a37650bd2226b3a"
+      }
+    }
+  ]
+}

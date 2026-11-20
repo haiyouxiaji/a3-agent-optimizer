@@ -24,3 +24,21 @@ Agent 冻结抬升后外移配方，按公开观测的末端高度启用。测�
 | 4 | 9.375 → 9.375 | 9 → 9/16 |
 
 每列各抽一局，以课程口径和严格口径分别进行原生复跑。8 次均匹配步数、目标饼干身份、槽位、成功标记、命令与执行动作哈希。确认回执解压后的 SHA-256 为 `e874009b292e7574f87cf7fb9eb146a8a40886489c0ee64128b19a1261ace15f`。 [确认逐局回执](confirmation.json.gz) · [原生复跑](native-replays.json.gz) · [复算审计](confirmation-audit.json)
+
+种子 `159428` 的三视角录像完整覆盖 500 步。该局从 0 块增至 5 块，两次完整成功标记均为假。录像与确认回执的终局和动作哈希一致。 [录像审计](video-159428-audit.json)
+
+## 从公开检查点复跑
+
+在本仓库根目录运行。复跑使用协议记录的模拟器提交与依赖环境。检查点路径可按本机检出位置设置，加载时仍核对冻结 SHA-256。
+
+```powershell
+$sim = (Resolve-Path '..\a3_dual_arm_sim').Path
+$env:PYTHONPATH = "$PWD\src;$sim\src;$PWD\scripts"
+$env:A3OPT_PLACEMENT_LOCK = (Resolve-Path 'evidence/release-recovery-20261121/confirmation-lock.json').Path
+$env:A3OPT_PLACEMENT_CHECKPOINT = (Resolve-Path 'evidence/advanced-20261120/policy.npz').Path
+$env:A3OPT_PLACEMENT_KIND = 'release-recovery'
+& "$sim\.venv\Scripts\python.exe" -m a3_dual_arm_sim.workflows.benchmark_cookie_batch_cli `
+  --task 2x5 --policy replay_placement:upstream_policy --profile advanced `
+  --source-column random --prompt-style task --episodes 1 --seed-start 159428 --max-steps 500 --workers 1 `
+  --output artifacts/replay-release-recovery-159428.json
+```

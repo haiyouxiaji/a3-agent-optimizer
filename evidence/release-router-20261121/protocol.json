@@ -1,0 +1,235 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "code_sha256": "1af3926f8a8964e1cb6b096889f305f039b3896650564b1a48211ee4038c1306",
+  "dependencies": {
+    "a3opt.placement_release_hold": "fbcdc8cbfc0996cbde5691d3ff6592eba9612cf9555d7d01cfe99234c09a403a",
+    "a3opt.placement_release_recovery": "9868a86c1553eea1f6947d0fac6e36d439f1ce98484a0c9491bfb550447ab8db",
+    "a3opt.placement_contact_feedback": "b64637ec3050cb9d0fdcec757f157b6f5c79ec2221d3ad2c8044a14b84d509d0",
+    "a3opt.placement_late_hover_gate": "368576ad11bba44712dcabf7f3ee7251ea7e7ba9dbaa1a9ab59ab48a3ff64e87",
+    "a3opt.placement_search": "3502123ef15a4ad5970a41c7c3cac0ff41ed1d8247510cd3a7c723306d0a7a96",
+    "a3opt.placement_benchmark": "334b64b04e5b29f810c9275bf1fb8f666d70e86a2e032bb221569c5b2387915b"
+  },
+  "sources": {
+    "release": {
+      "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+      "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46"
+    },
+    "routed": {
+      "confirmation-rollouts.json.gz": "ce7a5e3828d9d63f1134cd9d68a8008892c3dc36f372b3763e68c800b4f0a243",
+      "replication-rollouts.json.gz": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+    },
+    "hold": {
+      "protocol": "4985869afcba97328fed7ac4be44cce53afbaf53cf70df41b02d8bf6194c6080",
+      "fit": "966b7935adf148ccf28ce20f04955f1fc620af8e34fe7c0fec0b1df4d0dda7a5",
+      "data": "567ca6b68e75aa77e950152315ed7c337053a7f062ba314f2f24cb1cb9f62023"
+    },
+    "recovery": {
+      "protocol": "b4f60ca3dd31dd3e4c8f93d461f861d7d41d7b9a43bd8611a29f15fc75d5f892",
+      "fit": "d6d948b47bea8a70f12b256c6fee57041b75a16311c6f4e51791aba1ecc4cc3f",
+      "data": "8e4a66423cf912546c5fc50464d6492119e41adbc446b1194b6be6a74ce46dd2"
+    }
+  },
+  "schedule": {
+    "training": [
+      147450,
+      147408,
+      147413,
+      147416,
+      147426,
+      148435,
+      148415,
+      148450,
+      148401,
+      148405,
+      148427,
+      148443,
+      132100,
+      132105,
+      132109,
+      132112,
+      138014,
+      138023,
+      138007,
+      138017,
+      138027,
+      138035,
+      138038
+    ],
+    "development": [
+      161002,
+      161006,
+      161011,
+      161015,
+      161016,
+      161020,
+      161024,
+      161030,
+      161032,
+      161036,
+      161043,
+      161044,
+      161051,
+      161052,
+      161059,
+      161060
+    ],
+    "confirmation": [
+      161400,
+      161401,
+      161402,
+      161403,
+      161404,
+      161405,
+      161406,
+      161407,
+      161408,
+      161409,
+      161410,
+      161411,
+      161412,
+      161413,
+      161414,
+      161415,
+      161416,
+      161417,
+      161418,
+      161419,
+      161420,
+      161421,
+      161422,
+      161423,
+      161424,
+      161425,
+      161426,
+      161427,
+      161428,
+      161429,
+      161430,
+      161431,
+      161432,
+      161433,
+      161434,
+      161435,
+      161436,
+      161437,
+      161438,
+      161439,
+      161440,
+      161441,
+      161442,
+      161443,
+      161444,
+      161445,
+      161446,
+      161447,
+      161448,
+      161449,
+      161450,
+      161451,
+      161452,
+      161453,
+      161454,
+      161455,
+      161456,
+      161457,
+      161458,
+      161459,
+      161460,
+      161461,
+      161462,
+      161463
+    ]
+  },
+  "reused_hold_seeds": [
+    147450,
+    147408,
+    147413,
+    148435,
+    138014,
+    138023,
+    138007,
+    138027,
+    138035,
+    138038
+  ],
+  "new_hold_seeds": [
+    147416,
+    147426,
+    148415,
+    148450,
+    148401,
+    148405,
+    148427,
+    148443,
+    132100,
+    132105,
+    132109,
+    132112,
+    138017
+  ],
+  "features": [
+    "transfer_x",
+    "descent_x"
+  ],
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

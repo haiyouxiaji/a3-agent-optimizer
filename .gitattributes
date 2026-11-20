@@ -21,3 +21,4 @@ evidence/routed-20261120/*.json -text whitespace=cr-at-eol
 evidence/feedback-20261120/*.json -text whitespace=cr-at-eol
 evidence/release-hold-20261121/*.json -text whitespace=cr-at-eol
 evidence/release-recovery-20261121/*.json -text whitespace=cr-at-eol
+evidence/release-router-20261121/*.json -text whitespace=cr-at-eol

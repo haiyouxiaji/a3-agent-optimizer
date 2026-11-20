@@ -55,7 +55,7 @@ flowchart TD
     SENSE -.->|复用腕相机与净空标注| STAGEDGATE
     BEST --> HOLD["第 2 列第二批定点开爪 · 首次四列确认 8.75→9.00"]
     BEST --> RECOVERY["第 2 列第二批接触恢复 · 四列确认 8.922→9.172 · 晋级"]
-    HOLD -.->|合并已审计的轨迹分支| RELEASEGATE["按下降前的计划位置选择开爪轨迹"]
+    HOLD -.->|合并已审计的轨迹分支| RELEASEGATE["按计划位置分流 · 整组留出净少 1 块 · 回退"]
     RECOVERY -.->|保留下降后段接触恢复| RELEASEGATE
     PH -.->|复用技能表示与采集接口| TEN["原生 2×10 · 条件示范与四批策略"]
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
@@ -85,7 +85,7 @@ flowchart TD
 | 首批分段下降净空门控 | 24 对第 1 列新开发均分 9.58→9.67，严格完整成功 21/24→19/24。Agent 回退。 [公开回执](../evidence/feedback-20261120/README.md) |
 | 第 2 列第二批定点开爪 | 64 对四列平衡确认均分 8.75→9.00，第 2 列均分 7.00→8.00，严格完整成功均为 42/64。Agent 回退。 [公开回执](../evidence/release-hold-20261121/README.md) |
 | 第 2 列第二批接触恢复 | 64 对四列平衡确认均分 8.921875→9.171875，第 2 列均分 7.25→8.25，严格完整成功均为 35/64。8 次原生复跑匹配，Agent 晋级。 [公开回执](../evidence/release-recovery-20261121/README.md) |
-| 定点开爪与接触恢复的选择 | Agent 核对两个干预分支的基准物理末态，复用 10 局已有配对记录，按历史训练组补采 13 局。 [实现](../src/a3opt/placement_release_router.py) |
+| 定点开爪与接触恢复的选择 | Agent 复用 10 局配对记录并补采 13 局。分流规则在四组留出中合计少计 1 块，Agent 在训练阶段回退。 [逐组回执](../evidence/release-router-20261121/README.md) |
 | `2×10` 最近示范检索 | 20 对独立确认均分 1.80 → 3.15/20，配对差区间 [−0.35, +3.05]。保留加权平均参考。 |
 
 [较宽方案结果](../evidence/advanced-20261120/broad-descent-result.json) · [定向候选结果](../evidence/advanced-20261120/confirmation-result.json) · [冻结复验结果](../evidence/advanced-20261120/replication-result.json) · [2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json)

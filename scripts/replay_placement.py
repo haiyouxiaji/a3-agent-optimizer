@@ -167,7 +167,7 @@ def upstream_policy():
         raise ValueError("expected a supported frozen placement refinement")
     protocol_path = lock_path.parent / "protocol.json"
     lock, protocol = read_json(lock_path), read_json(protocol_path)
-    checkpoint = Path(lock["checkpoint"])
+    checkpoint = Path(os.environ.get("A3OPT_PLACEMENT_CHECKPOINT", lock["checkpoint"])).resolve(strict=True)
     constructor, model = decode_model(lock["corrections"], kind, incumbent=lock["incumbent"])
     if (sha256(protocol_path) != lock["protocol_sha256"] or sha256(checkpoint) != lock["checkpoint_sha256"]
             or protocol["environment"] != simulator_identity()):
