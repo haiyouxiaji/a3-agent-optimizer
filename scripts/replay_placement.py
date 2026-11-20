@@ -19,7 +19,7 @@ from a3opt import placement_clearance_agent, placement_clearance_feedback, place
 from a3opt import placement_compose, placement_contact_feedback
 from a3opt import placement_descent_agent, placement_early_clearance, placement_first_hover, placement_first_recovery
 from a3opt import placement_hover_agent, placement_hover_guard, placement_hover_guard_refine, placement_retarget_agent
-from a3opt import placement_interbatch
+from a3opt import placement_expert_landing, placement_interbatch
 from a3opt import placement_late_hover_gate, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_staged_descent, placement_staged_gate
 from a3opt import placement_routed_agent, placement_servo_agent, placement_slot_refine, placement_visual_geometry
@@ -36,10 +36,10 @@ class PlacementVideoTrace(VideoPolicy, PlacementTrace):
         self.frames = 0
 
 
+SEQUENTIAL_REFINEMENTS = ("first-recovery", "early-clearance", "clearance-refine", "interbatch", "expert-landing")
 RELEASED_REFINEMENTS = ("hover", "row", "compose", "first-hover", "hover-guard", "hover-guard-refine", "routed",
                         "wall-clearance", "clearance-feedback", "contact-feedback", "late-hover-gate", "staged-descent",
-                        "staged-gate", "release-hold", "release-recovery", "release-router", "first-recovery", "early-clearance",
-                        "clearance-refine", "interbatch")
+                        "staged-gate", "release-hold", "release-recovery", "release-router", *SEQUENTIAL_REFINEMENTS)
 
 
 def decode_model(records, policy_kind, *, incumbent=(), late_recovery=()):
@@ -91,7 +91,7 @@ def decode_model(records, policy_kind, *, incumbent=(), late_recovery=()):
             if len(model) > 1 or [item.record() for item in model] != list(records):
                 raise ValueError("invalid release router model")
             return partial(placement_release_router.ReleaseRouterPolicy, incumbent=base), model
-        if policy_kind in ("first-recovery", "early-clearance", "clearance-refine", "interbatch"):
+        if policy_kind in SEQUENTIAL_REFINEMENTS:
             fallback = tuple(placement_release_recovery.Recovery(*item[2:]) for item in late_recovery)
             if policy_kind == "first-recovery":
                 variant = placement_first_recovery.FirstRecoveryPolicy
@@ -104,10 +104,15 @@ def decode_model(records, policy_kind, *, incumbent=(), late_recovery=()):
                 variant = placement_clearance_refine.GuardedClearancePolicy
                 model = tuple(placement_clearance_refine.Guard(column, recipe, tuple(map(tuple, tests)))
                               for column, _, recipe, tests in records)
-            else:
+            elif policy_kind == "interbatch":
                 variant = placement_interbatch.InterbatchPolicy
                 model = tuple(placement_interbatch.Interbatch(column, first, second, tuple(condition) if condition else None)
                               for column, _, first, second, condition in records)
+            else:
+                variant = placement_expert_landing.ExpertLandingPolicy
+                model = tuple(placement_expert_landing.Landing(column, batch, tuple(anchor), tuple(center),
+                              tuple(map(tuple, coefficients)), tuple(axes))
+                              for column, batch, anchor, center, coefficients, axes in records)
             if (len(fallback) != 1 or [item.record() for item in fallback] != list(late_recovery)
                     or len(model) > 1 or [item.record() for item in model] != list(records)):
                 raise ValueError("invalid sequential placement model")
@@ -194,6 +199,9 @@ def verify_policy_code(configuration, frozen, kind, constructor):
     if kind == "interbatch" and (configuration["late_recovery"] != frozen["late_recovery"]
             or configuration["dependency_sha256"] != placement_interbatch.dependencies()):
         raise ValueError("coordinated placement dependencies differ from the frozen evaluation")
+    if kind == "expert-landing" and (configuration["late_recovery"] != frozen["late_recovery"]
+            or configuration["dependency_sha256"] != placement_expert_landing.dependencies()):
+        raise ValueError("expert landing dependencies differ from the frozen evaluation")
 
 
 def upstream_policy():

@@ -1,0 +1,235 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "code_sha256": "a9fed220b2aceaf9ae52f15929c0e775f96202311011d12373db0db1190eac3b",
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "checkpoint_sha256": "b106431cd01f2cab3cb85e6525f914b21d27d8a75f148566050c5e9d99f0b56b",
+  "dependency_sha256": {
+    "a3opt.placement_first_recovery": "879005afebdd980d008b9e1e73c5d988bba9e35ee2ff08efd8ff6277b9f80548",
+    "a3opt.placement_release_recovery": "9868a86c1553eea1f6947d0fac6e36d439f1ce98484a0c9491bfb550447ab8db",
+    "a3opt.placement_contact_feedback": "b64637ec3050cb9d0fdcec757f157b6f5c79ec2221d3ad2c8044a14b84d509d0",
+    "a3opt.placement_descent_agent": "396bf22d42e8405c796ede8071a0aff24abae6c731a1bbde667eada0adcbe0df",
+    "a3opt.placement_benchmark": "334b64b04e5b29f810c9275bf1fb8f666d70e86a2e032bb221569c5b2387915b",
+    "a3opt.placement_search": "3502123ef15a4ad5970a41c7c3cac0ff41ed1d8247510cd3a7c723306d0a7a96",
+    "a3opt.placement_train": "61f7c6b3154c9ed6847e975c7eaea6caf8772d995cac319d656227ed30a8b86d",
+    "a3opt.placement_early_clearance": "5e97cae7f096a516ca204fd303903689705ef80e1f7112f284bcb43a9e5502e3",
+    "a3opt.placement_clearance_refine": "033b1094fcca759bfe6344983a882cf28d2bc8ebc149779930b67124984dc0fc"
+  },
+  "source_sha256": {
+    "protocol.json": "5e22cb634ff35464f46b54f851b0b0d606362141066c86d050be31f2f16b6bd8",
+    "result.json": "4e4b5617cbdbf50f9f988baf3a9b72f649f653b378a7e94cb94a92a655b8be66",
+    "fit.json": "ac1ab3b1c0d318893bae69d1da0e35158307bc9f37853555378d6eaf706986de",
+    "dataset.json": "93bba867ca574f1b4339e99fa2c76f86371e173d18f07636603667e30e32b575",
+    "results.json": "916ec0b2cd3783fe3b4fb33945543ce7f535bf9d849cc30a9dfe8c38fb33dc3f"
+  },
+  "late_recovery": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "primary": [
+    1,
+    0,
+    "inset4-raise14",
+    null,
+    null
+  ],
+  "training_groups": {
+    "development-1": [
+      164813,
+      164800,
+      164817,
+      164808
+    ],
+    "development-2": [
+      164837,
+      164833
+    ],
+    "development-3": [
+      164876,
+      164885,
+      164867
+    ]
+  },
+  "schedule": {
+    "training": [
+      164813,
+      164800,
+      164817,
+      164808,
+      164837,
+      164833,
+      164876,
+      164885,
+      164867
+    ],
+    "development": [
+      166400,
+      166406,
+      166409,
+      166413,
+      166419,
+      166421,
+      166427,
+      166431,
+      166435,
+      166436,
+      166442,
+      166446,
+      166451,
+      166452,
+      166457,
+      166461,
+      166464,
+      166470,
+      166472,
+      166479,
+      166483,
+      166487,
+      166488,
+      166495
+    ],
+    "confirmation": [
+      166800,
+      166801,
+      166802,
+      166803,
+      166804,
+      166805,
+      166806,
+      166807,
+      166808,
+      166809,
+      166810,
+      166811,
+      166812,
+      166813,
+      166814,
+      166815,
+      166816,
+      166817,
+      166818,
+      166819,
+      166820,
+      166821,
+      166822,
+      166823,
+      166824,
+      166825,
+      166826,
+      166827,
+      166828,
+      166829,
+      166830,
+      166831,
+      166832,
+      166833,
+      166834,
+      166835,
+      166836,
+      166837,
+      166838,
+      166839,
+      166840,
+      166841,
+      166842,
+      166843,
+      166844,
+      166845,
+      166846,
+      166847,
+      166848,
+      166849,
+      166850,
+      166851,
+      166852,
+      166853,
+      166854,
+      166855,
+      166856,
+      166857,
+      166858,
+      166859,
+      166860,
+      166861,
+      166862,
+      166863
+    ]
+  },
+  "second_batch_window": 0.5,
+  "signals": [
+    "vertical_tracking_error_m",
+    "wall_axis_tracking_error_m",
+    "force_change_n",
+    "planned_row_gap_m"
+  ],
+  "recipes": [
+    "raise8",
+    "raise14",
+    "raise20",
+    "inset4-raise14"
+  ],
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

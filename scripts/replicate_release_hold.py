@@ -9,6 +9,7 @@ from functools import partial
 from pathlib import Path
 
 from a3opt import placement_benchmark, placement_first_hover, placement_hover_agent
+from a3opt.placement_expert_landing import Landing
 from a3opt.placement_release_recovery import Recovery
 from a3opt import placement_routed_agent, placement_sim, placement_search
 from a3opt.advanced_agent import _jobs, _record_once
@@ -19,7 +20,7 @@ from a3opt.difficulty_eval import RULES
 from a3opt.refinement_eval import read_json, render_frames, sha256, simulator_identity
 from a3opt.release_timing_agent import STRICT_RULES
 
-from audit_placement_confirmation import audit_confirmation, report_rule, scheduled_seeds
+from audit_placement_confirmation import audit_confirmation, audit_expert_landing, report_rule, scheduled_seeds
 from replay_placement import decode_model, policy_source
 
 
@@ -42,6 +43,9 @@ class PairedTrace(placement_benchmark.CombinedTrace):
             if isinstance(self.model, Recovery):
                 signals = self.policy.signal(observation, task)
                 diverges = signals is not None and self.model.activates(signals)
+            elif isinstance(self.model, Landing):
+                diverges = self.policy.actions is not None and self.policy.cursor == (
+                    self.model.batch, PLACE, max(1, len(self.policy.actions[self.model.batch][PLACE]) // 4))
             else:
                 diverges = self.policy.actions is not None and self.policy.cursor == (self.model.batch, PLACE, 0)
             if diverges:
@@ -52,10 +56,12 @@ class PairedTrace(placement_benchmark.CombinedTrace):
         env = copy(self.env)
         env.data = copy(self.env.data)
         controller = copy(self.policy)
-        controller.actions = self.policy.actions.copy()
-        controller.actions[self.model.batch] = [phase.copy() for phase in self.policy.actions[self.model.batch]]
+        controller.actions = [[phase.copy() for phase in batch] for batch in self.policy.actions]
+        controller.retries = self.policy.retries.copy()
         if isinstance(self.model, Recovery):
             controller.recovery = self.model
+        elif isinstance(self.model, Landing):
+            controller.landing = self.model
         else:
             controller.release_hold = self.model
         trace = placement_benchmark.CombinedTrace(controller)
@@ -124,6 +130,64 @@ def equivalent(actual, expected):
             raise ValueError(f"shared rollout differs from the full {rule} rollout of scene {row['seed']}")
 
 
+def resume_expert_confirmation(source, workers):
+    result_path = source / "result.json"
+    if result_path.is_file():
+        return audit_confirmation(source, "expert-landing")["status"]
+    protocol_path = source / "protocol.json"
+    lock_path = source / "confirmation-lock.json"
+    fit_path = source / "fit.json"
+    selection_path = source / "development-selection.json"
+    protocol, lock, fit = map(read_json, (protocol_path, lock_path, fit_path))
+    checkpoint, timing = Path(lock["checkpoint"]), tuple(lock["timing"])
+    seeds = lock["seeds"]
+    corrections, scores = audit_expert_landing(source, checkpoint, protocol, fit)
+    if (scores is None or not all(placement_search.passes(stats) for stats in scores.values())
+            or any(lock[key] != protocol[key] for key in ("incumbent", "late_recovery", "timing", "checkpoint_sha256"))
+            or lock["corrections"] != corrections or seeds != protocol["schedule"]["confirmation"]
+            or any(lock[key] != sha256(path) for key, path in (("fit_sha256", fit_path), ("protocol_sha256", protocol_path),
+                                                               ("selection_sha256", selection_path)))):
+        raise ValueError("the landing candidate differs from the pre-evaluation lock")
+    policy_type, models = decode_model(corrections, "expert-landing", incumbent=lock["incumbent"],
+                                       late_recovery=lock["late_recovery"])
+    model, = models
+    folder = source / "confirmation"
+    receipts = folder / "rollouts" / "episodes"
+    parity = list(dict.fromkeys([*protocol["schedule"]["development"][:4],
+                                *[item["seed"] for item in scores["default"]["changes"]]]))[:6]
+    _record_once(folder / "shared-prefix-protocol.json", {"lock_sha256": sha256(lock_path),
+                 "code_sha256": sha256(Path(__file__)), "parity_seeds": parity, "confirmation_seeds": seeds})
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        def evaluate(label, cases):
+            jobs = [(checkpoint, timing, policy_type, model, seed) for seed in cases]
+            return _jobs(pool, paired_episode, jobs, folder / label, lambda job: str(job[-1]), check_pair)
+
+        print(f"Verifying shared-prefix results against {len(parity)} full development pairs", flush=True)
+        for seed, pair in zip(parity, evaluate("shared-prefix-parity", parity), strict=True):
+            for arm in ("reference", "selected"):
+                equivalent(pair[arm], read_json(source / "development" / "episodes" / arm / f"{seed}.json"))
+        _record_once(folder / "shared-prefix-audit.json", {"seeds": parity, "matched_full_rollouts": 2 * len(parity)})
+        pending = [seed for seed in seeds if any(not (receipts / arm / f"{seed}.json").is_file()
+                                                for arm in ("reference", "selected"))]
+        print(f"Completing the frozen four-column panel, {len(pending)} pairs remaining", flush=True)
+        for seed, pair in zip(pending, evaluate("shared-prefix-rollouts", pending), strict=True):
+            for arm in ("reference", "selected"):
+                path = receipts / arm / f"{seed}.json"
+                if path.is_file():
+                    equivalent(pair[arm], read_json(path))
+                else:
+                    _record_once(path, pair[arm])
+        final = placement_search.confirm_combined(pool, folder, checkpoint, timing, seeds, models, seeds[:4],
+                                                   policy_type=policy_type)
+    if any(stats["scored_pairs_by_column"] != dict.fromkeys(map(str, range(1, 5)), len(seeds) // 4) for stats in final.values()):
+        raise ValueError("confirmation requires four equally represented columns")
+    promoted = placement_first_hover.supports_confirmation(final)
+    status = "candidate_promoted" if promoted else "reference_retained_after_expert_landing_confirmation"
+    _record_once(result_path, {"status": status, "confirmation": final, "development": scores, "corrections": corrections,
+                              "target_lower_bound": final["default"]["mean_ci95"][0] > placement_search.TARGET})
+    return audit_confirmation(source, "expert-landing")["status"]
+
+
 def run(source, output, seed_start, episodes, workers, *, policy_kind="release-hold"):
     origin = audit_confirmation(source, policy_kind)
     initial = origin["confirmation"]
@@ -135,11 +199,14 @@ def run(source, output, seed_start, episodes, workers, *, policy_kind="release-h
     lock = read_json(lock_path)
     checkpoint, timing = Path(lock["checkpoint"]), tuple(lock["timing"])
     release = checkpoint.parent
-    policy_type, models = decode_model(lock["corrections"], policy_kind, incumbent=lock["incumbent"])
+    policy_type, models = decode_model(lock["corrections"], policy_kind, incumbent=lock["incumbent"],
+                                       late_recovery=lock.get("late_recovery", ()))
     model, = models
     seeds = list(range(seed_start, seed_start + episodes))
     history = [source / "protocol.json", *output.parent.glob("*/protocol.json"),
                *release.glob("*-protocol.json"), *Path("evidence/routed-20261120").glob("*-protocol.json")]
+    if policy_kind == "expert-landing":
+        history.extend(release.parent.glob("*/*protocol.json"))
     for path in history:
         if path.parent != output and set(seeds) & scheduled_seeds(read_json(path).get("schedule", {})):
             raise ValueError(f"replication overlaps prior data in {path.parent}")
@@ -204,12 +271,23 @@ def run(source, output, seed_start, episodes, workers, *, policy_kind="release-h
 def main():
     parser = argparse.ArgumentParser(description="Replicate a frozen release policy on a new four-column seed block.")
     parser.add_argument("source", type=Path)
-    parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--policy-kind", choices=("release-hold", "release-recovery"), default="release-hold")
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--policy-kind", choices=("release-hold", "release-recovery", "expert-landing"), default="release-hold")
+    parser.add_argument("--resume-confirmation", action="store_true")
     parser.add_argument("--seed-start", type=int, default=160000)
     parser.add_argument("--episodes", type=int, default=128)
     parser.add_argument("--workers", type=int, default=12)
     args = parser.parse_args()
+    if args.resume_confirmation:
+        if args.policy_kind != "expert-landing" or args.out is not None or args.workers < 1:
+            parser.error("resuming a confirmation requires expert-landing and a positive worker budget")
+        source = args.source.resolve()
+        with _run_lock(source):
+            result = resume_expert_confirmation(source, args.workers)
+        print(result, flush=True)
+        return
+    if args.out is None:
+        parser.error("replication requires --out")
     output = args.out.resolve()
     with _run_lock(output):
         result = run(args.source.resolve(), output, args.seed_start, args.episodes, args.workers, policy_kind=args.policy_kind)

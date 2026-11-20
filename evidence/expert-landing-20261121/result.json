@@ -1,0 +1,316 @@
+{
+  "status": "reference_retained_after_expert_landing_confirmation",
+  "confirmation": {
+    "default": {
+      "episodes": 64,
+      "reference_mean": 9.171875,
+      "mean": 9.53125,
+      "mean_ci95": [
+        9.0625,
+        9.921875
+      ],
+      "paired_count_delta": 0.359375,
+      "paired_count_ci95": [
+        0.109375,
+        0.65625
+      ],
+      "reference_complete": 35,
+      "complete": 48,
+      "paired_success_rate_ci95": [
+        0.15625,
+        0.25
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 1,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 167602,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167626,
+          "column": 2,
+          "reference": 8,
+          "selected": 10,
+          "delta": 2
+        },
+        {
+          "seed": 167640,
+          "column": 2,
+          "reference": 3,
+          "selected": 10,
+          "delta": 7
+        },
+        {
+          "seed": 167652,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167656,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 167663,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 64,
+      "reference_mean": 9.171875,
+      "mean": 9.53125,
+      "mean_ci95": [
+        9.0625,
+        9.921875
+      ],
+      "paired_count_delta": 0.359375,
+      "paired_count_ci95": [
+        0.109375,
+        0.65625
+      ],
+      "reference_complete": 35,
+      "complete": 48,
+      "paired_success_rate_ci95": [
+        0.15625,
+        0.25
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 1,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 167602,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167626,
+          "column": 2,
+          "reference": 8,
+          "selected": 10,
+          "delta": 2
+        },
+        {
+          "seed": 167640,
+          "column": 2,
+          "reference": 3,
+          "selected": 10,
+          "delta": 7
+        },
+        {
+          "seed": 167652,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167656,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 167663,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ]
+    }
+  },
+  "development": {
+    "default": {
+      "episodes": 16,
+      "reference_mean": 8.0625,
+      "mean": 8.75,
+      "mean_ci95": [
+        7.5,
+        9.6875
+      ],
+      "paired_count_delta": 0.6875,
+      "paired_count_ci95": [
+        0.0625,
+        1.5
+      ],
+      "reference_complete": 4,
+      "complete": 11,
+      "paired_success_rate_ci95": [
+        0.1875,
+        0.6875
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 16
+      },
+      "changes": [
+        {
+          "seed": 167203,
+          "column": 2,
+          "reference": 6,
+          "selected": 10,
+          "delta": 4
+        },
+        {
+          "seed": 167206,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 167229,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        },
+        {
+          "seed": 167242,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 16,
+      "reference_mean": 8.0625,
+      "mean": 8.75,
+      "mean_ci95": [
+        7.5,
+        9.6875
+      ],
+      "paired_count_delta": 0.6875,
+      "paired_count_ci95": [
+        0.0625,
+        1.5
+      ],
+      "reference_complete": 4,
+      "complete": 11,
+      "paired_success_rate_ci95": [
+        0.1875,
+        0.6875
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 16
+      },
+      "changes": [
+        {
+          "seed": 167203,
+          "column": 2,
+          "reference": 6,
+          "selected": 10,
+          "delta": 4
+        },
+        {
+          "seed": 167206,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 167229,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        },
+        {
+          "seed": 167242,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ]
+    }
+  },
+  "corrections": [
+    [
+      2,
+      0,
+      [
+        0.03496120519867378,
+        -0.0004221561624656638,
+        0.7661990462187449
+      ],
+      [
+        0.17932757469334248,
+        0.3176407968431901,
+        0.08838678006867166,
+        0.09977283077909306,
+        0.02709844251565114
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          2.7418713364737277e-05
+        ],
+        [
+          0.0,
+          0.0,
+          6.071056567370316e-06
+        ],
+        [
+          0.0,
+          0.0,
+          -5.9083585087853206e-06
+        ],
+        [
+          0.0,
+          0.0,
+          1.121880194369278e-05
+        ],
+        [
+          0.0,
+          0.0,
+          1.0226239130816106e-05
+        ]
+      ],
+      [
+        true,
+        true,
+        true
+      ]
+    ]
+  ],
+  "target_lower_bound": true
+}

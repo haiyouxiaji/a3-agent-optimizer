@@ -8,16 +8,16 @@ from pathlib import Path
 from statistics import mean
 
 from a3opt import placement_benchmark, placement_clearance_refine, placement_compose, placement_descent_agent, placement_early_clearance
-from a3opt import placement_first_hover, placement_first_recovery, placement_interbatch
+from a3opt import placement_expert_landing, placement_first_hover, placement_first_recovery, placement_interbatch
 from a3opt import placement_hover_agent, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_search
 from a3opt import placement_routed_agent, placement_sim, placement_slot_refine, slot_alignment_fit
-from a3opt.advanced_agent import _record_once
+from a3opt.advanced_agent import _audit_expert, _record_once
 from a3opt.cli import _run_lock
 from a3opt.difficulty_eval import RULES
 from a3opt.refinement_eval import read_json, sha256, simulator_identity
 from a3opt.release_timing_agent import STRICT_RULES
-from replay_placement import RELEASED_REFINEMENTS, decode_model, policy_source, verify_policy_code
+from replay_placement import RELEASED_REFINEMENTS, SEQUENTIAL_REFINEMENTS, decode_model, policy_source, verify_policy_code
 
 
 def report_rule(pairs, rule):
@@ -32,8 +32,64 @@ def report_rule(pairs, rule):
     return details
 
 
-def released_inputs(root, protocol, lock, fit, kind):
-    release_path = Path(lock["checkpoint"]).parent / "controller.json"
+def audit_expert_landing(root, checkpoint, protocol, fit):
+    timing = protocol["timing"]
+    incumbent = tuple(placement_descent_agent.Descent(*item) for item in protocol["incumbent"])
+    kind = "expert-landing"
+    policy_type, _ = decode_model(fit["corrections"], kind, incumbent=protocol["incumbent"],
+                                 late_recovery=protocol["late_recovery"])
+    verify_policy_code(protocol, protocol, kind, policy_type)
+    if (protocol["environment"] != simulator_identity() or protocol["rules"] != RULES
+            or protocol["strict_rules"] != STRICT_RULES or sha256(checkpoint) != protocol["checkpoint_sha256"]
+            or protocol["reference_sha256"] != sha256(checkpoint.parent / "controller.json")):
+        raise ValueError("expert landing uses a different simulator or released reference")
+    common = {key: protocol[key] for key in ("environment", "incumbent", "timing", "rules", "strict_rules")}
+    archive = checkpoint.parent.parent / "release-recovery-20261121"
+    recovery = placement_first_recovery.frozen_recovery(archive, checkpoint, tuple(timing), incumbent, common)
+    panels, fingerprints = placement_expert_landing.archive_rows(archive, checkpoint, timing, common, recovery)
+    column, batch, sampling = placement_expert_landing.sample_plan(panels)
+    known = {row["seed"]: row for rows in panels.values() for row in rows}
+    dataset_path = root / "training" / "dataset.json"
+    dataset = read_json(dataset_path)
+    training = protocol["schedule"]["training"]
+    development = protocol["schedule"]["development"]
+    confirmation = protocol["schedule"]["confirmation"]
+    if (len(known) != sum(map(len, panels.values())) or protocol["scope"] != [column, batch]
+            or protocol["sampling"] != sampling or protocol["source_sha256"] != fingerprints
+            or [item.record() for item in recovery] != protocol["late_recovery"]
+            or training != [seed for group in sampling.values() for seed in group["failures"] + group["controls"]]
+            or len(set(training + development + confirmation)) != len(training + development + confirmation)
+            or set(development + confirmation) & known.keys() or fit["dataset_sha256"] != sha256(dataset_path)):
+        raise ValueError("expert landing sampling or data digest differs from the frozen protocol")
+    shards = root / "training" / "shards"
+    for seed, attempt in zip(training, dataset["attempts"], strict=True):
+        if attempt != read_json(root / "training" / "attempts" / f"{seed}.json"):
+            raise ValueError("expert attempt aggregate differs from the individual receipt")
+        _audit_expert((seed, column, shards), attempt)
+    rows, rejected = placement_expert_landing.training_rows(dataset["attempts"], shards, known, checkpoint, timing, batch)
+    if rows != dataset["rows"] or rejected != dataset["rejected"]:
+        raise ValueError("expert landing labels differ from the collected demonstrations")
+    model, metrics = placement_expert_landing.fit(rows, column, batch)
+    if [item.record() for item in model] != fit["corrections"] or any(fit[key] != value for key, value in metrics.items()):
+        raise ValueError("expert landing fit differs from the frozen demonstrations")
+    if not model:
+        return fit["corrections"], None
+    evaluated = read_json(root / "development" / "results.json")
+    for arm, corrections in (("reference", ()), ("selected", model)):
+        for seed, episode in zip(development, evaluated[arm], strict=True):
+            if episode != read_json(root / "development" / "episodes" / arm / f"{seed}.json"):
+                raise ValueError("expert landing development receipt differs from the recorded rollout")
+            placement_benchmark.check((checkpoint, *timing, seed, corrections), episode)
+    scores = placement_hover_agent.pair_stats(evaluated, model)
+    if any(row["column"] != column for arm in evaluated.values() for episode in arm for row in episode.values()):
+        raise ValueError("expert landing development includes an unexpected source column")
+    if scores != read_json(root / "development-selection.json"):
+        raise ValueError("expert landing development statistics differ from the paired rollouts")
+    return fit["corrections"], scores
+
+
+def released_inputs(root, protocol, lock, fit, kind, checkpoint):
+    release_path = checkpoint.parent / "controller.json"
     reference = read_json(release_path)
     training = root / "training" / ("rollouts/results.json" if kind == "wall-clearance" else "dataset.json")
     reference_hash = protocol.get("reference_manifest_sha256") or protocol["reference_sha256"]
@@ -127,6 +183,10 @@ def released_inputs(root, protocol, lock, fit, kind):
         if (base.record() != protocol["primary"] or batch != base.batch or groups != protocol["training_groups"]
                 or [item.record() for item in regenerated] != fitted_model or any(fit[key] != value for key, value in metrics.items())):
             raise ValueError("the coordinated placement fit differs from its training data")
+    if kind == "expert-landing":
+        _, scores = audit_expert_landing(root, checkpoint, protocol, fit)
+        if scores is None or not all(placement_search.passes(row) for row in scores.values()):
+            raise ValueError("expert landing did not pass the frozen development gate")
     if kind == "release-router":
         panels = read_json(training)["panels"]
         regenerated, metrics = placement_release_router.fit(panels)
@@ -140,7 +200,7 @@ def released_inputs(root, protocol, lock, fit, kind):
         development_seeds = protocol["schedule"]["development"]
         for arm, model in (("reference", ()), ("selected", regenerated), ("recovery", fallback)):
             for seed, receipt in zip(development_seeds, development[arm], strict=True):
-                placement_benchmark.check((Path(lock["checkpoint"]), *lock["timing"], seed, model), receipt)
+                placement_benchmark.check((checkpoint, *lock["timing"], seed, model), receipt)
         scores = {name: placement_hover_agent.pair_stats({"reference": development[name], "selected": development["selected"]},
                                                        regenerated) for name in ("reference", "recovery")}
         if (scores != read_json(root / "development-selection.json")
@@ -157,7 +217,7 @@ def released_inputs(root, protocol, lock, fit, kind):
 def supports_promotion(confirmation, kind):
     stricter_gate = ("first-hover", "hover-guard", "hover-guard-refine", "routed", "wall-clearance", "clearance-feedback",
                      "contact-feedback", "late-hover-gate", "staged-descent", "staged-gate", "release-hold", "release-recovery",
-                     "release-router", "first-recovery", "early-clearance", "clearance-refine", "interbatch")
+                     "release-router", *SEQUENTIAL_REFINEMENTS)
     if kind in stricter_gate:
         return placement_first_hover.supports_confirmation(confirmation)
     if kind == "compose":
@@ -170,12 +230,33 @@ def supports_promotion(confirmation, kind):
     )
 
 
-def audit_confirmation(root, kind):
+def audit_shared_prefix(root, lock_path, seeds, development):
+    folder = root / "confirmation"
+    protocol = read_json(folder / "shared-prefix-protocol.json")
+    parity = read_json(folder / "shared-prefix-audit.json")
+    cases = protocol["parity_seeds"]
+    if (protocol["lock_sha256"] != sha256(lock_path) or seeds != protocol["confirmation_seeds"]
+            or not cases or len(cases) != len(set(cases)) or not set(cases) <= set(development)
+            or parity != {"seeds": cases, "matched_full_rollouts": 2 * len(cases)}):
+        raise ValueError("shared-prefix evaluation does not match the locked confirmation or development schedule")
+    for seed in cases:
+        pair = read_json(folder / "shared-prefix-parity" / f"{seed}.json")
+        for arm in ("reference", "selected"):
+            expected = read_json(root / "development" / "episodes" / arm / f"{seed}.json")
+            for rule, row in expected.items():
+                if {key: value for key, value in row.items() if key != "wall_seconds"} != {
+                        key: value for key, value in pair[arm][rule].items() if key != "wall_seconds"}:
+                    raise ValueError(f"shared-prefix parity mismatch for {seed} in {arm} {rule}")
+    return parity["matched_full_rollouts"]
+
+
+def audit_confirmation(root, kind, checkpoint_override=None):
     protocol_path = root / "protocol.json"
+    lock_path = root / "confirmation-lock.json"
     protocol = read_json(protocol_path)
-    lock = read_json(root / "confirmation-lock.json")
+    lock = read_json(lock_path)
     fit_path, selection_path = root / "fit.json", root / "development-selection.json"
-    checkpoint = Path(lock["checkpoint"])
+    checkpoint = checkpoint_override or Path(lock["checkpoint"])
     seeds, corrections, timing = lock["seeds"], lock["corrections"], lock["timing"]
     schedule = protocol["schedule"]
     seen = scheduled_seeds({key: schedule[key] for key in ("scout", "training", "fit", "sensor_holdout", "development") if key in schedule})
@@ -184,7 +265,7 @@ def audit_confirmation(root, kind):
         planned = planned["random"]
     fit = read_json(fit_path)
     if kind in RELEASED_REFINEMENTS:
-        fitted_model, evaluator_hash = released_inputs(root, protocol, lock, fit, kind)
+        fitted_model, evaluator_hash = released_inputs(root, protocol, lock, fit, kind, checkpoint)
     else:
         fitted_model, evaluator_hash = fit["corrections"], protocol["evaluator_sha256"]
     if (set(seeds) & seen or len(seeds) != len(set(seeds)) or seeds != planned
@@ -237,8 +318,15 @@ def audit_confirmation(root, kind):
     promoted = supports_promotion(measurements, kind)
     if promoted != (stored["status"] == "candidate_promoted"):
         raise ValueError("saved promotion decision differs from the confirmation evidence")
+    parity = {}
+    if kind == "expert-landing":
+        target = measurements["default"]["mean_ci95"][0] > placement_search.TARGET
+        if target != stored["target_lower_bound"]:
+            raise ValueError("saved target judgment differs from the measured course interval")
+        if (confirmation / "shared-prefix-protocol.json").is_file():
+            parity["matched_full_rollouts"] = audit_shared_prefix(root, lock_path, seeds, schedule["development"])
     return {"run": root.name, "status": stored["status"], "corrections": corrections, "native_replays": 8,
-            "evaluation_sha256": sha256(rows_path), "seeds": seeds, "confirmation": measurements}
+            "evaluation_sha256": sha256(rows_path), "seeds": seeds, "confirmation": measurements, **parity}
 
 
 def scheduled_seeds(schedule):
@@ -282,7 +370,7 @@ def replicate(source, output, kind, seed_start, episodes, workers, *, follow_up=
                  "strict_rules": STRICT_RULES, "schedule": {"replication": {"random": seeds}},
                  "reference_sha256": sha256(checkpoint), "timing": list(timing), "model": lock["corrections"],
                  **({"incumbent": incumbent} if kind in RELEASED_REFINEMENTS else {}),
-                 **({"late_recovery": lock["late_recovery"]} if kind in ("first-recovery", "early-clearance", "clearance-refine", "interbatch") else {}),
+                 **({"late_recovery": lock["late_recovery"]} if kind in SEQUENTIAL_REFINEMENTS else {}),
                  "source_lock_sha256": sha256(lock_path), "source_results_sha256": origin["evaluation_sha256"],
                  "policy_code_sha256": sha256(policy_source(policy_type)), "audit_code_sha256": audit_hash,
                  "evaluator_sha256": sha256(Path(placement_benchmark.__file__)), "target_mean_strictly_above": placement_search.TARGET,
@@ -313,6 +401,8 @@ def main():
     parser = argparse.ArgumentParser(description="Verify a frozen advanced placement confirmation from its episode and native audit receipts.")
     parser.add_argument("run", type=Path)
     parser.add_argument("--policy-kind", required=True, choices=("descent", "servo", "clearance", "landing", *RELEASED_REFINEMENTS))
+    parser.add_argument("--checkpoint", type=Path, help="Use a relocated checkpoint whose hash matches the confirmation lock.")
+    parser.add_argument("--development-only", action="store_true", help="Verify expert landing collection, fit and development.")
     parser.add_argument("--replicate-out", type=Path)
     parser.add_argument("--seed-start", type=int, default=138000)
     parser.add_argument("--episodes", type=int, default=60)
@@ -321,8 +411,19 @@ def main():
     args = parser.parse_args()
     if args.follow_up and not args.replicate_out:
         parser.error("--follow-up requires --replicate-out")
+    if args.replicate_out and (args.checkpoint or args.development_only):
+        parser.error("checkpoint overrides and development-only auditing apply to existing receipts")
     source = args.run.resolve()
-    if args.replicate_out:
+    if args.development_only:
+        if args.policy_kind != "expert-landing":
+            parser.error("--development-only supports expert-landing")
+        checkpoint = args.checkpoint or Path("evidence/advanced-20261120/policy.npz")
+        protocol, fit = (read_json(source / name) for name in ("protocol.json", "fit.json"))
+        corrections, scores = audit_expert_landing(source, checkpoint.resolve(), protocol, fit)
+        passed = scores is not None and all(placement_search.passes(row) for row in scores.values())
+        print(json.dumps({"passed": passed, "fit_attempts": len(protocol["schedule"]["training"]),
+                          "corrections": corrections, "development": scores}, indent=2))
+    elif args.replicate_out:
         output = args.replicate_out.resolve()
         if source == output:
             raise ValueError("replication requires its own output directory")
@@ -334,7 +435,7 @@ def main():
                           "replication_mean": result["replication"]["default"]["mean"],
                           "pooled_mean": result["pooled"]["default"]["mean"]}, indent=2))
     else:
-        print(json.dumps(audit_confirmation(source, args.policy_kind), indent=2))
+        print(json.dumps(audit_confirmation(source, args.policy_kind, args.checkpoint), indent=2))
 
 
 if __name__ == "__main__":

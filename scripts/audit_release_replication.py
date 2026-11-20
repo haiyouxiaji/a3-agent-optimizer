@@ -27,15 +27,16 @@ def audit(root, checkpoint):
     protocol = read_json(root / "replication-protocol.json")
     result = read_json(root / "replication-result.json")
     kind = protocol["policy_kind"]
-    if kind not in ("release-hold", "release-recovery"):
-        raise ValueError("expected a stationary release or late contact recovery replica")
+    if kind not in ("release-hold", "release-recovery", "expert-landing"):
+        raise ValueError("expected a supported release policy replica")
     if (sha256(lock_path) != protocol["source_lock_sha256"] or sha256(original_path) != lock["protocol_sha256"]
             or sha256(checkpoint) != protocol["checkpoint_sha256"] or lock["checkpoint_sha256"] != protocol["checkpoint_sha256"]
             or lock["corrections"] != protocol["corrections"] or lock["seeds"] != original["schedule"]["confirmation"]
             or sha256(Path(placement_benchmark.__file__)) != protocol["evaluator_sha256"]
             or any(protocol[key] != original[key] for key in ("environment", "rules", "strict_rules"))):
         raise ValueError("replication does not match the original frozen inputs")
-    policy_type, model = decode_model(lock["corrections"], kind, incumbent=lock["incumbent"])
+    policy_type, model = decode_model(lock["corrections"], kind, incumbent=lock["incumbent"],
+                                      late_recovery=lock.get("late_recovery", ()))
     verify_policy_code(original, lock, kind, policy_type)
 
     prior = archived(root / "confirmation.json.gz", protocol["source_results_sha256"])
@@ -45,6 +46,13 @@ def audit(root, checkpoint):
     if (not seeds or len(seeds) % 4 or len(seeds) != len(set(seeds))
             or set(seeds) & scheduled_seeds(original["schedule"])):
         raise ValueError("replication schedule overlaps model selection or confirmation")
+    if kind == "expert-landing":
+        plan = read_json(root / "replication-plan.json")
+        if (plan["confirmation_lock_sha256"] != sha256(lock_path)
+                or plan["schedule"]["replication"] != seeds or plan["episodes"] != len(seeds)
+                or plan["by_column"] * 4 != len(seeds) or plan["run_if"] != "candidate_promoted"
+                or plan["target_mean_ci95_lower_bound_exceeds"] != placement_search.TARGET):
+            raise ValueError("expert landing replication differs from its registered schedule")
     for panel, planned in ((prior, lock["seeds"]), (new, seeds)):
         for arm, corrections in (("reference", ()), ("selected", model)):
             for seed, entry in zip(planned, panel[arm], strict=True):

@@ -1,0 +1,33 @@
+{
+  "source_lock_sha256": "bfda1f0f659b7b887a7da5d39baa365f03ac6d243593dfecc998e2d2b4dbba42",
+  "source_rollouts_sha256": "15b14b16a39385c89e710cec19f267f07dafe2e428bec27727f8da2898b65087",
+  "code_sha256": "9e701c9273e79b58139b66f56fcbc158f438cb618d9d413824dc732db252473d",
+  "seeds": [
+    167624
+  ],
+  "cases": [
+    {
+      "seed": 167624,
+      "column": 3,
+      "wrong_source_ids": [
+        67
+      ],
+      "history": {
+        "67": {
+          "source_exit": 341,
+          "first_target_step": 436,
+          "robot_contacts": []
+        }
+      }
+    }
+  ],
+  "trajectory_sha256": "868506b63d67cc3e9761adb18738602f01d33dad9f11a7fed4b3ffbc0d91e740",
+  "first_requested_cookie_contact": {
+    "step": 317,
+    "id": 46
+  },
+  "last_requested_cookie_contact": {
+    "step": 427,
+    "id": 46
+  }
+}

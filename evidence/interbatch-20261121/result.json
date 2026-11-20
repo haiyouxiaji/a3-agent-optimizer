@@ -1,0 +1,90 @@
+{
+  "status": "reference_retained_after_interbatch_training",
+  "fit": {
+    "admitted": false,
+    "heldout": {
+      "development-1": {
+        "correction": null,
+        "first_only": {
+          "gain": 6,
+          "improved": 2,
+          "harmed": 1,
+          "unsafe": 0,
+          "complete_delta": 2
+        },
+        "combined": {
+          "gain": 0,
+          "improved": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "complete_delta": 0
+        }
+      },
+      "development-2": {
+        "correction": null,
+        "first_only": {
+          "gain": -4,
+          "improved": 0,
+          "harmed": 1,
+          "unsafe": 0,
+          "complete_delta": -1
+        },
+        "combined": {
+          "gain": 0,
+          "improved": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "complete_delta": 0
+        }
+      },
+      "development-3": {
+        "correction": null,
+        "first_only": {
+          "gain": -7,
+          "improved": 0,
+          "harmed": 2,
+          "unsafe": 0,
+          "complete_delta": -1
+        },
+        "combined": {
+          "gain": 0,
+          "improved": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "complete_delta": 0
+        }
+      }
+    },
+    "unconditional": {
+      "raise8": {
+        "gain": -6,
+        "improved": 2,
+        "harmed": 4,
+        "unsafe": 0,
+        "complete_delta": 0
+      },
+      "raise14": {
+        "gain": -5,
+        "improved": 2,
+        "harmed": 4,
+        "unsafe": 0,
+        "complete_delta": -1
+      },
+      "raise20": {
+        "gain": -8,
+        "improved": 2,
+        "harmed": 4,
+        "unsafe": 0,
+        "complete_delta": -1
+      },
+      "inset4-raise14": {
+        "gain": -11,
+        "improved": 2,
+        "harmed": 5,
+        "unsafe": 0,
+        "complete_delta": -2
+      }
+    },
+    "full_fit": null
+  }
+}

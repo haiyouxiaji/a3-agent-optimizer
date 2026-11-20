@@ -1,0 +1,214 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "code_sha256": "16a56c0eee74c99cd22f8aceb76ea640e6b35cbd4b49104a2261ca19013913ed",
+  "dependency_sha256": {
+    "a3opt.advanced_sim": "18633c17a1cc555eccb5225175196e547bfad83cd8dadb62b05f27a87c3a9e90",
+    "a3opt.placement_benchmark": "334b64b04e5b29f810c9275bf1fb8f666d70e86a2e032bb221569c5b2387915b",
+    "a3opt.placement_descent_agent": "396bf22d42e8405c796ede8071a0aff24abae6c731a1bbde667eada0adcbe0df",
+    "a3opt.placement_first_recovery": "879005afebdd980d008b9e1e73c5d988bba9e35ee2ff08efd8ff6277b9f80548",
+    "a3opt.placement_release_recovery": "9868a86c1553eea1f6947d0fac6e36d439f1ce98484a0c9491bfb550447ab8db",
+    "a3opt.placement_servo_agent": "75e39274c748509fcbb431549d58dde9e30d69aa68ca372c5a99aec12ec54f27",
+    "a3opt.placement_search": "3502123ef15a4ad5970a41c7c3cac0ff41ed1d8247510cd3a7c723306d0a7a96"
+  },
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "checkpoint_sha256": "b106431cd01f2cab3cb85e6525f914b21d27d8a75f148566050c5e9d99f0b56b",
+  "late_recovery": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "source_sha256": {
+    "confirmation.json.gz": "e874009b292e7574f87cf7fb9eb146a8a40886489c0ee64128b19a1261ace15f",
+    "replication-rollouts.json.gz": "afa23cb709c8ae0e3fcec966733adb3e945ba7c0840201a424c489681ae79ace"
+  },
+  "scope": [
+    2,
+    0
+  ],
+  "sampling": {
+    "confirmation": {
+      "failures": [
+        159419,
+        159428
+      ],
+      "controls": [
+        159403
+      ]
+    },
+    "replication": {
+      "failures": [
+        162037,
+        162069,
+        162100,
+        162127
+      ],
+      "controls": [
+        162000,
+        162022,
+        162026
+      ]
+    }
+  },
+  "schedule": {
+    "training": [
+      159419,
+      159428,
+      159403,
+      162037,
+      162069,
+      162100,
+      162127,
+      162000,
+      162022,
+      162026
+    ],
+    "development": [
+      167203,
+      167206,
+      167210,
+      167215,
+      167216,
+      167222,
+      167227,
+      167229,
+      167232,
+      167238,
+      167242,
+      167247,
+      167249,
+      167255,
+      167256,
+      167262
+    ],
+    "confirmation": [
+      167600,
+      167601,
+      167602,
+      167603,
+      167604,
+      167605,
+      167606,
+      167607,
+      167608,
+      167609,
+      167610,
+      167611,
+      167612,
+      167613,
+      167614,
+      167615,
+      167616,
+      167617,
+      167618,
+      167619,
+      167620,
+      167621,
+      167622,
+      167623,
+      167624,
+      167625,
+      167626,
+      167627,
+      167628,
+      167629,
+      167630,
+      167631,
+      167632,
+      167633,
+      167634,
+      167635,
+      167636,
+      167637,
+      167638,
+      167639,
+      167640,
+      167641,
+      167642,
+      167643,
+      167644,
+      167645,
+      167646,
+      167647,
+      167648,
+      167649,
+      167650,
+      167651,
+      167652,
+      167653,
+      167654,
+      167655,
+      167656,
+      167657,
+      167658,
+      167659,
+      167660,
+      167661,
+      167662,
+      167663
+    ]
+  },
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

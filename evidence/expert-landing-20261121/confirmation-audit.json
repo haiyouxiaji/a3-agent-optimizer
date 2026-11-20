@@ -1,0 +1,388 @@
+{
+  "run": "placement-expert-landing-20261121",
+  "status": "reference_retained_after_expert_landing_confirmation",
+  "corrections": [
+    [
+      2,
+      0,
+      [
+        0.03496120519867378,
+        -0.0004221561624656638,
+        0.7661990462187449
+      ],
+      [
+        0.17932757469334248,
+        0.3176407968431901,
+        0.08838678006867166,
+        0.09977283077909306,
+        0.02709844251565114
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          2.7418713364737277e-05
+        ],
+        [
+          0.0,
+          0.0,
+          6.071056567370316e-06
+        ],
+        [
+          0.0,
+          0.0,
+          -5.9083585087853206e-06
+        ],
+        [
+          0.0,
+          0.0,
+          1.121880194369278e-05
+        ],
+        [
+          0.0,
+          0.0,
+          1.0226239130816106e-05
+        ]
+      ],
+      [
+        true,
+        true,
+        true
+      ]
+    ]
+  ],
+  "native_replays": 8,
+  "evaluation_sha256": "15b14b16a39385c89e710cec19f267f07dafe2e428bec27727f8da2898b65087",
+  "seeds": [
+    167600,
+    167601,
+    167602,
+    167603,
+    167604,
+    167605,
+    167606,
+    167607,
+    167608,
+    167609,
+    167610,
+    167611,
+    167612,
+    167613,
+    167614,
+    167615,
+    167616,
+    167617,
+    167618,
+    167619,
+    167620,
+    167621,
+    167622,
+    167623,
+    167624,
+    167625,
+    167626,
+    167627,
+    167628,
+    167629,
+    167630,
+    167631,
+    167632,
+    167633,
+    167634,
+    167635,
+    167636,
+    167637,
+    167638,
+    167639,
+    167640,
+    167641,
+    167642,
+    167643,
+    167644,
+    167645,
+    167646,
+    167647,
+    167648,
+    167649,
+    167650,
+    167651,
+    167652,
+    167653,
+    167654,
+    167655,
+    167656,
+    167657,
+    167658,
+    167659,
+    167660,
+    167661,
+    167662,
+    167663
+  ],
+  "confirmation": {
+    "default": {
+      "episodes": 64,
+      "reference_mean": 9.171875,
+      "mean": 9.53125,
+      "mean_ci95": [
+        9.0625,
+        9.921875
+      ],
+      "paired_count_delta": 0.359375,
+      "paired_count_ci95": [
+        0.109375,
+        0.65625
+      ],
+      "reference_complete": 35,
+      "complete": 48,
+      "paired_success_rate_ci95": [
+        0.15625,
+        0.25
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 1,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 167602,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167626,
+          "column": 2,
+          "reference": 8,
+          "selected": 10,
+          "delta": 2
+        },
+        {
+          "seed": 167640,
+          "column": 2,
+          "reference": 3,
+          "selected": 10,
+          "delta": 7
+        },
+        {
+          "seed": 167652,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167656,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 167663,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 16,
+          "means": [
+            9.6875,
+            9.6875
+          ],
+          "complete": [
+            10,
+            10
+          ]
+        },
+        "2": {
+          "episodes": 16,
+          "means": [
+            8.25,
+            9.6875
+          ],
+          "complete": [
+            2,
+            15
+          ]
+        },
+        "3": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            12,
+            12
+          ]
+        },
+        "4": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            11,
+            11
+          ]
+        }
+      }
+    },
+    "strict-500": {
+      "episodes": 64,
+      "reference_mean": 9.171875,
+      "mean": 9.53125,
+      "mean_ci95": [
+        9.0625,
+        9.921875
+      ],
+      "paired_count_delta": 0.359375,
+      "paired_count_ci95": [
+        0.109375,
+        0.65625
+      ],
+      "reference_complete": 35,
+      "complete": 48,
+      "paired_success_rate_ci95": [
+        0.15625,
+        0.25
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 1,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 167602,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167626,
+          "column": 2,
+          "reference": 8,
+          "selected": 10,
+          "delta": 2
+        },
+        {
+          "seed": 167640,
+          "column": 2,
+          "reference": 3,
+          "selected": 10,
+          "delta": 7
+        },
+        {
+          "seed": 167652,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 167656,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 167663,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 16,
+          "means": [
+            9.6875,
+            9.6875
+          ],
+          "complete": [
+            10,
+            10
+          ]
+        },
+        "2": {
+          "episodes": 16,
+          "means": [
+            8.25,
+            9.6875
+          ],
+          "complete": [
+            2,
+            15
+          ]
+        },
+        "3": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            12,
+            12
+          ]
+        },
+        "4": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            11,
+            11
+          ]
+        }
+      }
+    }
+  },
+  "matched_full_rollouts": 12,
+  "raw_simulator_mean": {
+    "default": {
+      "reference": 9.1875,
+      "selected": 9.546875
+    },
+    "strict-500": {
+      "reference": 9.1875,
+      "selected": 9.546875
+    }
+  },
+  "wrong_source_cases": [
+    {
+      "seed": 167624,
+      "column": 3,
+      "score": 11,
+      "requested_score": 10,
+      "by_column": [
+        0,
+        0,
+        10,
+        1
+      ],
+      "success": false
+    }
+  ]
+}

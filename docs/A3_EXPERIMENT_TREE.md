@@ -62,6 +62,9 @@ flowchart TD
     RECOVERY --> FIRSTREC["第 1 列首批接触恢复 · 11 个训练场景无增分 · 回退"]
     FIRSTREC --> EARLY["第 1 列首批提前定点开爪 · 开发 9.33→9.33 · 回退"]
     EARLY --> FIRSTGATE["复采 35 个公开观测前缀 · 留组仍有退化 · 回退"]
+    EARLY --> INTERBATCH["第二批避让 · 9 局训练 · 最佳配方净少 5 块 · 回退"]
+    RECOVERYREP --> EXPERTLAND["第 2 列首批专家开爪位置 · 16 对开发 8.06→8.75"]
+    EXPERTLAND --> EXPERTCONF["64 对高难确认 · 9.17→9.53 · 第 3 列错列回退"]
     PH -.->|复用技能表示与采集接口| TEN["原生 2×10 · 条件示范与四批策略"]
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
 ```
@@ -95,6 +98,9 @@ flowchart TD
 | 第 1 列首批接触恢复 | Agent 自主选列，从三组档案复采 11 个配对训练场景。抬升与抬升外移均未增分，Agent 在训练阶段回退。 [逐局回执](../evidence/first-recovery-20261121/README.md) |
 | 第 1 列首批提前定点开爪 | 24 对新开发均分均为 9.3333，严格完整成功 17→18/24。三局各少计 4 块，Agent 回退。 [逐局回执](../evidence/early-clearance-20261121/README.md) |
 | 首批启用条件补采 | Agent 复采 35 个决策前缀并重拟合门控，一组留出净少 3 块，在训练阶段回退。 [逐组回执](../evidence/clearance-refine-20261121/README.md) |
+| 第 1 列两批联动避让 | Agent 从三组历史开发场景复采 9 局。四种第二批轨迹分别净少 6、5、8、11 块，留组拟合后回退。 [逐局回执](../evidence/interbatch-20261121/README.md) |
+| 第 2 列首批专家开爪位置 | Agent 采集 10 次专家示范。16 对独立开发中，课程终局和 500 步释放均为 8.0625→8.75，严格完整成功为 4→11/16。 [开发及冻结回执](../evidence/expert-landing-20261121/README.md) |
+| 专家开爪四列确认 | 64 对高难终局均分为 9.171875→9.53125，严格完整成功为 35→48/64，8 次原生复跑一致。第 3 列同一局在两个控制器下均搬入邻列饼干，晋级回退。 [确认审计](../evidence/expert-landing-20261121/confirmation-audit.json) |
 | `2×10` 最近示范检索 | 20 对独立确认均分 1.80 → 3.15/20，配对差区间 [−0.35, +3.05]。保留加权平均参考。 |
 
 [较宽方案结果](../evidence/advanced-20261120/broad-descent-result.json) · [定向候选结果](../evidence/advanced-20261120/confirmation-result.json) · [冻结复验结果](../evidence/advanced-20261120/replication-result.json) · [2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json)

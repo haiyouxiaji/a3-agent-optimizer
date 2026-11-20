@@ -19,6 +19,7 @@ The timed reference scored 8.79/10. The candidate's 95% balanced bootstrap inter
 - [当前 Agent 与模型架构](docs/A3_CURRENT_ARCHITECTURE.md)
 - [实验树、分支决策与运行统计](docs/A3_EXPERIMENT_TREE.md)
 - [冻结策略、逐场景评测证据与复现命令](evidence/advanced-20261120/README.md)
+- [专家开爪位置的 64 对高难确认与错列审计](evidence/expert-landing-20261121/README.md)
 
 ## Earlier designs and experiments
 
