@@ -12,6 +12,10 @@ Agent 在第 1 列的 9 局训练场景中验证了四种第二批避让轨迹�
 
 首批专家开爪策略在 64 对高难场景中把指定来源终局均分从 **9.171875 提升至 9.53125/10**，95% 区间为 **[9.0625, 9.921875]**，严格完整成功从 **35/64 增至 48/64**。两组均在同一第 3 列场景多搬一块相邻列饼干。Agent 按原有错列门槛回退。 [逐局与原生复跑证据](../evidence/expert-landing-20261121/README.md)
 
+同一专家开爪策略作为第二批抓取实验的参考，在另一组 64 局的均分为 **9.34375/10**，无错列。两组共 128 局，指定来源均分为 **9.4375/10**，95% 区间为 **[9.125, 9.7109375]**，严格完整成功为 **101/128**，共 1 局错列。第二批抓取修正的确认均分为 **9.328125/10**，比其参考少 1 块，Agent 回退该修正。 [跨面板复核](../evidence/expert-grasp-20261121/README.md)
+
+Agent 对第 3 列第二批闭爪选择 **0.75 mm** 横移，并与首批专家开爪组合。冻结后在 64 对全新高难场景中得到 **8.84375 → 9.03125/10**，第 500 步严格完整成功 **42 → 49/64**，两组错列与安全停机均为 **0**。绝对均分区间 **[8.515625, 9.5]**，配对增益区间 **[−0.125, +0.546875]**。第 2 列一局的首批在下降时倾斜，合计少计 5 块，Agent 回退该组合。8 次原生复跑匹配。 [确认与槽位复算](../evidence/source-guard-refine-20261121/README.md)
+
 ## Agent 架构
 
 ```mermaid
@@ -34,6 +38,7 @@ flowchart LR
 | 任务专项采样 | [`advanced_agent.py`](../src/a3opt/advanced_agent.py)、[`branch_agent.py`](../src/a3opt/branch_agent.py)、[`placement_descent_refine.py`](../src/a3opt/placement_descent_refine.py) | 读取训练回执、按失分阶段复采失败与满分场景、校验配对数据、拟合示范或选择限幅控制参数。 |
 | 候选筛选 | [`placement_search.py`](../src/a3opt/placement_search.py)、[`acceptance.py`](../src/a3opt/acceptance.py) | 通用循环比较配对增益、非劣比例和成本。放置分支要求两种计分均有正向配对增益、完整成功数至少持平，并核对错列、安全停止和单局少计至少 4 块的事件。 |
 | 实验证据 | [`memory.py`](../src/a3opt/memory.py)、[`placement_benchmark.py`](../src/a3opt/placement_benchmark.py)、[`audit_placement_confirmation.py`](../scripts/audit_placement_confirmation.py) | 通用循环用 JSONL 保存状态、指标、成本和候选 ID。专项流程分别保存协议、采集计划、逐局回执、冻结记录和原生复跑核对。 |
+| 下降轨迹调优 | [`tune_landing_path.py`](../scripts/tune_landing_path.py) | Agent 从两批已结束的回执选择失败场景及满分对照，用同一专家落点比较保留原下降曲线与先横向对齐再下降，并在新开发场景检验候选。 |
 
 人负责设定候选空间、预算和验收规则。项目 Agent 完成场景选择、模拟器采集、数据整理、拟合与选模。最佳下降分支在第 1 列复采三局失分与三局满分对照，比较首批、第二批及两批干预，再打开独立开发集。确认种子只用于冻结后的验证。 [自动采集实现](../src/a3opt/placement_descent_refine.py) · [采集计划](../evidence/advanced-20261120/acquisition-plan.json)
 

@@ -22,7 +22,9 @@ from a3opt.refinement_eval import read_json, sha256, simulator_identity
 from a3opt.release_timing_agent import STRICT_RULES
 
 
-OPTIONS = {"close3": (.003, True), "close5": (.005, True), "lift5": (.005, False)}
+BASE_OPTIONS = {"close3": (.003, True), "close5": (.005, True), "lift5": (.005, False)}
+CLOSE_REFINEMENTS = {"close075": (.00075, True), "close15": (.0015, True), "close225": (.00225, True)}
+OPTIONS = {**BASE_OPTIONS, **CLOSE_REFINEMENTS}
 SECOND = 1
 
 
@@ -198,7 +200,23 @@ def load_parent(source):
     return checkpoint, timing, policy_type, release_anchor, controls, lock, sha256(lock_path), sha256(rows_path)
 
 
-def run(source, root, block, workers):
+def refinement_options(previous, scope, rollouts_sha256):
+    if previous is None:
+        return BASE_OPTIONS, None
+    fit_path = previous / "fit.json"
+    protocol, fit, result = (read_json(previous / name) for name in ("protocol.json", "fit.json", "result.json"))
+    if (protocol["scope"] != list(scope) or protocol["parent_rollouts_sha256"] != rollouts_sha256
+            or result["status"] != "reference_retained_after_source_guard_training" or fit["guard"] is not None
+            or fit["training"] != result["training"] or fit["dataset_sha256"] != sha256(previous / "training" / "dataset.json")):
+        raise ValueError("source-separation refinement requires the completed parent training stage")
+    guarded = [name for name, score in fit["training"].items() if score["wrong_source"] == 0 and not score["safety_stops"]]
+    strongest = max(guarded, key=lambda name: fit["training"][name]["net_gain"], default=None)
+    if strongest == "close3":
+        return CLOSE_REFINEMENTS, sha256(fit_path)
+    raise ValueError("the previous candidates do not support smaller close-phase adjustments")
+
+
+def run(source, root, block, workers, previous=None):
     from a3_dual_arm_sim.sim.randomization import choose_column
 
     if block < 0 or block % 4 or workers < 1:
@@ -208,6 +226,7 @@ def run(source, root, block, workers):
     if scope is None:
         return {"status": "reference_retained_without_adjacent_source_errors"}
     (column, neighbor), failures = scope
+    recipes, previous_hash = refinement_options(previous, (column, neighbor), rows_hash)
     healthy = [seed for seed, episode in controls.items() if episode["strict-500"]["column"] == column
                and episode["strict-500"]["success"] and seed not in failures]
     if len(healthy) < 4:
@@ -225,9 +244,10 @@ def run(source, root, block, workers):
                  "checkpoint_sha256": sha256(checkpoint), "code_sha256": sha256(Path(__file__)),
                  "parent_lock_sha256": lock_hash, "parent_rollouts_sha256": rows_hash,
                  "incumbent": parent["incumbent"], "late_recovery": parent["late_recovery"], "timing": list(timing),
-                 "scope": [column, neighbor], "failures": failures, "options": {name: list(values) for name, values in OPTIONS.items()},
+                 "scope": [column, neighbor], "failures": failures, "options": {name: list(values) for name, values in recipes.items()},
+                 "previous_fit_sha256": previous_hash,
                  "schedule": {"training": training, "development": development, "confirmation": confirmation}})
-    options = tuple(SourceGuard(column, neighbor, recipe) for recipe in OPTIONS)
+    options = tuple(SourceGuard(column, neighbor, recipe) for recipe in recipes)
     with ProcessPoolExecutor(max_workers=workers) as pool:
         print(f"Agent is collecting {len(training)} paired source-separation training scenes", flush=True)
         jobs = [(checkpoint, timing, constructor, options, seed) for seed in training]
@@ -272,10 +292,11 @@ def main():
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--seed-block", type=int, default=170000)
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--refine-from", type=Path)
     args = parser.parse_args()
     root = args.out.resolve()
     with _run_lock(root):
-        result = run(args.source.resolve(), root, args.seed_block, args.workers)
+        result = run(args.source.resolve(), root, args.seed_block, args.workers, args.refine_from)
         _record_once(root / "result.json", result)
     print(result["status"], flush=True)
 

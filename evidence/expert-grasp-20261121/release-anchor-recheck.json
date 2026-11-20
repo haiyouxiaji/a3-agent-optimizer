@@ -1,0 +1,23 @@
+{
+  "episodes": 128,
+  "mean": 9.4375,
+  "mean_ci95": [
+    9.125,
+    9.7109375
+  ],
+  "raw_mean": 9.4453125,
+  "strict_completions": 101,
+  "wrong_source": 1,
+  "source_rollouts": [
+    {
+      "run": "placement-expert-landing-20261121",
+      "arm": "selected",
+      "sha256": "15b14b16a39385c89e710cec19f267f07dafe2e428bec27727f8da2898b65087"
+    },
+    {
+      "run": "placement-expert-grasp-20261121",
+      "arm": "reference",
+      "sha256": "4c521162daafc0fb1341a87e36e47aed6b87b2c35d6a73d458e5455d0208cd47"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "dataset_sha256": "d3bbc59a114914d676e088107b26b995c7951a3d7cb0e273bfc44462bc09eedc",
+  "training": {
+    "close075": {
+      "net_gain": 0,
+      "regressions": 0,
+      "wrong_source": 0,
+      "safety_stops": 0,
+      "completion_losses": 0
+    },
+    "close15": {
+      "net_gain": 0,
+      "regressions": 0,
+      "wrong_source": 0,
+      "safety_stops": 0,
+      "completion_losses": 0
+    },
+    "close225": {
+      "net_gain": -5,
+      "regressions": 1,
+      "wrong_source": 0,
+      "safety_stops": 0,
+      "completion_losses": 1
+    }
+  },
+  "guard": [
+    3,
+    4,
+    "close075"
+  ]
+}

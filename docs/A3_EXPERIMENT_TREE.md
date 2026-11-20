@@ -66,6 +66,10 @@ flowchart TD
     RECOVERYREP --> EXPERTLAND["第 2 列首批专家开爪位置 · 16 对开发 8.06→8.75"]
     EXPERTLAND --> EXPERTCONF["64 对高难确认 · 9.17→9.53 · 第 3 列错列回退"]
     EXPERTCONF --> SOURCEGUARD["第 3 列抓取避让 · 消除错列的一支导致对照少搬 5 块 · 回退"]
+    SOURCEGUARD --> GUARDREFINE["闭爪横移 0.75 mm · 64 对 8.84→9.03 · 首批下降回退"]
+    GUARDREFINE --> LANDINGPATH["专家落点前的下降路径 · 跨面板配对训练"]
+    EXPERTLAND --> EXPERTGRASP["第 2 列第二批专家抓取 · 开发 8.69→9.25"]
+    EXPERTGRASP --> GRASPCONF["64 对高难确认 · 9.34→9.33 · 回退"]
     PH -.->|复用技能表示与采集接口| TEN["原生 2×10 · 条件示范与四批策略"]
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
 ```
@@ -103,6 +107,8 @@ flowchart TD
 | 第 2 列首批专家开爪位置 | Agent 采集 10 次专家示范。16 对独立开发中，课程终局和 500 步释放均为 8.0625→8.75，严格完整成功为 4→11/16。 [开发及冻结回执](../evidence/expert-landing-20261121/README.md) |
 | 专家开爪四列确认 | 64 对高难终局均分为 9.171875→9.53125，严格完整成功为 35→48/64，8 次原生复跑一致。第 3 列同一局在两个控制器下均搬入邻列饼干，晋级回退。 [确认审计](../evidence/expert-landing-20261121/confirmation-audit.json) |
 | 第 3 列第二批抓取避让 | Agent 复采 1 局错列和 4 局正常对照。闭爪时横移 3 mm 修复错列，另一个场景少搬 5 块，Agent 回退。 [训练回执](../evidence/source-guard-20261121/README.md) |
+| 细化闭爪横移并组合专家开爪 | Agent 选中 0.75 mm。64 对独立场景指定来源均分 8.84375→9.03125，严格完整成功 42→49/64，双方错列和安全停机均为 0。一个第 2 列场景少搬 5 块，配对区间跨零，Agent 回退。 [确认与复跑](../evidence/source-guard-refine-20261121/README.md) |
+| 第 2 列第二批专家抓取 | 16 对开发场景的均分为 8.6875→9.25，64 对四列确认均分为 9.34375→9.328125，严格完整成功为 53→52/64。Agent 回退。 [开发与确认回执](../evidence/expert-grasp-20261121/README.md) |
 | `2×10` 最近示范检索 | 20 对独立确认均分 1.80 → 3.15/20，配对差区间 [−0.35, +3.05]。保留加权平均参考。 |
 
 [较宽方案结果](../evidence/advanced-20261120/broad-descent-result.json) · [定向候选结果](../evidence/advanced-20261120/confirmation-result.json) · [冻结复验结果](../evidence/advanced-20261120/replication-result.json) · [2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json)

@@ -16,10 +16,16 @@ on 100 independent, paired `2×5 / advanced` scenes balanced across four source 
 The timed reference scored 8.79/10. The candidate's 95% balanced bootstrap interval is
 [8.77, 9.49]. The course-budget `2×10` experiment is tracked separately.
 
+The expert-release and source-separation candidate scored **9.03125/10** on a new
+64-pair advanced panel, with a 95% interval of **[8.515625, 9.5]**. Strict completion
+improved from 42 to 49 episodes. A five-cookie regression and an inconclusive paired
+gain kept the Agent's reference policy in place.
+
 - [当前 Agent 与模型架构](docs/A3_CURRENT_ARCHITECTURE.md)
 - [实验树、分支决策与运行统计](docs/A3_EXPERIMENT_TREE.md)
 - [冻结策略、逐场景评测证据与复现命令](evidence/advanced-20261120/README.md)
 - [专家开爪位置的 64 对高难确认与错列审计](evidence/expert-landing-20261121/README.md)
+- [专家开爪与来源避让组合的独立确认](evidence/source-guard-refine-20261121/README.md)
 
 ## Earlier designs and experiments
 

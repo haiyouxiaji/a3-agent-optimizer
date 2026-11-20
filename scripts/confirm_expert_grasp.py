@@ -76,18 +76,19 @@ def verify_receipts(folder, checkpoint, timing, seeds, models, pairs):
             placement_benchmark.check((checkpoint, *timing, seed, corrections), episode)
 
 
-def measurements(paired, models):
-    return {rule: grasp.compare([row[rule] for row in paired["reference"]], [row[rule] for row in paired["selected"]], models)
+def measurements(paired, models, compare_rows=grasp.compare):
+    return {rule: compare_rows([row[rule] for row in paired["reference"]], [row[rule] for row in paired["selected"]], models)
             for rule in ("default", "strict-500")}
 
 
-def audit(root, checkpoint, timing, models, lock, selection):
+def audit(root, checkpoint, timing, models, lock, selection, *, compare_rows=grasp.compare,
+          retained_status="reference_retained_after_expert_grasp_confirmation"):
     folder = root / "confirmation"
     seeds = lock["seeds"]
     rows_path = folder / "rollouts" / "results.json"
     paired = read_json(rows_path)
     verify_receipts(folder / "rollouts", checkpoint, timing, seeds, models, paired)
-    confirmed = measurements(paired, models)
+    confirmed = measurements(paired, models, compare_rows)
     if any(stats["scored_pairs_by_column"] != dict.fromkeys(map(str, range(1, 5)), len(seeds) // 4) for stats in confirmed.values()):
         raise ValueError("grasp confirmation is not four-column balanced")
     replay = read_json(folder / "audit.json")
@@ -99,7 +100,7 @@ def audit(root, checkpoint, timing, models, lock, selection):
             placement_sim.audit((checkpoint, *timing, "random", seed, models, strict), receipt)
             if any(receipt[key] != paired["selected"][index][rule][key] for key in NATIVE_FIELDS):
                 raise ValueError("grasp native replay diverged from the confirmation")
-    status = "candidate_promoted" if placement_first_hover.supports_confirmation(confirmed) else "reference_retained_after_expert_grasp_confirmation"
+    status = "candidate_promoted" if placement_first_hover.supports_confirmation(confirmed) else retained_status
     result = {"status": status, "confirmation": confirmed, "development": selection, "corrections": lock["corrections"],
               "target_lower_bound": confirmed["default"]["mean_ci95"][0] > placement_search.TARGET}
     _record_once(root / "result.json", result)
@@ -107,11 +108,12 @@ def audit(root, checkpoint, timing, models, lock, selection):
             "by_column": {rule: report_rule(paired, rule) for rule in confirmed}}
 
 
-def resume(root, checkpoint, timing, constructor, models, lock, development, selection, workers):
+def resume(root, checkpoint, timing, constructor, models, lock, development, selection, workers, *,
+           compare_rows=grasp.compare, parity_seeds=None):
     folder = root / "confirmation"
     seeds = lock["seeds"]
     controls = {row["default"]["seed"]: (row, trial) for row, trial in zip(development["reference"], development["selected"], strict=True)}
-    parity = list(dict.fromkeys([*controls.keys()][:3] + [change["seed"] for change in selection["default"]["changes"]]))[:6]
+    parity = list(dict.fromkeys([*controls.keys()][:3] + [change["seed"] for change in selection["default"]["changes"]]))[:6] if parity_seeds is None else parity_seeds
     _record_once(folder / "shared-prefix-protocol.json", {"lock_sha256": sha256(root / "confirmation-lock.json"),
                  "driver_sha256": sha256(Path(__file__)), "paired_episode_sha256": sha256(Path(paired_episode.__code__.co_filename)),
                  "parity_seeds": parity, "confirmation_seeds": seeds})
@@ -120,14 +122,14 @@ def resume(root, checkpoint, timing, constructor, models, lock, development, sel
             jobs = [(checkpoint, timing, constructor, models, seed) for seed in cases]
             return _jobs(pool, paired_episode, jobs, folder / label, lambda job: str(job[-1]), check_pair)
 
-        print(f"Verifying the grasp evaluator against {len(parity)} full development pairs", flush=True)
+        print(f"Verifying the evaluator against {len(parity)} full development pairs", flush=True)
         for seed, pair in zip(parity, evaluate("shared-prefix-parity", parity), strict=True):
             for arm, expected in zip(("reference", "selected"), controls[seed], strict=True):
                 equivalent(pair[arm], expected)
         _record_once(folder / "shared-prefix-audit.json", {"seeds": parity, "matched_full_rollouts": 2 * len(parity)})
         receipts = folder / "rollouts" / "episodes"
         missing = [seed for seed in seeds if any(not (receipts / arm / f"{seed}.json").is_file() for arm in ("reference", "selected"))]
-        print(f"Completing {len(missing)} frozen four-column grasp pairs", flush=True)
+        print(f"Completing {len(missing)} frozen four-column pairs", flush=True)
         for seed, pair in zip(missing, evaluate("shared-prefix-rollouts", missing), strict=True):
             for arm in ("reference", "selected"):
                 path = receipts / arm / f"{seed}.json"
@@ -136,7 +138,7 @@ def resume(root, checkpoint, timing, constructor, models, lock, development, sel
                 else:
                     _record_once(path, pair[arm])
         placement_search.confirm_combined(pool, folder, checkpoint, timing, seeds, models, seeds[:4],
-                                          policy_type=constructor, compare_rows=grasp.compare)
+                                          policy_type=constructor, compare_rows=compare_rows)
 
 
 def main():

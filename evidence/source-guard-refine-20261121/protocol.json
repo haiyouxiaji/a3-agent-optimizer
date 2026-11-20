@@ -1,0 +1,176 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "checkpoint_sha256": "b106431cd01f2cab3cb85e6525f914b21d27d8a75f148566050c5e9d99f0b56b",
+  "code_sha256": "844506bddf08268fad1cbdec8872bb19dcfc47a5774bf62dd6ab2d1b58ac8804",
+  "parent_lock_sha256": "bfda1f0f659b7b887a7da5d39baa365f03ac6d243593dfecc998e2d2b4dbba42",
+  "parent_rollouts_sha256": "15b14b16a39385c89e710cec19f267f07dafe2e428bec27727f8da2898b65087",
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "late_recovery": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "scope": [
+    3,
+    4
+  ],
+  "failures": [
+    167624
+  ],
+  "options": {
+    "close075": [
+      0.00075,
+      true
+    ],
+    "close15": [
+      0.0015,
+      true
+    ],
+    "close225": [
+      0.00225,
+      true
+    ]
+  },
+  "previous_fit_sha256": "3c16a58607d9e2cfca7a3cc953f709341621dcdda20df30c56faf4e7a7ae7ab5",
+  "schedule": {
+    "training": [
+      167624,
+      167603,
+      167616,
+      167641,
+      167657
+    ],
+    "development": [
+      171201,
+      171204,
+      171208,
+      171214,
+      171219,
+      171222,
+      171227,
+      171230
+    ],
+    "confirmation": [
+      171600,
+      171601,
+      171602,
+      171603,
+      171604,
+      171605,
+      171606,
+      171607,
+      171608,
+      171609,
+      171610,
+      171611,
+      171612,
+      171613,
+      171614,
+      171615,
+      171616,
+      171617,
+      171618,
+      171619,
+      171620,
+      171621,
+      171622,
+      171623,
+      171624,
+      171625,
+      171626,
+      171627,
+      171628,
+      171629,
+      171630,
+      171631,
+      171632,
+      171633,
+      171634,
+      171635,
+      171636,
+      171637,
+      171638,
+      171639,
+      171640,
+      171641,
+      171642,
+      171643,
+      171644,
+      171645,
+      171646,
+      171647,
+      171648,
+      171649,
+      171650,
+      171651,
+      171652,
+      171653,
+      171654,
+      171655,
+      171656,
+      171657,
+      171658,
+      171659,
+      171660,
+      171661,
+      171662,
+      171663
+    ]
+  }
+}
