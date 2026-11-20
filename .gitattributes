@@ -38,3 +38,4 @@ evidence/clearance-refine-20261121/*.json -text whitespace=cr-at-eol
 evidence/interbatch-20261121/*.json -text whitespace=cr-at-eol
 evidence/expert-landing-20261121/*.json -text whitespace=cr-at-eol
 evidence/expert-grasp-20261121/*.json -text whitespace=cr-at-eol
+evidence/source-guard-20261121/*.json -text whitespace=cr-at-eol
