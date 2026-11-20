@@ -1,0 +1,122 @@
+{
+  "always_staged": {
+    "gain": [
+      31,
+      31
+    ],
+    "complete_gain": [
+      4,
+      4
+    ],
+    "helped": 8,
+    "harmed": 3,
+    "major_losses": 1,
+    "unsafe": 0,
+    "activations": 23
+  },
+  "checks": {
+    "plan": {
+      "threshold_m": 0.002001698757450223,
+      "leave_one_scene_out": {
+        "gain": [
+          35,
+          35
+        ],
+        "complete_gain": [
+          5,
+          5
+        ],
+        "helped": 7,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 12
+      },
+      "admitted": true
+    },
+    "pose": {
+      "threshold_m": 0.002026956716299348,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          4,
+          4
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    },
+    "force": {
+      "threshold_m": 0.0021106457382453507,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          4,
+          4
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    },
+    "edges": {
+      "threshold_m": 0.001957042985927477,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          3,
+          3
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    }
+  },
+  "corrections": [
+    [
+      [
+        1,
+        0,
+        "inset-then-hover"
+      ],
+      [
+        "plan",
+        [
+          0.494949494949495,
+          0.028551063424075124
+        ],
+        [
+          0.49997449174806374,
+          0.002453816597559039
+        ],
+        [
+          0.0002739744652148171,
+          -0.0028385808671740295
+        ],
+        0.0036425123859382463
+      ],
+      0.002001698757450223
+    ]
+  ],
+  "dataset_sha256": "721047688b4fb19419af2b2ac60ca355e7938f96b37734de2c6b4ed6cf423df3"
+}

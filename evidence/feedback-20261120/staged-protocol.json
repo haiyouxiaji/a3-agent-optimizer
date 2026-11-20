@@ -1,0 +1,242 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "sources": {
+    "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+    "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46",
+    "routed_replication": {
+      "protocol_sha256": "59044b95a9ed3ef9725009d6ce3de9455111376285f402daad6e1b2bc8362864",
+      "rollout_sha256": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+    }
+  },
+  "sampling": [
+    {
+      "column": 2,
+      "batch": 1,
+      "lost_during_descent": 38,
+      "failures": [
+        138014,
+        148435,
+        138023,
+        132100
+      ],
+      "controls": [
+        138027,
+        138035,
+        138038
+      ]
+    },
+    {
+      "column": 1,
+      "batch": 0,
+      "lost_during_descent": 35,
+      "failures": [
+        132123,
+        138030,
+        138048,
+        148423
+      ],
+      "controls": [
+        132103,
+        132108,
+        132114
+      ]
+    }
+  ],
+  "schedule": {
+    "training": [
+      138014,
+      148435,
+      138023,
+      132100,
+      138027,
+      138035,
+      138038,
+      132123,
+      138030,
+      138048,
+      148423,
+      132103,
+      132108,
+      132114
+    ],
+    "development": [
+      154001,
+      154002,
+      154004,
+      154007,
+      154008,
+      154010,
+      154012,
+      154015,
+      154016,
+      154017,
+      154020,
+      154022,
+      154025,
+      154027,
+      154029,
+      154031,
+      154032,
+      154033,
+      154037,
+      154038,
+      154042,
+      154043,
+      154044,
+      154045,
+      154049,
+      154050,
+      154052,
+      154054,
+      154057,
+      154058,
+      154060,
+      154061
+    ],
+    "confirmation": [
+      154400,
+      154401,
+      154402,
+      154403,
+      154404,
+      154405,
+      154406,
+      154407,
+      154408,
+      154409,
+      154410,
+      154411,
+      154412,
+      154413,
+      154414,
+      154415,
+      154416,
+      154417,
+      154418,
+      154419,
+      154420,
+      154421,
+      154422,
+      154423,
+      154424,
+      154425,
+      154426,
+      154427,
+      154428,
+      154429,
+      154430,
+      154431,
+      154432,
+      154433,
+      154434,
+      154435,
+      154436,
+      154437,
+      154438,
+      154439,
+      154440,
+      154441,
+      154442,
+      154443,
+      154444,
+      154445,
+      154446,
+      154447,
+      154448,
+      154449,
+      154450,
+      154451,
+      154452,
+      154453,
+      154454,
+      154455,
+      154456,
+      154457,
+      154458,
+      154459,
+      154460,
+      154461,
+      154462,
+      154463
+    ]
+  },
+  "code_sha256": "f4583a24a3c95c2d333e9fa3cf4a4cd3341446fd1252db24627afedf29972612",
+  "recipes": {
+    "align-then-lower": [
+      0.35,
+      0.0,
+      0.0
+    ],
+    "align-then-hover": [
+      0.35,
+      0.01,
+      0.0
+    ],
+    "inset-then-hover": [
+      0.45,
+      0.014,
+      0.004
+    ]
+  },
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

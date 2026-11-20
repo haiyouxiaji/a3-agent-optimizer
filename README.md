@@ -158,12 +158,27 @@ learns whether wrist force, torque, gripper load, or height tracking can trigger
 `python -m a3opt.placement_late_hover_gate --late <hover-run> --out <late-hover-run>` tests planned-position gates for
 the second batch on multiple archived panels, withholding an entire panel at a time.
 `python -m a3opt.placement_staged_descent --out <staged-run>` tests paths that finish lateral alignment before lowering.
+`python -m a3opt.placement_staged_gate --source <staged-run> --out <gated-run>` uses paired gains and regressions to learn
+when to apply the first-batch staged descent.
+`python -m a3opt.placement_release_hold --out <release-hold-run>` resamples historical placement failures and successful
+controls, evaluates fixed-pose opening trajectories, and validates the selected recipe on new scenes.
+`python -m a3opt.placement_release_recovery --out <release-recovery-run>` collects matched branches late in descent
+and uses held-out historical groups to test release recovery rules based on wrist force and position tracking.
+`python -m a3opt.placement_release_router --out <release-router-run>` joins the two audited training archives and
+resamples missing stationary-release branches. The Agent learns when to choose stationary opening at the start of
+descent and when to keep contact recovery available. The development test compares a selected route with both the
+published policy and contact recovery alone.
+`python scripts/replicate_release_hold.py <completed-confirmation-run> --out <replication-run>` repeats a frozen release
+policy on 128 fresh scenes, with 32 per source column. Pass `--policy-kind release-recovery` and a fresh seed block
+for the recovery policy. The evaluator checks shared-prefix rollouts against archived full episodes before starting.
+The clearance feedback agent accepts `--rgb-archive <evidence-dir>` to fit
+explicit tray-edge features from its archived wrist frames and collect a separate sensor holdout.
 The clearance, contact, and staged descent agents accept `--source <routed-replication>` to add audited historical scenarios.
 The [feedback evidence bundle](evidence/feedback-20261120/README.md) contains the saved protocols, datasets, and outcomes.
 `python scripts/audit_placement_confirmation.py <run> --policy-kind hover` verifies a completed hover run from its
 freeze, individual rollouts, and native replay receipts. The other controller audit kinds are `row`, `compose`, `first-hover`,
 `hover-guard`, `hover-guard-refine`, `routed`, `wall-clearance`, `clearance-feedback`, `contact-feedback`, `late-hover-gate`,
-and `staged-descent`.
+`staged-descent`, `staged-gate`, `release-hold`, `release-recovery`, and `release-router`.
 
 ### Real closed-loop experiments
 

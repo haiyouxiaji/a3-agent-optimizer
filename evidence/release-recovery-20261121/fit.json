@@ -1,0 +1,246 @@
+{
+  "held_out": {
+    "routed-confirmation": {
+      "gate": [
+        2,
+        1,
+        "raise-then-outward",
+        2,
+        0.0010316189812705212
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 2,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 2
+      }
+    },
+    "routed-replication": {
+      "gate": [
+        2,
+        1,
+        "raise-then-outward",
+        1,
+        0.01704489748094197
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 3,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 3
+      }
+    },
+    "release-confirmation": {
+      "gate": [
+        2,
+        1,
+        "raise-then-outward",
+        2,
+        0.0010316189812705212
+      ],
+      "effect": {
+        "gain": 2,
+        "improved": 1,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 1
+      }
+    },
+    "release-replication": {
+      "gate": [
+        2,
+        1,
+        "raise-then-outward",
+        2,
+        0.0010421552195019612
+      ],
+      "effect": {
+        "gain": 15,
+        "improved": 4,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 4
+      }
+    }
+  },
+  "admitted": true,
+  "fold_predictions": [
+    {
+      "seed": 147450,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 147408,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 147413,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 147416,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 147426,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148435,
+      "triggered": true,
+      "gain": 6,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148415,
+      "triggered": true,
+      "gain": 3,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148450,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148401,
+      "triggered": true,
+      "gain": 1,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148405,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148427,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148443,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132100,
+      "triggered": true,
+      "gain": 2,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132105,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132109,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132112,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138014,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138023,
+      "triggered": true,
+      "gain": 4,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138007,
+      "triggered": true,
+      "gain": 3,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138017,
+      "triggered": true,
+      "gain": 3,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138027,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138035,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138038,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    }
+  ],
+  "corrections": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "dataset_sha256": "8e4a66423cf912546c5fc50464d6492119e41adbc446b1194b6be6a74ce46dd2"
+}

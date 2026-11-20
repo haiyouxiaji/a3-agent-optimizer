@@ -18,7 +18,8 @@ from a3opt.placement_sim import Correction, PlacementPolicy, PlacementTrace, aud
 from a3opt import placement_clearance_agent, placement_clearance_feedback, placement_compose, placement_contact_feedback
 from a3opt import placement_descent_agent, placement_first_hover
 from a3opt import placement_hover_agent, placement_hover_guard, placement_hover_guard_refine, placement_retarget_agent
-from a3opt import placement_late_hover_gate, placement_staged_descent
+from a3opt import placement_late_hover_gate, placement_release_hold, placement_release_recovery, placement_release_router
+from a3opt import placement_staged_descent, placement_staged_gate
 from a3opt import placement_routed_agent, placement_servo_agent, placement_slot_refine, placement_visual_geometry
 from a3opt import placement_wall_clearance_agent
 from a3opt.refinement_eval import read_json, sha256, simulator_identity, write_json
@@ -34,7 +35,8 @@ class PlacementVideoTrace(VideoPolicy, PlacementTrace):
 
 
 RELEASED_REFINEMENTS = ("hover", "row", "compose", "first-hover", "hover-guard", "hover-guard-refine", "routed",
-                        "wall-clearance", "clearance-feedback", "contact-feedback", "late-hover-gate", "staged-descent")
+                        "wall-clearance", "clearance-feedback", "contact-feedback", "late-hover-gate", "staged-descent",
+                        "staged-gate", "release-hold", "release-recovery", "release-router")
 
 
 def decode_model(records, policy_kind, *, incumbent=()):
@@ -66,6 +68,26 @@ def decode_model(records, policy_kind, *, incumbent=()):
         if policy_kind == "staged-descent":
             model = tuple(placement_staged_descent.StagedEntry(*item) for item in records)
             return partial(placement_staged_descent.StagedEntryPolicy, incumbent=base), model
+        if policy_kind == "staged-gate":
+            model = tuple(placement_staged_gate.StagedGate(placement_staged_descent.StagedEntry(*entry),
+                placement_clearance_feedback.WallModel(mode, tuple(center), tuple(scale), tuple(weights), intercept), cutoff)
+                for entry, (mode, center, scale, weights, intercept), cutoff in records)
+            return partial(placement_staged_gate.StagedGatePolicy, incumbent=base), model
+        if policy_kind == "release-hold":
+            model = tuple(placement_release_hold.ReleaseHold(recipe) for _, _, recipe in records)
+            if len(model) > 1 or [item.record() for item in model] != list(records):
+                raise ValueError("unexpected stationary release scope")
+            return partial(placement_release_hold.ReleaseHoldPolicy, incumbent=base), model
+        if policy_kind == "release-recovery":
+            model = tuple(placement_release_recovery.Recovery(*item[2:]) for item in records)
+            if len(model) > 1 or [item.record() for item in model] != list(records):
+                raise ValueError("unexpected release recovery scope")
+            return partial(placement_release_recovery.RecoveryPolicy, incumbent=base), model
+        if policy_kind == "release-router":
+            model = tuple(placement_release_router.decode(item) for item in records)
+            if len(model) > 1 or [item.record() for item in model] != list(records):
+                raise ValueError("invalid release router model")
+            return partial(placement_release_router.ReleaseRouterPolicy, incumbent=base), model
         if policy_kind == "routed":
             model = placement_routed_agent.decode(records) if records else ()
             if any(item.column == adaptation.column for item in base for adaptation in model):
@@ -132,6 +154,10 @@ def verify_policy_code(configuration, frozen, kind, constructor):
         raise ValueError("projection guard dependency differs from the frozen evaluation")
     if kind == "routed" and placement_routed_agent.dependencies() != configuration["dependency_sha256"]:
         raise ValueError("routed controller dependencies differ from the frozen evaluation")
+    if kind == "release-recovery" and sha256(Path(placement_contact_feedback.__file__)) != configuration["contact_code_sha256"]:
+        raise ValueError("contact signal code differs from the frozen evaluation")
+    if kind == "release-router" and placement_release_router.dependencies() != configuration["dependencies"]:
+        raise ValueError("release router dependencies differ from the frozen evaluation")
 
 
 def upstream_policy():

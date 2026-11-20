@@ -1,0 +1,210 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "code_sha256": "fbcdc8cbfc0996cbde5691d3ff6592eba9612cf9555d7d01cfe99234c09a403a",
+  "sources": {
+    "release": {
+      "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+      "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46"
+    },
+    "routed": {
+      "confirmation-rollouts.json.gz": "ce7a5e3828d9d63f1134cd9d68a8008892c3dc36f372b3763e68c800b4f0a243",
+      "replication-rollouts.json.gz": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+    }
+  },
+  "sampling": {
+    "failures": [
+      148435,
+      147450,
+      138014,
+      147408,
+      138023,
+      138007
+    ],
+    "controls": [
+      138027,
+      138035,
+      138038,
+      138051,
+      138058,
+      147413
+    ]
+  },
+  "schedule": {
+    "training": [
+      148435,
+      147450,
+      138014,
+      147408,
+      138023,
+      138007,
+      138027,
+      138035,
+      138038,
+      138051,
+      138058,
+      147413
+    ],
+    "development": [
+      158101,
+      158107,
+      158110,
+      158115,
+      158118,
+      158122,
+      158126,
+      158128,
+      158132,
+      158137,
+      158140,
+      158147,
+      158150,
+      158153,
+      158157,
+      158163
+    ],
+    "confirmation": [
+      158500,
+      158501,
+      158502,
+      158503,
+      158504,
+      158505,
+      158506,
+      158507,
+      158508,
+      158509,
+      158510,
+      158511,
+      158512,
+      158513,
+      158514,
+      158515,
+      158516,
+      158517,
+      158518,
+      158519,
+      158520,
+      158521,
+      158522,
+      158523,
+      158524,
+      158525,
+      158526,
+      158527,
+      158528,
+      158529,
+      158530,
+      158531,
+      158532,
+      158533,
+      158534,
+      158535,
+      158536,
+      158537,
+      158538,
+      158539,
+      158540,
+      158541,
+      158542,
+      158543,
+      158544,
+      158545,
+      158546,
+      158547,
+      158548,
+      158549,
+      158550,
+      158551,
+      158552,
+      158553,
+      158554,
+      158555,
+      158556,
+      158557,
+      158558,
+      158559,
+      158560,
+      158561,
+      158562,
+      158563
+    ]
+  },
+  "recipes": {
+    "planned-18": [
+      0.018,
+      0.0,
+      0.0
+    ],
+    "anchored-24": [
+      0.024,
+      1.0,
+      0.0
+    ],
+    "outward-24": [
+      0.024,
+      1.0,
+      0.004
+    ]
+  },
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

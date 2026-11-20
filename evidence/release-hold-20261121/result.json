@@ -1,0 +1,217 @@
+{
+  "status": "reference_retained_after_release_hold_confirmation",
+  "corrections": [
+    [
+      2,
+      1,
+      "planned-18"
+    ]
+  ],
+  "development": {
+    "default": {
+      "episodes": 16,
+      "reference_mean": 8.6875,
+      "mean": 8.75,
+      "mean_ci95": [
+        7.5,
+        9.6875
+      ],
+      "paired_count_delta": 0.0625,
+      "paired_count_ci95": [
+        0.0,
+        0.1875
+      ],
+      "reference_complete": 3,
+      "complete": 3,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 16
+      },
+      "changes": [
+        {
+          "seed": 158126,
+          "column": 2,
+          "reference": 4,
+          "selected": 5,
+          "delta": 1
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 16,
+      "reference_mean": 8.6875,
+      "mean": 8.75,
+      "mean_ci95": [
+        7.5,
+        9.6875
+      ],
+      "paired_count_delta": 0.0625,
+      "paired_count_ci95": [
+        0.0,
+        0.1875
+      ],
+      "reference_complete": 3,
+      "complete": 3,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 16
+      },
+      "changes": [
+        {
+          "seed": 158126,
+          "column": 2,
+          "reference": 4,
+          "selected": 5,
+          "delta": 1
+        }
+      ]
+    }
+  },
+  "confirmation": {
+    "default": {
+      "episodes": 64,
+      "reference_mean": 8.75,
+      "mean": 9.0,
+      "mean_ci95": [
+        8.375,
+        9.53125
+      ],
+      "paired_count_delta": 0.25,
+      "paired_count_ci95": [
+        0.015625,
+        0.5625
+      ],
+      "reference_complete": 42,
+      "complete": 42,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 158504,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        },
+        {
+          "seed": 158511,
+          "column": 2,
+          "reference": 1,
+          "selected": 0,
+          "delta": -1
+        },
+        {
+          "seed": 158527,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 158540,
+          "column": 2,
+          "reference": 2,
+          "selected": 10,
+          "delta": 8
+        },
+        {
+          "seed": 158547,
+          "column": 2,
+          "reference": 2,
+          "selected": 5,
+          "delta": 3
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 64,
+      "reference_mean": 8.75,
+      "mean": 9.0,
+      "mean_ci95": [
+        8.375,
+        9.53125
+      ],
+      "paired_count_delta": 0.25,
+      "paired_count_ci95": [
+        0.015625,
+        0.5625
+      ],
+      "reference_complete": 42,
+      "complete": 42,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 158504,
+          "column": 2,
+          "reference": 9,
+          "selected": 10,
+          "delta": 1
+        },
+        {
+          "seed": 158511,
+          "column": 2,
+          "reference": 1,
+          "selected": 0,
+          "delta": -1
+        },
+        {
+          "seed": 158527,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 158540,
+          "column": 2,
+          "reference": 2,
+          "selected": 10,
+          "delta": 8
+        },
+        {
+          "seed": 158547,
+          "column": 2,
+          "reference": 2,
+          "selected": 5,
+          "delta": 3
+        }
+      ]
+    }
+  },
+  "target_lower_bound": false
+}

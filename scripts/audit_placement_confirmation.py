@@ -8,7 +8,8 @@ from pathlib import Path
 from statistics import mean
 
 from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_first_hover
-from a3opt import placement_hover_agent, placement_search
+from a3opt import placement_hover_agent, placement_release_hold, placement_release_recovery, placement_release_router
+from a3opt import placement_search
 from a3opt import placement_routed_agent, placement_sim, placement_slot_refine, slot_alignment_fit
 from a3opt.advanced_agent import _record_once
 from a3opt.cli import _run_lock
@@ -73,6 +74,40 @@ def released_inputs(root, protocol, lock, fit, kind):
             raise ValueError("the routed fit differs from the frozen training selection")
     if kind == "wall-clearance" and protocol["labels_sha256"] != sha256(root / "training" / "labels.json"):
         raise ValueError("the wall-clearance labels differ from the frozen training data")
+    if kind == "release-hold":
+        dataset = read_json(training)
+        rows = dataset["rows"]
+        regenerated, metrics = placement_release_hold.fit(rows, dataset["sampling"]["controls"])
+        if (dataset["sampling"] != protocol["sampling"] or [row["seed"] for row in rows] != protocol["schedule"]["training"]
+                or [item.record() for item in regenerated] != fitted_model or metrics != fit["metrics"]):
+            raise ValueError("the stationary release fit differs from the frozen training selection")
+    if kind == "release-recovery":
+        panels = read_json(training)["panels"]
+        regenerated, metrics = placement_release_recovery.fit(panels)
+        groups = {name: [row["seed"] for row in rows] for name, rows in panels.items()}
+        if (groups != {name: group["failures"] + group["controls"] for name, group in protocol["sampling"].items()}
+                or [item.record() for item in regenerated] != fitted_model
+                or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the release recovery fit differs from the frozen training selection")
+    if kind == "release-router":
+        panels = read_json(training)["panels"]
+        regenerated, metrics = placement_release_router.fit(panels)
+        training_seeds = [row["seed"] for rows in panels.values() for row in rows]
+        if (training_seeds != protocol["schedule"]["training"] or len(training_seeds) != len(set(training_seeds))
+                or [item.record() for item in regenerated] != fitted_model
+                or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the release route differs from the frozen training selection")
+        fallback = (placement_release_router.ReleaseRoute(regenerated[0].fallback),)
+        development = read_json(root / "development" / "results.json")
+        development_seeds = protocol["schedule"]["development"]
+        for arm, model in (("reference", ()), ("selected", regenerated), ("recovery", fallback)):
+            for seed, receipt in zip(development_seeds, development[arm], strict=True):
+                placement_benchmark.check((Path(lock["checkpoint"]), *lock["timing"], seed, model), receipt)
+        scores = {name: placement_hover_agent.pair_stats({"reference": development[name], "selected": development["selected"]},
+                                                       regenerated) for name in ("reference", "recovery")}
+        if (scores != read_json(root / "development-selection.json")
+                or not all(placement_search.passes(row) for panel in scores.values() for row in panel.values())):
+            raise ValueError("release router development gate does not match its paired evaluations")
     if kind == "staged-descent":
         groups = read_json(training)["groups"]
         for column, group in groups.items():
@@ -83,7 +118,8 @@ def released_inputs(root, protocol, lock, fit, kind):
 
 def supports_promotion(confirmation, kind):
     stricter_gate = ("first-hover", "hover-guard", "hover-guard-refine", "routed", "wall-clearance", "clearance-feedback",
-                     "contact-feedback", "late-hover-gate", "staged-descent")
+                     "contact-feedback", "late-hover-gate", "staged-descent", "staged-gate", "release-hold", "release-recovery",
+                     "release-router")
     if kind in stricter_gate:
         return placement_first_hover.supports_confirmation(confirmation)
     if kind == "compose":

@@ -33,7 +33,7 @@ def test_feedback_abstains_without_wrist_and_keeps_incumbent_descent(monkeypatch
     calls = []
     monkeypatch.setattr(feedback, "task_column", int)
     monkeypatch.setattr(feedback, "readings", lambda *args: np.zeros(17))
-    monkeypatch.setattr(feedback.wrist, "wrist_features", lambda frame: np.zeros(50))
+    monkeypatch.setitem(feedback.IMAGE_ENCODERS, "wrist", lambda frame: np.zeros(50))
     monkeypatch.setattr(feedback.descent, "adjust", lambda phases, xyz, name: calls.append(name))
     monkeypatch.setattr(feedback.descent.DescentPolicy, "act", lambda self, obs, task: "reference")
     monkeypatch.setattr(feedback.PlacementPolicy, "act", lambda self, obs, task: "corrected")

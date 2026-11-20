@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
+import io
+import json
 import os
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, replace
 from functools import partial
 from pathlib import Path
+from zipfile import ZipFile
 
 import numpy as np
 
@@ -23,9 +28,29 @@ from a3opt.release_timing_agent import STRICT_RULES
 
 
 NEAR_WALL_M = .002
-FEATURES = {"plan": 2, "pose": 8, "force": 17, "wrist": 67}
-PENALTIES = {"plan": 2., "pose": 6., "force": 16., "wrist": 32.}
+FEATURES = {"plan": 2, "pose": 8, "force": 17, "wrist": 67, "edges": 67}
+PENALTIES = {"plan": 2., "pose": 6., "force": 16., "wrist": 32., "edges": 24.}
 PANEL_SIZES = {"fit": 16, "sensor_holdout": 24, "development": 20, "confirmation": 64}
+
+
+def wrist_edges(image):
+    import cv2
+
+    pixels = cv2.resize(image, (160, 160), interpolation=cv2.INTER_AREA)[:110, 38:122].astype(float)
+    brightest = pixels.max(axis=-1)
+    neutral = (brightest >= 62.) & (np.ptp(pixels, axis=-1) <= .20 * brightest)
+    mask = cv2.morphologyEx(neutral.astype(np.uint8), cv2.MORPH_CLOSE, np.ones((3, 3), dtype=np.uint8))
+    features = []
+    for view in (mask, mask.T):
+        for band in np.array_split(view, 5, axis=1):
+            support = band.mean(axis=1)
+            edge_rows = np.flatnonzero(support >= .25) / len(support)
+            quantiles = np.quantile(edge_rows, [.1, .5, .9]) if len(edge_rows) else np.zeros(3)
+            features.extend([*quantiles, float(support.mean()), len(edge_rows) / len(support)])
+    return np.asarray(features)
+
+
+IMAGE_ENCODERS = {"wrist": wrist.wrist_features, "edges": wrist_edges}
 
 
 def readings(policy, observation, batch):
@@ -93,7 +118,7 @@ class FeedbackPolicy(descent.DescentPolicy):
     @property
     def camera_names(self):
         item = self.pending()
-        if item is not None and item.estimator.mode == "wrist":
+        if item is not None and item.estimator.mode in IMAGE_ENCODERS:
             return ("left_wrist",)
         return super().camera_names
 
@@ -101,11 +126,12 @@ class FeedbackPolicy(descent.DescentPolicy):
         item = self.pending()
         if item is not None and task_column(task) == item.column:
             values = readings(self, observation, item.batch)
-            if item.estimator.mode == "wrist":
+            encode = IMAGE_ENCODERS.get(item.estimator.mode)
+            if encode is not None:
                 frame = observation.get(wrist.WRIST)
                 if frame is None or not np.any(frame):
                     return super().act(observation, task)
-                values = np.r_[values, wrist.wrist_features(frame)]
+                values = np.r_[values, encode(frame)]
             if np.isfinite(values).all() and item.estimator.predict(values) <= NEAR_WALL_M:
                 prior = self.profiles.get((item.column, item.batch))
                 if prior is not None:
@@ -126,6 +152,10 @@ def clearance(snapshot, batch, scoring_tolerance):
 
 
 class TransferTrace(PlacementTrace):
+    def __init__(self, policy, encoder=wrist.wrist_features):
+        super().__init__(policy)
+        self.encoder = encoder
+
     def reset(self, context=None):
         super().reset(context)
         self.samples, self.frames = [], {}
@@ -141,12 +171,12 @@ class TransferTrace(PlacementTrace):
         public = readings(policy, env._observation(), batch)
         self.frames[str(batch)] = frame
         self.samples.append({"batch": batch, "step": self.step, "prefix_sha256": snapshot["prefix_sha256"],
-                             "features": np.r_[public, wrist.wrist_features(frame)].tolist(),
+                             "features": np.r_[public, self.encoder(frame)].tolist(),
                              "margin_m": clearance(snapshot, batch, env.CONTACT_CONTAINMENT_TOLERANCE_M)})
         self.finished = batch == 1
 
 
-def collect(checkpoint, timing, incumbent, shards, seed):
+def collect(checkpoint, timing, incumbent, shards, seed, *, image_mode="wrist"):
     import cv2
     from a3_dual_arm_sim.workflows.benchmark import make_cookie_benchmark
 
@@ -155,7 +185,7 @@ def collect(checkpoint, timing, incumbent, shards, seed):
     env = engine.create_env(render_cameras=False)
     try:
         env.task_config = replace(env.task_config, terminate_on_success=False)
-        trace = TransferTrace(descent.DescentPolicy(checkpoint, *timing, incumbent))
+        trace = TransferTrace(descent.DescentPolicy(checkpoint, *timing, incumbent), IMAGE_ENCODERS[image_mode])
         result = engine.run_episode(trace, seed=seed, env=env, diagnostic=trace)
         shard = shards / f"{seed}.npz"
         _npz(shard, **trace.frames)
@@ -166,7 +196,7 @@ def collect(checkpoint, timing, incumbent, shards, seed):
         env.close()
 
 
-def audit(job, row):
+def audit(job, row, *, image_mode="wrist"):
     checkpoint, timing, _, shards, seed = job
     shard = shards / f"{seed}.npz"
     batches = [sample["batch"] for sample in row["samples"]]
@@ -185,8 +215,39 @@ def audit(job, row):
             if (len(features) != FEATURES["wrist"] or not np.isfinite(features).all()
                     or margin is not None and not np.isfinite(margin)
                     or len(sample["prefix_sha256"]) != 2 or any(len(digest) != 64 for digest in sample["prefix_sha256"])
-                    or not np.array_equal(features[FEATURES["force"]:], wrist.wrist_features(frames[str(sample["batch"])]))):
+                    or not np.array_equal(features[FEATURES["force"]:], IMAGE_ENCODERS[image_mode](frames[str(sample["batch"])]))):
                 raise ValueError("invalid transfer observation or label")
+
+
+def archived_training(folder, checkpoint, timing, environment):
+    protocol = read_json(folder / "clearance-protocol.json")
+    if protocol["environment"] != environment:
+        raise ValueError("archived wrist observations require the same simulator identity")
+    datasets = (("fit", "clearance-fit-dataset.json.gz", "clearance-fit.json"),
+                ("sensor_holdout", "clearance-holdout-dataset.json.gz", "clearance-sensor-holdout.json"))
+    rows, fingerprints = [], {}
+    with ZipFile(folder / "clearance-wrist-frames.zip") as shards:
+        for split, dataset, receipt in datasets:
+            raw = gzip.decompress((folder / dataset).read_bytes())
+            digest = hashlib.sha256(raw).hexdigest()
+            if digest != read_json(folder / receipt)["dataset_sha256"]:
+                raise ValueError("archived wrist labels differ from the frozen dataset")
+            fingerprints[dataset] = digest
+            panel = json.loads(raw)[split]
+            if [row["seed"] for row in panel] != protocol["schedule"][split]:
+                raise ValueError("archived wrist scenes differ from their original split")
+            for row in panel:
+                frame_data = shards.read(f"{row['seed']}.npz")
+                if (row["checkpoint_sha256"] != sha256(checkpoint) or row["timing"] != list(timing)
+                        or row["column"] != wall.COLUMN or row["profile"] != "advanced"
+                        or hashlib.sha256(frame_data).hexdigest() != row["shard_sha256"]):
+                    raise ValueError("archived wrist observation does not match the controller and scene")
+                with np.load(io.BytesIO(frame_data), allow_pickle=False) as frames:
+                    for sample in row["samples"]:
+                        features = sample["features"][:FEATURES["force"]]
+                        sample["features"] = features + wrist_edges(frames[str(sample["batch"])]).tolist()
+                rows.append(row)
+    return rows, fingerprints
 
 
 def fit(scenes, mode):
@@ -256,7 +317,7 @@ def active_plan(rows):
     return {"failures": sorted(failures), "controls": sorted(controls - failures)}
 
 
-def schedule(root, block, historic_seeds, active):
+def schedule(root, block, historic_seeds, active, archived_seeds=None):
     from a3_dual_arm_sim.sim.randomization import choose_column
 
     if block < 0 or block % 4:
@@ -274,11 +335,11 @@ def schedule(root, block, historic_seeds, active):
             or reserved & historic_seeds or any(path.parent != root and reserved & hover.scheduled_seeds(
                 read_json(path).get("schedule", {})) for path in root.parent.glob("*/protocol.json"))):
         raise ValueError("clearance evaluation must use mutually disjoint, untouched scenes")
-    panels["fit"] += active["failures"] + active["controls"]
+    panels["fit"] = archived_seeds if archived_seeds is not None else panels["fit"] + active["failures"] + active["controls"]
     return panels
 
 
-def run(root, release, source, block, workers):
+def run(root, release, source, block, workers, rgb_archive=None):
     manifest = release / "controller.json"
     frozen = read_json(manifest)
     checkpoint, timing = release / frozen["checkpoint"], tuple(frozen["timing"])
@@ -298,19 +359,32 @@ def run(root, release, source, block, workers):
     if len(previous) != len(history):
         raise ValueError("duplicated clearance training source")
     active = active_plan(history)
-    panels = schedule(root, block, set(previous), active)
+    archived, image_mode = None, "wrist"
+    if rgb_archive is not None:
+        archived, archive["wrist_frames"] = archived_training(rgb_archive, checkpoint, timing, common["environment"])
+        image_mode = "edges"
+    archived_seeds = None if archived is None else [row["seed"] for row in archived]
+    panels = schedule(root, block, set(previous) | set(archived_seeds or ()), active, archived_seeds)
+    modes = ("plan", "pose", "force", image_mode)
     protocol = root / "protocol.json"
     _record_once(protocol, {**common, "reference_manifest_sha256": sha256(manifest), "source": archive, "schedule": panels,
                  "active_sampling": active, "code_sha256": sha256(Path(__file__)), "near_wall_m": NEAR_WALL_M,
-                 "penalties": PENALTIES, "recipes": {name: list(values) for name, values in wall.RECIPES.items()},
+                 "penalties": {mode: PENALTIES[mode] for mode in modes}, "image_encoder": image_mode,
+                 "recipes": {name: list(values) for name, values in wall.RECIPES.items()},
                  "sensor_holdout_requires": ["at_least_four_near_wall_and_four_clear_labels", "fewer_misses_or_spurious_triggers",
                                              "no_increase_in_either_error"], "confirmation_requires": routed.REQUIREMENTS})
     policy_type = partial(FeedbackPolicy, incumbent=incumbent)
+    collector = partial(collect, image_mode=image_mode)
+    audit_samples = partial(audit, image_mode=image_mode)
     with ProcessPoolExecutor(max_workers=workers) as pool:
         shards = root / "training" / "frames"
-        training_jobs = [(checkpoint, timing, incumbent, shards, seed) for seed in panels["fit"]]
-        print(f"Agent acquiring {len(training_jobs)} training transfer scenes", flush=True)
-        training = _jobs(pool, collect, training_jobs, root / "training" / "episodes", lambda job: str(job[-1]), audit)
+        if archived is None:
+            training_jobs = [(checkpoint, timing, incumbent, shards, seed) for seed in panels["fit"]]
+            print(f"Agent acquiring {len(training_jobs)} training transfer scenes", flush=True)
+            training = _jobs(pool, collector, training_jobs, root / "training" / "episodes", lambda job: str(job[-1]), audit_samples)
+        else:
+            training = archived
+            print(f"Agent encoding tray edges from {len(training)} archived scenes", flush=True)
         for row in training:
             if row["seed"] in previous:
                 expected = previous[row["seed"]]["phase_geometry"]
@@ -321,13 +395,13 @@ def run(root, release, source, block, workers):
         if sum(sample["margin_m"] is not None for scene in training for sample in scene["samples"]) < 12:
             return {"status": "reference_retained_without_sensor_labels"}
         cross_validation = {}
-        for mode in FEATURES:
+        for mode in modes:
             estimates = []
             for scene in training:
                 grouped = [other for other in training if other["seed"] != scene["seed"]]
                 estimates.extend(predictions([scene], fit(grouped, mode)))
             cross_validation[mode] = metrics(estimates)
-        mode = min((mode for mode in FEATURES if mode != "plan"),
+        mode = min((mode for mode in modes if mode != "plan"),
                    key=lambda mode: (sum(errors(cross_validation[mode])), *errors(cross_validation[mode]),
                                      cross_validation[mode]["mae_mm"], FEATURES[mode]))
         baseline, estimator = fit(training, "plan"), fit(training, mode)
@@ -336,7 +410,7 @@ def run(root, release, source, block, workers):
                      "estimator": estimator.record(), "fit_seeds": panels["fit"], "dataset_sha256": sha256(dataset)})
         heldout_jobs = [(checkpoint, timing, incumbent, shards, seed) for seed in panels["sensor_holdout"]]
         print(f"Agent froze {mode} before acquiring {len(heldout_jobs)} sensor holdout scenes", flush=True)
-        heldout = _jobs(pool, collect, heldout_jobs, root / "sensor-holdout" / "episodes", lambda job: str(job[-1]), audit)
+        heldout = _jobs(pool, collector, heldout_jobs, root / "sensor-holdout" / "episodes", lambda job: str(job[-1]), audit_samples)
         holdout_dataset = root / "sensor-holdout" / "dataset.json"
         _record_once(holdout_dataset, {"sensor_holdout": heldout})
         independent = {model.mode: predictions(heldout, model) for model in (baseline, estimator)}
@@ -402,6 +476,7 @@ def main():
     parser = argparse.ArgumentParser(description="Acquire and validate observable tray-wall clearance feedback.")
     parser.add_argument("--release", type=Path, default=Path("evidence/advanced-20261120"))
     parser.add_argument("--source", type=Path)
+    parser.add_argument("--rgb-archive", type=Path, help="Fit from archived wrist frames using explicit tray-edge features.")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--seed-block", type=int, default=150000)
     parser.add_argument("--workers", type=int, default=12)
@@ -410,7 +485,8 @@ def main():
         parser.error("--workers must be positive")
     root = args.out.resolve()
     with _run_lock(root):
-        result = run(root, args.release.resolve(), args.source.resolve() if args.source else None, args.seed_block, args.workers)
+        result = run(root, args.release.resolve(), args.source.resolve() if args.source else None, args.seed_block, args.workers,
+                     args.rgb_archive.resolve() if args.rgb_archive else None)
         _record_once(root / "result.json", result)
     print(result["status"], flush=True)
 

@@ -1,0 +1,72 @@
+{
+  "default": {
+    "episodes": 16,
+    "reference_mean": 8.6875,
+    "mean": 8.75,
+    "mean_ci95": [
+      7.5,
+      9.6875
+    ],
+    "paired_count_delta": 0.0625,
+    "paired_count_ci95": [
+      0.0,
+      0.1875
+    ],
+    "reference_complete": 3,
+    "complete": 3,
+    "paired_success_rate_ci95": [
+      0.0,
+      0.0
+    ],
+    "major_losses": 0,
+    "safety_stops": 0,
+    "wrong_source": 0,
+    "scored_pairs_by_column": {
+      "2": 16
+    },
+    "changes": [
+      {
+        "seed": 158126,
+        "column": 2,
+        "reference": 4,
+        "selected": 5,
+        "delta": 1
+      }
+    ]
+  },
+  "strict-500": {
+    "episodes": 16,
+    "reference_mean": 8.6875,
+    "mean": 8.75,
+    "mean_ci95": [
+      7.5,
+      9.6875
+    ],
+    "paired_count_delta": 0.0625,
+    "paired_count_ci95": [
+      0.0,
+      0.1875
+    ],
+    "reference_complete": 3,
+    "complete": 3,
+    "paired_success_rate_ci95": [
+      0.0,
+      0.0
+    ],
+    "major_losses": 0,
+    "safety_stops": 0,
+    "wrong_source": 0,
+    "scored_pairs_by_column": {
+      "2": 16
+    },
+    "changes": [
+      {
+        "seed": 158126,
+        "column": 2,
+        "reference": 4,
+        "selected": 5,
+        "delta": 1
+      }
+    ]
+  }
+}

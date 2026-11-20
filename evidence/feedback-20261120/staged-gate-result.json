@@ -1,0 +1,208 @@
+{
+  "status": "reference_retained_after_staged_gate_development",
+  "development": {
+    "default": {
+      "episodes": 24,
+      "reference_mean": 9.583333333333334,
+      "mean": 9.666666666666666,
+      "mean_ci95": [
+        9.125,
+        10.0
+      ],
+      "paired_count_delta": 0.08333333333333333,
+      "paired_count_ci95": [
+        -0.375,
+        0.625
+      ],
+      "reference_complete": 21,
+      "complete": 19,
+      "paired_success_rate_ci95": [
+        -0.25,
+        0.08333333333333333
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 24
+      },
+      "changes": [
+        {
+          "seed": 156044,
+          "column": 1,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 156088,
+          "column": 1,
+          "reference": 10,
+          "selected": 7,
+          "delta": -3
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 24,
+      "reference_mean": 9.583333333333334,
+      "mean": 9.666666666666666,
+      "mean_ci95": [
+        9.125,
+        10.0
+      ],
+      "paired_count_delta": 0.08333333333333333,
+      "paired_count_ci95": [
+        -0.375,
+        0.625
+      ],
+      "reference_complete": 21,
+      "complete": 19,
+      "paired_success_rate_ci95": [
+        -0.25,
+        0.08333333333333333
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 24
+      },
+      "changes": [
+        {
+          "seed": 156044,
+          "column": 1,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 156088,
+          "column": 1,
+          "reference": 10,
+          "selected": 7,
+          "delta": -3
+        }
+      ]
+    }
+  },
+  "always_staged": {
+    "gain": [
+      31,
+      31
+    ],
+    "complete_gain": [
+      4,
+      4
+    ],
+    "helped": 8,
+    "harmed": 3,
+    "major_losses": 1,
+    "unsafe": 0,
+    "activations": 23
+  },
+  "checks": {
+    "plan": {
+      "threshold_m": 0.002001698757450223,
+      "leave_one_scene_out": {
+        "gain": [
+          35,
+          35
+        ],
+        "complete_gain": [
+          5,
+          5
+        ],
+        "helped": 7,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 12
+      },
+      "admitted": true
+    },
+    "pose": {
+      "threshold_m": 0.002026956716299348,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          4,
+          4
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    },
+    "force": {
+      "threshold_m": 0.0021106457382453507,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          4,
+          4
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    },
+    "edges": {
+      "threshold_m": 0.001957042985927477,
+      "leave_one_scene_out": {
+        "gain": [
+          34,
+          34
+        ],
+        "complete_gain": [
+          3,
+          3
+        ],
+        "helped": 7,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0,
+        "activations": 14
+      },
+      "admitted": true
+    }
+  },
+  "corrections": [
+    [
+      [
+        1,
+        0,
+        "inset-then-hover"
+      ],
+      [
+        "plan",
+        [
+          0.494949494949495,
+          0.028551063424075124
+        ],
+        [
+          0.49997449174806374,
+          0.002453816597559039
+        ],
+        [
+          0.0002739744652148171,
+          -0.0028385808671740295
+        ],
+        0.0036425123859382463
+      ],
+      0.002001698757450223
+    ]
+  ]
+}

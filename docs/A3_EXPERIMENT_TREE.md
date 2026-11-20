@@ -46,10 +46,17 @@ flowchart TD
     ROUTED --> ROUTEDREP["组合的独立复验 · 8.53/10 · 回退"]
     ROUTEDREP -.->|复用参考回执诊断| WALL["第 1 列两批盒边修正 · 开发 8.75→8.50 · 回退"]
     WALL --> SENSE["搬运末端估计盒边净空 · 24 局留出无改进 · 回退"]
+    SENSE --> EDGES["拟合腕相机盒缘 · 新 24 局留出回退"]
     ROUTEDREP -.->|按阶段选取失分与满分场景| FORCE["下降阶段接触反馈 · 12 对开发持平 · 回退"]
     HOVER --> LATE["第 2 列第二批门控 · 整组留出净增 13 块 · 回退"]
     ROUTEDREP -.->|复用第 2 列配对回执| LATE
-    FORCE -.->|复用下降失分采样| STAGED["升空对齐后垂直下降 · 同场景配对训练"]
+    FORCE -.->|复用下降失分采样| STAGED["先对齐再垂直下降 · 开发 7.84→8.22 · 回退"]
+    STAGED --> STAGEDGATE["按净空启用分段下降 · 完整成功 21→19/24 · 回退"]
+    SENSE -.->|复用腕相机与净空标注| STAGEDGATE
+    BEST --> HOLD["第 2 列第二批定点开爪 · 首次四列确认 8.75→9.00"]
+    BEST --> RECOVERY["第 2 列第二批接触恢复 · 开发 7.625→8.4375"]
+    HOLD -.->|合并已审计的轨迹分支| RELEASEGATE["按下降前的计划位置选择开爪轨迹"]
+    RECOVERY -.->|保留下降后段接触恢复| RELEASEGATE
     PH -.->|复用技能表示与采集接口| TEN["原生 2×10 · 条件示范与四批策略"]
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
 ```
@@ -74,6 +81,11 @@ flowchart TD
 | 搬运末端净空 | 30 个拟合场景选出末端位姿模型。24 个留出场景中，两模型各漏判 6/15、误触发 3/30，Agent 在整局开发前回退。 [公开回执](../evidence/feedback-20261120/README.md) |
 | 下降中的接触反馈 | Agent 从 14 个训练场景选择第 1 列首批修正。12 对新场景的得分均为 9.58/10，严格完整成功均为 10/12，Agent 回退。 [公开回执](../evidence/feedback-20261120/README.md) |
 | 第 2 列第二批开爪门控 | 4 组共 68 对历史样本。逐组留出的门控净增 13 块，低于常开修正的 46 块，Agent 回退。 [公开回执](../evidence/feedback-20261120/README.md) |
+| 先对齐再垂直下降 | 32 对新开发均分 7.84→8.22，严格完整成功 7/32→9/32。首批改动影响第二批，一局少计 5 块，Agent 回退。 [公开回执](../evidence/feedback-20261120/README.md) |
+| 首批分段下降净空门控 | 24 对第 1 列新开发均分 9.58→9.67，严格完整成功 21/24→19/24。Agent 回退。 [公开回执](../evidence/feedback-20261120/README.md) |
+| 第 2 列第二批定点开爪 | 64 对四列平衡确认均分 8.75→9.00，第 2 列均分 7.00→8.00，严格完整成功均为 42/64。Agent 回退。 [公开回执](../evidence/release-hold-20261121/README.md) |
+| 第 2 列第二批接触恢复 | 16 对第 2 列新开发均分 7.625→8.4375，严格完整成功均为 1/16。通过开发筛选。 [公开回执](../evidence/release-recovery-20261121/README.md) |
+| 定点开爪与接触恢复的选择 | Agent 核对两个干预分支的基准物理末态，复用 10 局已有配对记录，按历史训练组补采 13 局。 [实现](../src/a3opt/placement_release_router.py) |
 | `2×10` 最近示范检索 | 20 对独立确认均分 1.80 → 3.15/20，配对差区间 [−0.35, +3.05]。保留加权平均参考。 |
 
 [较宽方案结果](../evidence/advanced-20261120/broad-descent-result.json) · [定向候选结果](../evidence/advanced-20261120/confirmation-result.json) · [冻结复验结果](../evidence/advanced-20261120/replication-result.json) · [2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json)
