@@ -1,0 +1,24 @@
+{
+  "status": "reference_retained_after_sensor_holdout",
+  "sensor_holdout": {
+    "plan": {
+      "near_wall": 15,
+      "clear": 30,
+      "missed": 6,
+      "false_triggers": 3,
+      "unsupported": 3,
+      "unsupported_triggers": 2,
+      "mae_mm": 1.6481570856654226
+    },
+    "pose": {
+      "near_wall": 15,
+      "clear": 30,
+      "missed": 6,
+      "false_triggers": 3,
+      "unsupported": 3,
+      "unsupported_triggers": 2,
+      "mae_mm": 1.662910346822939
+    }
+  },
+  "mode": "pose"
+}

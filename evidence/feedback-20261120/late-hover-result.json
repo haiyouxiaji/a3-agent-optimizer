@@ -1,0 +1,194 @@
+{
+  "status": "reference_retained_after_late_hover_training",
+  "validation": {
+    "routed-confirmation": {
+      "rule": [
+        "rise-20mm-in",
+        "transfer_x",
+        -1,
+        -0.02094989537582098
+      ],
+      "always_hover": {
+        "activations": 16,
+        "gain": [
+          10,
+          10
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 2,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0
+      },
+      "gated": {
+        "activations": 1,
+        "gain": [
+          0,
+          0
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 0,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0
+      }
+    },
+    "routed-replication": {
+      "rule": [
+        "rise-20mm-in",
+        "transfer_x",
+        -1,
+        -0.01903419861441429
+      ],
+      "always_hover": {
+        "activations": 16,
+        "gain": [
+          9,
+          9
+        ],
+        "complete_gain": [
+          -1,
+          -1
+        ],
+        "helped": 3,
+        "harmed": 3,
+        "major_losses": 0,
+        "unsafe": 0
+      },
+      "gated": {
+        "activations": 8,
+        "gain": [
+          10,
+          10
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 3,
+        "harmed": 2,
+        "major_losses": 0,
+        "unsafe": 0
+      }
+    },
+    "hover-development": {
+      "rule": [
+        "rise-20mm-in",
+        "transfer_x",
+        -1,
+        -0.02094989537582098
+      ],
+      "always_hover": {
+        "activations": 20,
+        "gain": [
+          13,
+          13
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 3,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0
+      },
+      "gated": {
+        "activations": 0,
+        "gain": [
+          0,
+          0
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 0,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0
+      }
+    },
+    "hover-confirmation": {
+      "rule": [
+        "rise-20mm-in",
+        "transfer_x",
+        1,
+        -0.018107093379222856
+      ],
+      "always_hover": {
+        "activations": 16,
+        "gain": [
+          14,
+          14
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 4,
+        "harmed": 1,
+        "major_losses": 0,
+        "unsafe": 0
+      },
+      "gated": {
+        "activations": 5,
+        "gain": [
+          3,
+          3
+        ],
+        "complete_gain": [
+          0,
+          0
+        ],
+        "helped": 1,
+        "harmed": 0,
+        "major_losses": 0,
+        "unsafe": 0
+      }
+    }
+  },
+  "always_hover": {
+    "activations": 68,
+    "gain": [
+      46,
+      46
+    ],
+    "complete_gain": [
+      -1,
+      -1
+    ],
+    "helped": 12,
+    "harmed": 4,
+    "major_losses": 0,
+    "unsafe": 0
+  },
+  "cross_validated_gate": {
+    "activations": 14,
+    "gain": [
+      13,
+      13
+    ],
+    "complete_gain": [
+      0,
+      0
+    ],
+    "helped": 4,
+    "harmed": 2,
+    "major_losses": 0,
+    "unsafe": 0
+  },
+  "full_fit": [
+    "rise-20mm-in",
+    "transfer_x",
+    -1,
+    -0.02094989537582098
+  ],
+  "admitted": false
+}

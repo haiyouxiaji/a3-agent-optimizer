@@ -1,5 +1,16 @@
 src/a3opt/placement_descent_agent.py text eol=lf
 src/a3opt/placement_benchmark.py text eol=lf
+src/a3opt/placement_search.py text eol=lf
+src/a3opt/placement_first_hover.py text eol=lf
+src/a3opt/placement_hover*.py text eol=lf
+src/a3opt/placement_routed_agent.py text eol=lf
+src/a3opt/placement_wall_clearance_agent.py text eol=lf
+src/a3opt/placement_clearance_feedback.py text eol=lf
+src/a3opt/placement_contact_feedback.py text eol=lf
+src/a3opt/placement_late_hover_gate.py text eol=lf
+src/a3opt/placement_staged_descent.py text eol=lf
 scripts/audit_placement_confirmation.py text eol=lf
 evidence/advanced-20261120/*.json -text whitespace=cr-at-eol
 evidence/advanced-20261120/*.csv text eol=lf
+evidence/routed-20261120/*.json -text whitespace=cr-at-eol
+evidence/feedback-20261120/*.json -text whitespace=cr-at-eol

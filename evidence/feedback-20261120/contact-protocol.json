@@ -1,0 +1,239 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "reference_manifest_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "sources": {
+    "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+    "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46",
+    "routed_replication": {
+      "protocol_sha256": "59044b95a9ed3ef9725009d6ce3de9455111376285f402daad6e1b2bc8362864",
+      "rollout_sha256": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+    }
+  },
+  "sampling": [
+    {
+      "column": 2,
+      "batch": 1,
+      "lost_during_descent": 38,
+      "failures": [
+        138014,
+        148435,
+        138023,
+        132100
+      ],
+      "controls": [
+        138027,
+        138035,
+        138038
+      ]
+    },
+    {
+      "column": 1,
+      "batch": 0,
+      "lost_during_descent": 35,
+      "failures": [
+        132123,
+        138030,
+        138048,
+        148423
+      ],
+      "controls": [
+        132103,
+        132108,
+        132114
+      ]
+    }
+  ],
+  "schedule": {
+    "training": [
+      138014,
+      148435,
+      138023,
+      132100,
+      138027,
+      138035,
+      138038,
+      132123,
+      138030,
+      138048,
+      148423,
+      132103,
+      132108,
+      132114
+    ],
+    "development": [
+      152002,
+      152003,
+      152004,
+      152005,
+      152008,
+      152011,
+      152013,
+      152015,
+      152018,
+      152019,
+      152022,
+      152023,
+      152024,
+      152025,
+      152028,
+      152030,
+      152032,
+      152034,
+      152036,
+      152038,
+      152040,
+      152041,
+      152044,
+      152047
+    ],
+    "confirmation": [
+      152400,
+      152401,
+      152402,
+      152403,
+      152404,
+      152405,
+      152406,
+      152407,
+      152408,
+      152409,
+      152410,
+      152411,
+      152412,
+      152413,
+      152414,
+      152415,
+      152416,
+      152417,
+      152418,
+      152419,
+      152420,
+      152421,
+      152422,
+      152423,
+      152424,
+      152425,
+      152426,
+      152427,
+      152428,
+      152429,
+      152430,
+      152431,
+      152432,
+      152433,
+      152434,
+      152435,
+      152436,
+      152437,
+      152438,
+      152439,
+      152440,
+      152441,
+      152442,
+      152443,
+      152444,
+      152445,
+      152446,
+      152447,
+      152448,
+      152449,
+      152450,
+      152451,
+      152452,
+      152453,
+      152454,
+      152455,
+      152456,
+      152457,
+      152458,
+      152459,
+      152460,
+      152461,
+      152462,
+      152463
+    ]
+  },
+  "code_sha256": "b64637ec3050cb9d0fdcec757f157b6f5c79ec2221d3ad2c8044a14b84d509d0",
+  "window": 0.55,
+  "signals": [
+    "wrist_force_change",
+    "wrist_torque_change",
+    "gripper_load_change",
+    "vertical_tracking_error"
+  ],
+  "training_endpoint": "targeted_retract_or_episode_end",
+  "recipes": {
+    "raise8": [
+      0.0,
+      0.008
+    ],
+    "raise16": [
+      0.0,
+      0.016
+    ],
+    "inset4-raise12": [
+      0.004,
+      0.012
+    ]
+  },
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

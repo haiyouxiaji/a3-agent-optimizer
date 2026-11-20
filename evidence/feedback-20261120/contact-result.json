@@ -1,0 +1,69 @@
+{
+  "status": "reference_retained_after_contact_development",
+  "development": {
+    "default": {
+      "episodes": 12,
+      "reference_mean": 9.583333333333334,
+      "mean": 9.583333333333334,
+      "mean_ci95": [
+        8.75,
+        10.0
+      ],
+      "paired_count_delta": 0.0,
+      "paired_count_ci95": [
+        0.0,
+        0.0
+      ],
+      "reference_complete": 10,
+      "complete": 10,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 12
+      },
+      "changes": []
+    },
+    "strict-500": {
+      "episodes": 12,
+      "reference_mean": 9.583333333333334,
+      "mean": 9.583333333333334,
+      "mean_ci95": [
+        8.75,
+        10.0
+      ],
+      "paired_count_delta": 0.0,
+      "paired_count_ci95": [
+        0.0,
+        0.0
+      ],
+      "reference_complete": 10,
+      "complete": 10,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 12
+      },
+      "changes": []
+    }
+  },
+  "corrections": [
+    [
+      1,
+      0,
+      "inset4-raise12",
+      1,
+      false,
+      0.012540355356983956
+    ]
+  ]
+}

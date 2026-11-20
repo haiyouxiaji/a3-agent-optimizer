@@ -129,6 +129,42 @@ Training can observe simulator geometry to label rollouts; the policy uses task 
 `a3opt.placement_visual_geometry` learns a second-batch gate from their spatial features. See
 [placement experiments and receipts](docs/A3_PLACEMENT_SEARCH.md) for the exact splits and rollback decisions.
 
+`python -m a3opt.placement_hover_agent --out artifacts/placement-hover --workers 6` starts a follow-up from the
+published frozen policy. The Agent scouts fresh column-2 scenes, branches from the end of the second transfer, and
+selects a hover release height using matched failures and full-score controls. A candidate that passes development is
+frozen for four-column confirmation under the same two scoring rules, with native replay checks.
+`python -m a3opt.placement_slot_refine --acquisition <hover-run> --out <row-run>` uses the hover run's scout receipts
+to fit a bounded first-batch alignment correction and evaluates it on fresh scenes. The row candidate must increase
+strict full-slot success while preserving both endpoint counts.
+`python -m a3opt.placement_compose --hover <hover-run> --row <row-run> --out <combined-run>` checks the two
+fitted corrections together on the row branch's development scenes. The final confirmation uses a new seed block.
+`python -m a3opt.placement_first_hover --source <hover-run> --source <combined-run> --out <first-hover-run>`
+uses historical reference rollouts to select first-batch failures. It learns from matched simulation forks and
+checks both batches on fresh scenes before opening confirmation.
+`python -m a3opt.placement_hover_guard --source <hover-run> --source <combined-run> --first-hover <first-hover-run> --out <guard-run>`
+fits an activation threshold from full-episode gains and regressions before opening fresh development and confirmation scenes.
+`python -m a3opt.placement_hover_guard_refine --previous <guard-run> --out <refined-run>` uses the guard's
+development feedback to fit a threshold that also checks the planned descent endpoint.
+`python -m a3opt.placement_routed_agent --late <hover-run> --early <refined-run> --out <routed-run>` audits
+the source pairs, selects complementary residuals on distinct source columns, and runs a fresh four-column confirmation.
+`--fit-only` saves the dataset and freezes the recipe and seed list. Rerun the same command without the flag to evaluate it.
+The routed controller and frozen follow-up have [paired receipts and a reproducible summary](evidence/routed-20261120/README.md).
+`python -m a3opt.placement_wall_clearance_agent --source <routed-replication> --out <clearance-run>` uses the
+reference rollouts to learn a placement gate near the box walls, then compares bounded corrections over full episodes.
+`python -m a3opt.placement_clearance_feedback --out <sensor-run>` learns the tray-wall clearance from public observations
+and tests it against the planned-position estimate on withheld scenes before evaluating any action changes.
+`python -m a3opt.placement_contact_feedback --out <contact-run>` runs matched simulator branches during descent and
+learns whether wrist force, torque, gripper load, or height tracking can trigger a bounded recovery.
+`python -m a3opt.placement_late_hover_gate --late <hover-run> --out <late-hover-run>` tests planned-position gates for
+the second batch on multiple archived panels, withholding an entire panel at a time.
+`python -m a3opt.placement_staged_descent --out <staged-run>` tests paths that finish lateral alignment before lowering.
+The clearance, contact, and staged descent agents accept `--source <routed-replication>` to add audited historical scenarios.
+The [feedback evidence bundle](evidence/feedback-20261120/README.md) contains the saved protocols, datasets, and outcomes.
+`python scripts/audit_placement_confirmation.py <run> --policy-kind hover` verifies a completed hover run from its
+freeze, individual rollouts, and native replay receipts. The other controller audit kinds are `row`, `compose`, `first-hover`,
+`hover-guard`, `hover-guard-refine`, `routed`, `wall-clearance`, `clearance-feedback`, `contact-feedback`, `late-hover-gate`,
+and `staged-descent`.
+
 ### Real closed-loop experiments
 
 1. Install the upstream simulation repository and its dependencies into the same environment

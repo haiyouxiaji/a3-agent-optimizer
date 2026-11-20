@@ -1,0 +1,143 @@
+{
+  "decisions": [
+    {
+      "column": 2,
+      "batch": 1,
+      "gate": [
+        2,
+        1,
+        "inset4-raise12",
+        3,
+        false,
+        0.0024199296802392967
+      ],
+      "leave_one_out": [
+        {
+          "seed": 138014,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 148435,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138023,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 132100,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138027,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138035,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138038,
+          "triggered": true,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        }
+      ],
+      "admitted": false
+    },
+    {
+      "column": 1,
+      "batch": 0,
+      "gate": [
+        1,
+        0,
+        "inset4-raise12",
+        1,
+        false,
+        0.012540355356983956
+      ],
+      "leave_one_out": [
+        {
+          "seed": 132123,
+          "triggered": true,
+          "gain": 5,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138030,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 138048,
+          "triggered": true,
+          "gain": 5,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 148423,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 132103,
+          "triggered": false,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 132108,
+          "triggered": true,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        },
+        {
+          "seed": 132114,
+          "triggered": true,
+          "gain": 0,
+          "complete_gain": 0,
+          "unsafe": false
+        }
+      ],
+      "admitted": true
+    }
+  ],
+  "corrections": [
+    [
+      1,
+      0,
+      "inset4-raise12",
+      1,
+      false,
+      0.012540355356983956
+    ]
+  ],
+  "dataset_sha256": "467a11c1d31e6435bb2b7042d5828449a8594750fd8f87856d50cb5315f30fdf"
+}

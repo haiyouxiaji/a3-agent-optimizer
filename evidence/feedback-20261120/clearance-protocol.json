@@ -1,0 +1,267 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "reference_manifest_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "source": {
+    "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+    "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46",
+    "routed_replication": {
+      "protocol_sha256": "59044b95a9ed3ef9725009d6ce3de9455111376285f402daad6e1b2bc8362864",
+      "rollout_sha256": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+    }
+  },
+  "schedule": {
+    "fit": [
+      150003,
+      150004,
+      150009,
+      150013,
+      150019,
+      150021,
+      150026,
+      150028,
+      150033,
+      150038,
+      150041,
+      150044,
+      150049,
+      150055,
+      150056,
+      150060,
+      132106,
+      138030,
+      148407,
+      148423,
+      148425,
+      148444,
+      148455,
+      148462,
+      132114,
+      132124,
+      132137,
+      148410,
+      148417,
+      148456
+    ],
+    "sensor_holdout": [
+      150103,
+      150105,
+      150108,
+      150115,
+      150117,
+      150121,
+      150124,
+      150131,
+      150134,
+      150138,
+      150141,
+      150146,
+      150150,
+      150153,
+      150156,
+      150160,
+      150165,
+      150168,
+      150174,
+      150178,
+      150183,
+      150185,
+      150188,
+      150195
+    ],
+    "development": [
+      150242,
+      150246,
+      150251,
+      150255,
+      150259,
+      150262,
+      150267,
+      150268,
+      150273,
+      150276,
+      150283,
+      150287,
+      150289,
+      150295,
+      150299,
+      150303,
+      150304,
+      150311,
+      150312,
+      150317
+    ],
+    "confirmation": [
+      150400,
+      150401,
+      150402,
+      150403,
+      150404,
+      150405,
+      150406,
+      150407,
+      150408,
+      150409,
+      150410,
+      150411,
+      150412,
+      150413,
+      150414,
+      150415,
+      150416,
+      150417,
+      150418,
+      150419,
+      150420,
+      150421,
+      150422,
+      150423,
+      150424,
+      150425,
+      150426,
+      150427,
+      150428,
+      150429,
+      150430,
+      150431,
+      150432,
+      150433,
+      150434,
+      150435,
+      150436,
+      150437,
+      150438,
+      150439,
+      150440,
+      150441,
+      150442,
+      150443,
+      150444,
+      150445,
+      150446,
+      150447,
+      150448,
+      150449,
+      150450,
+      150451,
+      150452,
+      150453,
+      150454,
+      150455,
+      150456,
+      150457,
+      150458,
+      150459,
+      150460,
+      150461,
+      150462,
+      150463
+    ]
+  },
+  "active_sampling": {
+    "failures": [
+      132106,
+      138030,
+      148407,
+      148423,
+      148425,
+      148444,
+      148455,
+      148462
+    ],
+    "controls": [
+      132114,
+      132124,
+      132137,
+      148410,
+      148417,
+      148456
+    ]
+  },
+  "code_sha256": "a024f5f8b1e7dcb46b4bd75b590016877ed1544525178f8316caffa88cb439cf",
+  "near_wall_m": 0.002,
+  "penalties": {
+    "plan": 2.0,
+    "pose": 6.0,
+    "force": 16.0,
+    "wrist": 32.0
+  },
+  "recipes": {
+    "inset4": [
+      0.004,
+      0.0
+    ],
+    "hover12": [
+      0.0,
+      0.012
+    ],
+    "inset4-hover12": [
+      0.004,
+      0.012
+    ]
+  },
+  "sensor_holdout_requires": [
+    "at_least_four_near_wall_and_four_clear_labels",
+    "fewer_misses_or_spurious_triggers",
+    "no_increase_in_either_error"
+  ],
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ]
+}

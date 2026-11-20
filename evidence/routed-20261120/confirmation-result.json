@@ -1,0 +1,109 @@
+{
+  "status": "reference_retained_after_confirmation",
+  "confirmation": {
+    "default": {
+      "episodes": 64,
+      "reference_mean": 9.375,
+      "mean": 9.59375,
+      "mean_ci95": [
+        9.140625,
+        9.921875
+      ],
+      "paired_count_delta": 0.21875,
+      "paired_count_ci95": [
+        0.0,
+        0.484375
+      ],
+      "reference_complete": 44,
+      "complete": 44,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 147408,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 147443,
+          "column": 4,
+          "reference": 5,
+          "selected": 9,
+          "delta": 4
+        },
+        {
+          "seed": 147450,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 64,
+      "reference_mean": 9.375,
+      "mean": 9.59375,
+      "mean_ci95": [
+        9.140625,
+        9.921875
+      ],
+      "paired_count_delta": 0.21875,
+      "paired_count_ci95": [
+        0.0,
+        0.484375
+      ],
+      "reference_complete": 44,
+      "complete": 44,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 147408,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 147443,
+          "column": 4,
+          "reference": 5,
+          "selected": 9,
+          "delta": 4
+        },
+        {
+          "seed": 147450,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        }
+      ]
+    }
+  }
+}

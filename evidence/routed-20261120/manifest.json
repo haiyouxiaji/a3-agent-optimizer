@@ -1,0 +1,34 @@
+{
+  "corrections": [
+    [
+      2,
+      1,
+      "rise-20mm-in"
+    ],
+    [
+      4,
+      0,
+      "rise20-x-minus",
+      0.043
+    ]
+  ],
+  "controller": "../advanced-20261120/controller.json",
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "rollout_sha256": {
+    "confirmation-rollouts.json.gz": "ce7a5e3828d9d63f1134cd9d68a8008892c3dc36f372b3763e68c800b4f0a243",
+    "replication-rollouts.json.gz": "47af3f125171308befde291ee33d90c43c9bca860cd785501b8d8a75e41b06b4"
+  },
+  "files_sha256": {
+    "confirmation-protocol.json": "87a3b9ff32d539f9fbbfff2c66f76d72f60f26833c2d4a83c5ce5ff7b3cc0703",
+    "confirmation-result.json": "af54c01035fdd23a9cfdf499b71605f56f4a15aafc4dc16a23bb47906dd4821f",
+    "replication-protocol.json": "59044b95a9ed3ef9725009d6ce3de9455111376285f402daad6e1b2bc8362864",
+    "replication-result.json": "454bd3ef4d541df8c6c0593e765cd2ec838cc7358eb7af3aca44e78f1ce19e5d",
+    "native-replays.json.gz": "30cb5c05f7deb19b9597e54968ba2df24d6d4f93c57fd8ac24d8def95f57a326"
+  }
+}

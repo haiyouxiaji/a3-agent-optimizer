@@ -2,6 +2,114 @@
 
 发布版提供冻结策略、原始评测协议、逐局回执和复现代码。文中的 `artifacts/` 路径是本地运行产物。 [公开证据](../evidence/advanced-20261120/README.md)
 
+## 第 2 列开爪高度与首批对齐
+
+发布策略在 `2×5 / advanced` 的 100 对四列平衡评测中取得 9.14/10，第 2 列为 8.32/10。第 2 列有 6 局在第二批成功搬运 5 块后发生倾倒，共少计 21 块。另有 10 局计满 10 块但未达到完整成功，其中 9 局的末端槽位匹配缺少首批的一块。 [发布版逐局回执](../evidence/advanced-20261120/README.md)
+
+开爪高度 Agent 用 32 局新场景自动筛选 6 局倾倒和 6 局满分对照。从同一搬运后状态比较 5 种位移配方，核对零改动分支的动作和终局回执。Agent 选中目标盒局部 X −5 mm、Z +20 mm 的配方。20 对独立第 2 列开发场景的两项计数均为 **7.35 → 8.00/10**，严格完整成功均为 **6/20**，3 局增分，另 17 局持平。首次开发尝试遇到首帧游标初始化错误，修复后重用的采样和参考回执均重新核验并保存哈希。 [开发结果](../artifacts/placement-hover-20261120/retry-initialization/development-selection.json) · [缓存来源](../artifacts/placement-hover-20261120/retry-initialization/cache-provenance.json)
+
+Agent 随后冻结候选，用种子 `140400–140463` 做确认，每列 16 对。晋级要求课程终局均分超过 9/10，两种计分的配对增益 95% 区间下限均大于零，完整成功数至少持平，且无错列、安全停机或单局少计 4 块及以上。原生复跑在每列各取一局，分别核对两种口径的步数、动作哈希与终局。 [确认锁](../artifacts/placement-hover-20261120/retry-initialization/confirmation-lock.json)
+
+确认结果的课程终局和第 500 步释放均为 **8.78125 → 9.00/10**。配对增益为 **+0.21875**，95% 区间为 **[+0.03125, +0.4375]**。第 2 列由 **8.3125 → 9.1875**，4 局增分，1 局少计 1 块。其余三列的动作和计分逐局一致。严格完整成功均为 **38/64**，两种策略均无错列或安全停机。8 次原生复跑全部匹配。候选总体均分恰为 9.00，95% 区间为 [8.45, 9.48]，Agent 按预设门槛保留发布策略。 [确认结果](../artifacts/placement-hover-20261120/retry-initialization/result.json) · [原生复跑审计](../artifacts/placement-hover-20261120/retry-initialization/confirmation/audit.json)
+
+开发种子 `140271` 的参考与候选在第 500 步分别计入 3 与 10 块，两局完整成功标志均为假。两段三视角录像各有 501 帧控制画面（含重置帧）和 40 帧终局停留。复跑匹配动作哈希、终局和随机化字段。 [参考录像](../artifacts/placement-hover-20261120/retry-initialization/videos/strict-500/development/140271-reference.mp4) · [候选录像](../artifacts/placement-hover-20261120/retry-initialization/videos/strict-500/development/140271-selected.mp4) · [录像审计](../artifacts/placement-hover-20261120/retry-initialization/videos/strict-500/development/140271-audit.json)
+
+首批对齐分支的初版读取了库默认槽位，开发运行中止。修正后从课程评测加载的 `cookie_batch.yaml` 读取槽位并冻结配置哈希，另设独立开发种子。Agent 从侦察参考回执提取 25 条几何标注，用估计目标盒位姿和原计划的末端位置拟合不超过 12 mm 的纵向修正。按场景留一的刚性平移预测中，5 块同时满足纵向槽容差的场景从 **7/25 → 25/25**，平均最大纵向偏差从 **7.22 → 0.73 mm**。闭环开发使用 12 对新的第 2 列场景，按 500 步内的实际终局入盒数与完整成功做筛选。 [标注与拟合](../artifacts/placement-row-refine-20261120/training/dataset.json) · [评测协议](../artifacts/placement-row-refine-20261120/protocol.json) · [Agent 入口](../src/a3opt/placement_slot_refine.py)
+
+12 对闭环开发中，首批退臂时 5 槽均已匹配的场景从 **2/12 → 11/12**，严格完整成功从 **2/12 → 8/12**，两项终局均分从 **8.50 → 8.33/10**。种子 `142006` 的首批仍计 5 块，第二批在成功搬运 5 块后倾倒，计数由 2 降为 0。其余 11 对的终局数量持平。首批对齐单独使用触发了得分回退条件。 [开发结果](../artifacts/placement-row-refine-20261120/result.json) · [逐局回执](../artifacts/placement-row-refine-20261120/development/results.json)
+
+组合 Agent 校验两个分支的冻结证据，读取各自拟合后的参数。第 2 列首批采用纵向对齐，第二批采用抬高开爪。两项改动在相同 12 个开发场景进行交互检查，复用已核验的参考回执。独立确认预留 `143400–143463`，每列 16 对。Agent 仅在开发得分和严格完整成功均提升时打开确认集。 [组合 Agent](../src/a3opt/placement_compose.py) · [联合协议](../artifacts/placement-compose-20261120/protocol.json)
+
+组合方案在开发集的两项终局均分均为 **8.50 → 9.50/10**，严格完整成功从 **2/12 → 10/12**。3 局增分，1 局少计 1 块。种子 `142006` 从 7 块提高到 10 块。用上游独立 CLI 加载冻结候选再次得到 10/10，在第 433 步判定完整成功。 [开发结果](../artifacts/placement-compose-20261120/development-selection.json) · [冻结记录](../artifacts/placement-compose-20261120/confirmation-lock.json) · [上游 CLI 回执](../artifacts/placement-compose-20261120/upstream-cli-142006.json)
+
+同一开发种子的第 500 步严格口径录像也完成了逐帧和动作哈希核验。两段均包含重置帧、500 步控制和 40 帧终局停留，参考在第 500 步计 7 块，组合策略计 10 块并达到完整成功。 [参考录像](../artifacts/placement-compose-20261120/videos/strict-500/development/142006-reference.mp4) · [组合录像](../artifacts/placement-compose-20261120/videos/strict-500/development/142006-selected.mp4) · [录像审计](../artifacts/placement-compose-20261120/videos/strict-500/development/142006-audit.json)
+
+64 对独立确认的课程均分为 **8.66 → 8.94**，配对增益的 95% 区间为 **[−0.11, +0.73]**。第 500 步释放均分为 **8.61 → 8.94**，配对增益区间为 **[−0.03, +0.75]**。严格完整成功从 **40/64 → 48/64**，配对成功率提高 12.5 个百分点，95% 区间为 [6.25, 18.75] 个百分点。种子 `143402` 的第一批在下降时倾倒，第二批搬运时已倾斜，课程口径少计 4 块。两臂各 64 局均无安全停机和错列计分，8 次原生闭环复跑全部匹配。Agent 根据均分、配对增益和大幅退化条件判定回退。 [确认结果](../artifacts/placement-compose-20261120/result.json) · [原生复跑](../artifacts/placement-compose-20261120/confirmation/audit.json)
+
+```powershell
+$sim = (Resolve-Path '..\a3_dual_arm_sim').Path
+$env:PYTHONPATH = "$PWD\src;$sim\src;$PWD\scripts"
+$env:A3OPT_PLACEMENT_LOCK = (Resolve-Path 'artifacts/placement-compose-20261120/confirmation-lock.json').Path
+$env:A3OPT_PLACEMENT_KIND = 'compose'
+& "$sim\.venv\Scripts\python.exe" -m a3_dual_arm_sim.workflows.benchmark_cookie_batch_cli `
+  --task 2x5 --policy replay_placement:upstream_policy --profile advanced `
+  --source-column random --prompt-style task --episodes 1 --seed-start 142006 --max-steps 500 --workers 1 `
+  --output artifacts/replay-compose-142006.json
+```
+
+## 首批开爪高度
+
+Agent 将已完成的发布回执和两次第 2 列实验的参考回执用作诊断数据。它按首批在搬运时保持直立、下降后倾倒、第一批退臂时未计入等条件找失分，自动选择第 1、4 列。每列用 4 个失分种子和 4 个严格完整成功种子，从首批搬运完成的同一物理状态分支。分支比较五种开爪位移，零修改分支核对首批退臂时的物理状态、已执行动作与计分。后续开发与确认使用新的种子并评估两批完整回合。 [Agent 入口](../src/a3opt/placement_first_hover.py) · [复采计划](../artifacts/placement-first-hover-20261120/acquisition-plan.json)
+
+Agent 选中只用于第 4 列首批的目标盒局部 X −4 mm、Z +20 mm。该配方在首批训练分支恢复 4 局，共多计 18 块，独立开发的 8 对完整回合从 **8.75 → 6.25**，严格完整成功从 **6/8 → 1/8**。6 局少计 5 块，首批均保有 5 块，失分发生在第二批。此结果说明只按首批退臂计分拟合放置动作会遗漏两批的物理干扰。 [训练决策](../artifacts/placement-first-hover-20261120/fit.json) · [闭环结果](../artifacts/placement-first-hover-20261120/result.json)
+
+后续 Agent 先对高横向偏差的历史场景补跑完整回合，优先采集倾倒样本和接近边界的对照。它根据两种计分和完整成功的实测收益，学习计划末端沿预测盒位局部 X 的启用阈值。运行策略通过首帧盒位估计和自身的关节轨迹计算该特征。 [阈值学习入口](../src/a3opt/placement_hover_guard.py) · [协议](../artifacts/placement-hover-guard-20261120/protocol.json)
+
+单阈值版本以计划搬运终点 X ≥ 42.5 mm 启用修正。16 对第 4 列开发场景两项均分为 **9.00 → 9.625**，严格完整成功为 **8/16 → 7/16**。3 局各增计 5 块，`145052` 的第二批少计 5 块。`145026` 的两臂动作哈希一致，都误计了第 3 列的 1 块。Agent 判定退回。 [逐局结果](../artifacts/placement-hover-guard-20261120/development/results.json) · [开发决策](../artifacts/placement-hover-guard-20261120/result.json)
+
+联合阈值版本使用上述开发反馈和已有训练回合拟合修正。Agent 对计划搬运和下降终点同时检查局部 X，拟合阈值为 43 mm。16 对新第 4 列开发场景的课程终局及第 500 步释放均分均为 **9.375 → 9.6875**，严格完整成功均为 **14/16**。一局首批恢复 5 块，另 15 局计数持平。候选据此冻结，确认种子为 `146400–146463`，每列 16 对。 [Agent 入口](../src/a3opt/placement_hover_guard_refine.py) · [拟合结果](../artifacts/placement-hover-guard-refine-20261120/fit.json) · [开发结果](../artifacts/placement-hover-guard-refine-20261120/development-selection.json)
+
+64 对独立确认的两项均分均为 **8.328125 → 8.40625/10**。第 4 列从 **8.4375 → 8.75**，种子 `146437` 恢复首批 5 块。配对增益的 95% 区间为 **[0, +0.234375]**。两侧严格完整成功均为 **37/64**，无严重掉分、错列和安全停机。8 次原生复跑匹配，Agent 保留发布策略。该组参考的第 2 列均分为 **7.375/10**。第 2 列有五局在第二批完整搬运后出现下降倾倒，有两局未抓起第二批。两种失分出现在不同阶段。 [确认结果](../artifacts/placement-hover-guard-refine-20261120/result.json) · [逐局回执](../artifacts/placement-hover-guard-refine-20261120/confirmation/rollouts/results.json) · [原生复跑](../artifacts/placement-hover-guard-refine-20261120/confirmation/audit.json)
+
+## 第 2、4 列修正组合
+
+Agent 自动校验两分支的代码、数据集、确认锁及逐局回执，然后重算两种口径的配对指标。组合训练证据包含第 2 列开爪高度分支的 20 对开发、64 对历史确认，以及第 4 列联合阈值分支的 16 对开发。来源列互斥，运行时第 2 列只在第二批下降前抬高开爪，第 4 列只在首批下降前检查两个计划终点。训练选模通过后，独立确认使用 `147400–147463`，每列 16 对。 [Agent 入口](../src/a3opt/placement_routed_agent.py) · [训练证据](../artifacts/placement-routed-20261120/training/dataset.json) · [确认锁](../artifacts/placement-routed-20261120/confirmation-lock.json)
+
+64 对确认的课程终局和第 500 步释放均分均为 **9.375 → 9.59375/10**。候选均分的 95% 区间为 **[9.140625, 9.921875]**，配对增益 **+0.21875** 的区间为 **[0, +0.484375]**。第 2 列均分由 8.4375 到 9.0625，第 4 列由 9.375 到 9.625。3 局增分、61 局持平，严格完整成功均为 **44/64**。无严重掉分、错列或安全停机，8 次原生复跑匹配。因配对区间下限为 0，首次确认未触发晋级。后续冻结复验预留 `148400–148463`，晋级结论依据该组独立数据沿用相同门槛。 [首次确认](../artifacts/placement-routed-20261120/result.json) · [原生复跑](../artifacts/placement-routed-20261120/confirmation/audit.json) · [复验协议](../artifacts/placement-routed-replication-20261120/protocol.json)
+
+64 对冻结复验的两项均分均为 **8.390625 → 8.53125/10**，配对增益的 95% 区间为 **[−0.078125, +0.421875]**，严格完整成功 **34 → 33/64**，8 次原生复跑匹配。两组共 128 对，候选均分为 **9.0625/10**，95% 区间 **[8.640625, 9.4453125]**，严格完整成功由 **78/128 降至 77/128**。第 2 列合并均分由 **8.3125 升至 8.90625**。第 1 列的策略和结果逐对一致，参考分在两组之间由 9.6875 变为 7.1875。Agent 在复验后回退组合。 [可下载的两组原始回执](../evidence/routed-20261120/README.md)
+
+种子 `147450` 的参考与候选都完整运行了 500 步。第二批下降结束时，参考饼干组的最小竖直轴分量绝对值约为 0.861，候选约为 1.000。释放计数从 **5 → 10 块**，候选首批仍缺一个槽位，严格完整成功为假。两段三视角视频各有 501 帧控制画面和 40 帧终局停留，终局及动作哈希与原回执一致。 [参考录像](../artifacts/placement-routed-20261120/videos/strict-500/147450-reference.mp4) · [候选录像](../artifacts/placement-routed-20261120/videos/strict-500/147450-selected.mp4) · [录像审计](../artifacts/placement-routed-20261120/videos/strict-500/147450-audit.json)
+
+```powershell
+$sim = (Resolve-Path '..\a3_dual_arm_sim').Path
+$env:PYTHONPATH = "$PWD\src;$sim\src"
+$env:OPENBLAS_NUM_THREADS = '1'
+$env:OMP_NUM_THREADS = '1'
+& "$sim\.venv\Scripts\python.exe" -u -m a3opt.placement_routed_agent `
+  --late artifacts/placement-hover-20261120/retry-initialization `
+  --early artifacts/placement-hover-guard-refine-20261120 `
+  --out artifacts/placement-routed-20261120 --workers 12
+& "$sim\.venv\Scripts\python.exe" scripts/audit_placement_confirmation.py `
+  artifacts/placement-routed-20261120 --policy-kind routed
+& "$sim\.venv\Scripts\python.exe" scripts/audit_placement_confirmation.py `
+  artifacts/placement-routed-20261120 --policy-kind routed --follow-up `
+  --replicate-out artifacts/placement-routed-replication-20261120 `
+  --seed-start 148400 --episodes 64 --workers 16
+```
+
+## 第 1 列盒边放置
+
+组合复验中，第 1 列每批各有 4 个回合出现下降或开爪阶段倾倒并失分。Agent 在复验和公开基线的参考回执上提取搬运结束时的计划末端横向位置，按两批各自靠近的盒边拟合启用阈值。在同一组失分和严格完整成功场景中，比较向内移动 4 mm、抬高 12 mm 和两者组合。每个训练分支运行至 500 步终局或上游终止，以便同时看到对两批的影响。用于归因的饼干真实坐标和倾角只进入训练回执。新开发和确认使用独立种子。 [Agent 入口](../src/a3opt/placement_wall_clearance_agent.py) · [采样与阈值](../artifacts/placement-wall-clearance-20261120/protocol.json)
+
+Agent 自动重采 5 个倾倒场景和 3 个完整成功对照，共比较 32 局完整回合。首批和第二批的计划末端向外投影阈值分别为约 31.27 mm 和 29.96 mm。Agent 选中向内 4 mm 与抬高 12 mm 的组合。定向训练的两种计数均分从 **6.25 → 9.75**，5 局增分，另外 3 局计数持平，严格完整成功从 **3/8 → 6/8**。 [拟合回执](../artifacts/placement-wall-clearance-20261120/fit.json)
+
+16 对新开发的两种计数均分从 **8.75 降至 8.50**，严格完整成功均为 **13/16**。种子 `149031` 和 `149058` 首批的计分诊断净空分别为约 2.05 mm 和 3.11 mm，两局都未触发修正。`149058` 第二批净空为 10.36 mm，门控触发后该回合由 5 块降至 1 块。上述诊断包含 4 mm 计分容差。Agent 在开发后回退候选，确认种子保留。 [开发回执](../artifacts/placement-wall-clearance-20261120/result.json)
+
+### 搬运末端净空反馈
+
+Agent 从历史回执选出失分场景和完整成功对照，并与新随机场景一起回放到搬运末端。数据集记录公开末端位姿、腕部力矩、触觉和腕相机图像。标签为五块直立饼干到该批外侧盒壁的最小有符号净空，扣除计分容差。窗口在下降动作前，部署策略由公开观测推断净空。
+
+Agent 按回合做留一验证，从位姿、位姿加力觉、位姿加力觉及腕相机三种模型中选一个，与同一训练集拟合的计划位置模型一起冻结。24 个留出场景用于检验两种估计的漏判和误触发。只有两类错误均未增加且至少一类减少，才会比较限幅放置修正。Agent 用 20 个新场景做整局开发。候选通过后进入新的 64 对四列平衡确认，以课程终局和第 500 步释放计数评估，抽样核对两套原生评测。 [Agent 入口](../src/a3opt/placement_clearance_feedback.py)
+
+30 个拟合场景包括 16 个新场景、8 个历史失分场景和 6 个成功对照。Agent 选中末端位姿模型。24 个留出场景的两批共得到 45 个有效标签，其中 15 批的物理净空不超过 2 mm。计划位置和末端位姿模型均漏判 **6/15**、误触发 **3/30**，另有 **2/3** 个标签不可用的样本触发了修正。净空平均绝对误差分别为 **1.65 mm** 和 **1.66 mm**。Agent 在留出阶段回退，整局开发和确认的种子保留。 [传感器评测回执](../evidence/feedback-20261120/README.md)
+
+### 下降中的接触反馈
+
+历史回执中最集中的两组下降失分分别在第 2 列第二批和第 1 列首批。Agent 每组自动复采 4 个失分场景和 3 个完整成功对照，在下降进度约 55% 的同一模拟状态比较原动作与三种限幅修正。腕部力、力矩、夹爪负载与末端高度跟踪误差作为候选信号。分支只改尚未执行的下降、开爪及退臂轨迹，并核对零修正分支的末态和动作与原回合完全一致。分支训练比较到目标批次退臂，开发和确认按整局评测。 [Agent 入口](../src/a3opt/placement_contact_feedback.py)
+
+分组留一验证中，第 1 列首批的反馈方案在 2 局合计多计 10 块，第 2 列第二批没有可复现的增益。Agent 将第 1 列方案用于 12 对新场景，两种计数均为 **9.58 → 9.58**，严格完整成功均为 **10/12**。其中 6 局的动作改变，唯一失分的场景仍计 5 块。Agent 在开发阶段回退。首次采集的分支终止判定有误。修复后用新的运行目录重采，14 局原动作分支均匹配其原始回合。 [接触反馈回执](../evidence/feedback-20261120/README.md)
+
+### 第 2 列第二批开爪门控
+
+Agent 从 4 个已结束的评测组构建 68 对第 2 列训练样本，以同场景抬高开爪的效果为标签。每轮留出一整组，训练门控只使用其余组的计划末端横向位置。常开修正在 68 对中净增 **46 块**，12 局增分、4 局减分，少一次严格完整成功。门控的逐组留出结果净增 **13 块**，4 局增分、2 局减分。Agent 回退门控，并保留独立开发和确认种子。 [门控数据与回执](../evidence/feedback-20261120/README.md)
+
+### 先横向对齐，再垂直下降
+
+Agent 从已核验的失分与满分回执中选出训练场景，比较三种分段下降轨迹。从公开末端位姿出发，先在搬运高度完成水平对齐，再沿垂直方向下降。末端位移和关节修正设有限幅，两批动作的原有控制步数与夹爪序列保留。训练用历史同种子参考核对搬运前缀，开发和确认各用新的配对场景。 [Agent 入口](../src/a3opt/placement_staged_descent.py)
+
+## 发布版的评测协议
+
 本轮目标为 `2×5 / advanced` 的四列平衡随机评测均分超过 9/10。课程主指标沿用项目介绍第 9–11 页的回合终局入盒数和 500 控制步上限。早期放置候选使用每列 5 局的确认集，后续分支预留每列 10 局。每个种子配对比较原策略与候选策略，同时记录第 500 步的已释放数量和连续 20 步完整成功。报告正确来源计数，并核对上游终局总数和错列情况。 [教师任务书](../../midterm.pdf) · [项目介绍](../../_build/project_intro.txt#L95)
 
 ## 放置失分与策略改动
