@@ -1,0 +1,293 @@
+{
+  "run": "placement-release-recovery-20261121",
+  "status": "candidate_promoted",
+  "corrections": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "native_replays": 8,
+  "evaluation_sha256": "e874009b292e7574f87cf7fb9eb146a8a40886489c0ee64128b19a1261ace15f",
+  "seeds": [
+    159400,
+    159401,
+    159402,
+    159403,
+    159404,
+    159405,
+    159406,
+    159407,
+    159408,
+    159409,
+    159410,
+    159411,
+    159412,
+    159413,
+    159414,
+    159415,
+    159416,
+    159417,
+    159418,
+    159419,
+    159420,
+    159421,
+    159422,
+    159423,
+    159424,
+    159425,
+    159426,
+    159427,
+    159428,
+    159429,
+    159430,
+    159431,
+    159432,
+    159433,
+    159434,
+    159435,
+    159436,
+    159437,
+    159438,
+    159439,
+    159440,
+    159441,
+    159442,
+    159443,
+    159444,
+    159445,
+    159446,
+    159447,
+    159448,
+    159449,
+    159450,
+    159451,
+    159452,
+    159453,
+    159454,
+    159455,
+    159456,
+    159457,
+    159458,
+    159459,
+    159460,
+    159461,
+    159462,
+    159463
+  ],
+  "confirmation": {
+    "default": {
+      "episodes": 64,
+      "reference_mean": 8.921875,
+      "mean": 9.171875,
+      "mean_ci95": [
+        8.734375,
+        9.5625
+      ],
+      "paired_count_delta": 0.25,
+      "paired_count_ci95": [
+        0.046875,
+        0.484375
+      ],
+      "reference_complete": 35,
+      "complete": 35,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 159414,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 159428,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 159451,
+          "column": 2,
+          "reference": 6,
+          "selected": 9,
+          "delta": 3
+        },
+        {
+          "seed": 159456,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 16,
+          "means": [
+            9.0625,
+            9.0625
+          ],
+          "complete": [
+            10,
+            10
+          ]
+        },
+        "2": {
+          "episodes": 16,
+          "means": [
+            7.25,
+            8.25
+          ],
+          "complete": [
+            1,
+            1
+          ]
+        },
+        "3": {
+          "episodes": 16,
+          "means": [
+            10,
+            10
+          ],
+          "complete": [
+            15,
+            15
+          ]
+        },
+        "4": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            9,
+            9
+          ]
+        }
+      }
+    },
+    "strict-500": {
+      "episodes": 64,
+      "reference_mean": 8.921875,
+      "mean": 9.171875,
+      "mean_ci95": [
+        8.734375,
+        9.5625
+      ],
+      "paired_count_delta": 0.25,
+      "paired_count_ci95": [
+        0.046875,
+        0.484375
+      ],
+      "reference_complete": 35,
+      "complete": 35,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 16,
+        "2": 16,
+        "3": 16,
+        "4": 16
+      },
+      "changes": [
+        {
+          "seed": 159414,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 159428,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 159451,
+          "column": 2,
+          "reference": 6,
+          "selected": 9,
+          "delta": 3
+        },
+        {
+          "seed": 159456,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 16,
+          "means": [
+            9.0625,
+            9.0625
+          ],
+          "complete": [
+            10,
+            10
+          ]
+        },
+        "2": {
+          "episodes": 16,
+          "means": [
+            7.25,
+            8.25
+          ],
+          "complete": [
+            1,
+            1
+          ]
+        },
+        "3": {
+          "episodes": 16,
+          "means": [
+            10,
+            10
+          ],
+          "complete": [
+            15,
+            15
+          ]
+        },
+        "4": {
+          "episodes": 16,
+          "means": [
+            9.375,
+            9.375
+          ],
+          "complete": [
+            9,
+            9
+          ]
+        }
+      }
+    }
+  }
+}
