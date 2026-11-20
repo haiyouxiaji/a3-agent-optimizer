@@ -1,0 +1,17 @@
+{
+  "prefixes_matched": 35,
+  "groups": {
+    "routed-replication": 4,
+    "release-confirmation": 3,
+    "release-replication": 4,
+    "development-1": 8,
+    "development-2": 8,
+    "development-3": 8
+  },
+  "development_scenes_used_for_training": 24,
+  "development_scenes_opened_this_run": 0,
+  "confirmation_scenes_opened_this_run": 0,
+  "training_sha256": "fb6d81b1755cbbf58b46a75a69cf3bda67ca4420570a7daa45d7d89c3ae11fab",
+  "heldout_net_gain": 22,
+  "heldout_harmed": 1
+}

@@ -60,6 +60,8 @@ flowchart TD
     HOLD -.->|合并已审计的轨迹分支| RELEASEGATE["按计划位置分流 · 整组留出净少 1 块 · 回退"]
     RECOVERY -.->|保留下降后段接触恢复| RELEASEGATE
     RECOVERY --> FIRSTREC["第 1 列首批接触恢复 · 11 个训练场景无增分 · 回退"]
+    FIRSTREC --> EARLY["第 1 列首批提前定点开爪 · 开发 9.33→9.33 · 回退"]
+    EARLY --> FIRSTGATE["复采 35 个公开观测前缀 · 留组仍有退化 · 回退"]
     PH -.->|复用技能表示与采集接口| TEN["原生 2×10 · 条件示范与四批策略"]
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
 ```
@@ -91,6 +93,8 @@ flowchart TD
 | 接触恢复冻结复验 | 128 对四列平衡场景均分 9.1796875→9.21875，严格完整成功均为 83/128。配对增益区间 [0, +0.1015625]，候选均分区间 [8.8671875, 9.5390625]。8 次原生复跑匹配，Agent 保留参考。 [复验结果](../evidence/release-recovery-20261121/replication-result.json) |
 | 定点开爪与接触恢复的选择 | Agent 复用 10 局配对记录并补采 13 局。分流规则在四组留出中合计少计 1 块，Agent 在训练阶段回退。 [逐组回执](../evidence/release-router-20261121/README.md) |
 | 第 1 列首批接触恢复 | Agent 自主选列，从三组档案复采 11 个配对训练场景。抬升与抬升外移均未增分，Agent 在训练阶段回退。 [逐局回执](../evidence/first-recovery-20261121/README.md) |
+| 第 1 列首批提前定点开爪 | 24 对新开发均分均为 9.3333，严格完整成功 17→18/24。三局各少计 4 块，Agent 回退。 [逐局回执](../evidence/early-clearance-20261121/README.md) |
+| 首批启用条件补采 | Agent 复采 35 个决策前缀并重拟合门控，一组留出净少 3 块，在训练阶段回退。 [逐组回执](../evidence/clearance-refine-20261121/README.md) |
 | `2×10` 最近示范检索 | 20 对独立确认均分 1.80 → 3.15/20，配对差区间 [−0.35, +3.05]。保留加权平均参考。 |
 
 [较宽方案结果](../evidence/advanced-20261120/broad-descent-result.json) · [定向候选结果](../evidence/advanced-20261120/confirmation-result.json) · [冻结复验结果](../evidence/advanced-20261120/replication-result.json) · [2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json)

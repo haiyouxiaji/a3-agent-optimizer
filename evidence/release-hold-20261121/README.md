@@ -21,3 +21,5 @@ Agent 冻结了 18 mm 候选。在 16 对独立开发场景中，两种计数均
 保留原配方，在 `160000–160127` 中运行 128 对新场景，每列各 32 对。课程终局和第 500 步释放均为 **8.96875 → 9.0625/10**，第 2 列为 **8.40625 → 8.78125/10**，严格完整成功均为 **85/128**。5 局提高，123 局计数持平。按列分层的配对增益 95% 区间为 **[+0.015625, +0.203125]**，候选绝对均分区间为 **[8.6875, 9.40625]**。该候选通过复验的点估计和配对增益门槛。 [复验协议](replication-protocol.json) · [复验结果](replication-result.json)
 
 共享前缀的评测流程先核对了 12 次历史完整运行的回执。128 对新场景中的 8 次原生复跑全部匹配。复验逐局回执解压后的 SHA-256 为 `73280aa37aa46d69eed56f1d7c90129009ad4c46ef0057924a5d622c290c38f1`。两组共 192 对的候选均分为 **9.0417/10**，两侧严格完整成功均为 **127/192**。 [共享前缀核对](replication-parity.json) · [逐局复验回执](replication-rollouts.json.gz) · [复验原生复跑](replication-native-replays.json.gz)
+
+设置与接触恢复相同的 `PYTHONPATH` 后，从仓库根目录运行 `python scripts/audit_release_replication.py evidence/release-hold-20261121` 可复算配对结果并核对归档的原生回执。 [首次确认锁](confirmation-lock.json)

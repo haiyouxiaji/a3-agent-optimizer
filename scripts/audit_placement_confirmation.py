@@ -7,8 +7,8 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from statistics import mean
 
-from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_early_clearance
-from a3opt import placement_first_hover, placement_first_recovery
+from a3opt import placement_benchmark, placement_clearance_refine, placement_compose, placement_descent_agent, placement_early_clearance
+from a3opt import placement_first_hover, placement_first_recovery, placement_interbatch
 from a3opt import placement_hover_agent, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_search
 from a3opt import placement_routed_agent, placement_sim, placement_slot_refine, slot_alignment_fit
@@ -109,6 +109,24 @@ def released_inputs(root, protocol, lock, fit, kind):
                 or groups != {name: group["failures"] + group["controls"] for name, group in protocol["sampling"].items()}
                 or any(fit[key] != value for key, value in metrics.items())):
             raise ValueError("the early clearance fit differs from its training data")
+    if kind == "clearance-refine":
+        panels = read_json(training)["panels"]
+        column, batch = protocol["scope"]
+        _, _, recipe, *_ = protocol["parent_correction"]
+        regenerated, metrics = placement_clearance_refine.fit(panels, column, recipe)
+        groups = {name: [row["seed"] for row in rows] for name, rows in panels.items()}
+        if (batch != placement_early_clearance.BATCH or [item.record() for item in regenerated] != fitted_model
+                or groups != protocol["training_groups"] or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the clearance guard fit differs from its training data")
+    if kind == "interbatch":
+        panels = read_json(training)["panels"]
+        column, batch, first_recipe, second_recipe, condition = protocol["primary"]
+        base = placement_interbatch.Interbatch(column, first_recipe, second_recipe, condition)
+        regenerated, metrics = placement_interbatch.fit(panels, base)
+        groups = {name: [row["seed"] for row in rows] for name, rows in panels.items()}
+        if (base.record() != protocol["primary"] or batch != base.batch or groups != protocol["training_groups"]
+                or [item.record() for item in regenerated] != fitted_model or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the coordinated placement fit differs from its training data")
     if kind == "release-router":
         panels = read_json(training)["panels"]
         regenerated, metrics = placement_release_router.fit(panels)
@@ -139,7 +157,7 @@ def released_inputs(root, protocol, lock, fit, kind):
 def supports_promotion(confirmation, kind):
     stricter_gate = ("first-hover", "hover-guard", "hover-guard-refine", "routed", "wall-clearance", "clearance-feedback",
                      "contact-feedback", "late-hover-gate", "staged-descent", "staged-gate", "release-hold", "release-recovery",
-                     "release-router", "first-recovery", "early-clearance")
+                     "release-router", "first-recovery", "early-clearance", "clearance-refine", "interbatch")
     if kind in stricter_gate:
         return placement_first_hover.supports_confirmation(confirmation)
     if kind == "compose":
@@ -264,7 +282,7 @@ def replicate(source, output, kind, seed_start, episodes, workers, *, follow_up=
                  "strict_rules": STRICT_RULES, "schedule": {"replication": {"random": seeds}},
                  "reference_sha256": sha256(checkpoint), "timing": list(timing), "model": lock["corrections"],
                  **({"incumbent": incumbent} if kind in RELEASED_REFINEMENTS else {}),
-                 **({"late_recovery": lock["late_recovery"]} if kind in ("first-recovery", "early-clearance") else {}),
+                 **({"late_recovery": lock["late_recovery"]} if kind in ("first-recovery", "early-clearance", "clearance-refine", "interbatch") else {}),
                  "source_lock_sha256": sha256(lock_path), "source_results_sha256": origin["evaluation_sha256"],
                  "policy_code_sha256": sha256(policy_source(policy_type)), "audit_code_sha256": audit_hash,
                  "evaluator_sha256": sha256(Path(placement_benchmark.__file__)), "target_mean_strictly_above": placement_search.TARGET,

@@ -174,6 +174,12 @@ the confirmed second-batch recovery as its reference.
 `python -m a3opt.placement_early_clearance --out <early-clearance-run>` resamples first-batch placement losses and
 tries a higher stationary release before late contact. The Agent fits and checks the gate using separate historical
 groups, evaluates the entire two-batch episode, and freezes before opening the four-column confirmation set.
+`python -m a3opt.placement_clearance_refine --source <completed-early-clearance-run> --out <guard-run>` revisits the
+outcomes of a rejected unconditional correction. It replays the public observations up to the decision and fits an
+activation rule from gains and regressions before reserving it for fresh closed-loop evaluation.
+`python -m a3opt.placement_interbatch --source <completed-early-clearance-run> --out <coordinated-run>` resamples
+second placements after the first-batch correction. The Agent verifies each unchanged branch against the archived
+full episode, then fits a coordinated policy using both scoring endpoints and full two-batch outcomes.
 `python scripts/replicate_release_hold.py <completed-confirmation-run> --out <replication-run>` repeats a frozen release
 policy on 128 fresh scenes, with 32 per source column. Pass `--policy-kind release-recovery` and a fresh seed block
 for the recovery policy. The evaluator checks shared-prefix rollouts against archived full episodes before starting.
@@ -184,7 +190,8 @@ The [feedback evidence bundle](evidence/feedback-20261120/README.md) contains th
 `python scripts/audit_placement_confirmation.py <run> --policy-kind hover` verifies a completed hover run from its
 freeze, individual rollouts, and native replay receipts. The other controller audit kinds are `row`, `compose`, `first-hover`,
 `hover-guard`, `hover-guard-refine`, `routed`, `wall-clearance`, `clearance-feedback`, `contact-feedback`, `late-hover-gate`,
-`staged-descent`, `staged-gate`, `release-hold`, `release-recovery`, `release-router`, `first-recovery`, and `early-clearance`.
+`staged-descent`, `staged-gate`, `release-hold`, `release-recovery`, `release-router`, `first-recovery`, `early-clearance`,
+`clearance-refine`, and `interbatch`.
 
 ### Real closed-loop experiments
 

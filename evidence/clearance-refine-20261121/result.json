@@ -1,0 +1,152 @@
+{
+  "status": "reference_retained_after_clearance_guard_training",
+  "fit": {
+    "admitted": false,
+    "heldout": {
+      "routed-replication": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              5,
+              -0.0553218102400983,
+              false
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": 10,
+          "complete_delta": 2,
+          "improved": 2,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 4
+        }
+      },
+      "release-confirmation": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              5,
+              -0.0553218102400983,
+              false
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": 5,
+          "complete_delta": 0,
+          "improved": 1,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 3
+        }
+      },
+      "release-replication": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              5,
+              -0.05761968287611434,
+              false
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": 0,
+          "complete_delta": 0,
+          "improved": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 0
+        }
+      },
+      "development-1": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              4,
+              0.029026545871345275,
+              true
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": 10,
+          "complete_delta": 2,
+          "improved": 2,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 4
+        }
+      },
+      "development-2": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              5,
+              -0.0553218102400983,
+              false
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": 0,
+          "complete_delta": 0,
+          "improved": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 6
+        }
+      },
+      "development-3": {
+        "guard": [
+          1,
+          0,
+          "inset4-raise14",
+          [
+            [
+              4,
+              0.028216994486738728,
+              true
+            ]
+          ]
+        ],
+        "effect": {
+          "gain": -3,
+          "complete_delta": 0,
+          "improved": 0,
+          "harmed": 1,
+          "unsafe": 0,
+          "activations": 5
+        }
+      }
+    },
+    "full_fit": [
+      1,
+      0,
+      "inset4-raise14",
+      [
+        [
+          5,
+          -0.0553218102400983,
+          false
+        ]
+      ]
+    ]
+  }
+}

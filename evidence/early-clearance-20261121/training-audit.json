@@ -1,0 +1,77 @@
+{
+  "training_scenes": 11,
+  "matched_reference_suffixes": 11,
+  "historical_groups": [
+    "routed-replication",
+    "release-confirmation",
+    "release-replication"
+  ],
+  "selected": [
+    [
+      1,
+      0,
+      "inset4-raise14",
+      null,
+      null,
+      true
+    ]
+  ],
+  "held_out": {
+    "routed-replication": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 2,
+        "complete_gain": 2,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 4
+      }
+    },
+    "release-confirmation": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 5,
+        "improved": 1,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 3
+      }
+    },
+    "release-replication": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 2,
+        "complete_gain": 2,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 4
+      }
+    }
+  },
+  "training_sha256": "93bba867ca574f1b4339e99fa2c76f86371e173d18f07636603667e30e32b575",
+  "validation_seed_sets_disjoint": true
+}

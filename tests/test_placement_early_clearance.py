@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from a3opt import placement_early_clearance as clearance
+from a3opt import placement_clearance_refine as refine, placement_early_clearance as clearance
 
 
 def test_probe_can_read_the_initial_observation_before_actions_exist():
@@ -34,3 +34,21 @@ def test_clearance_preserves_gripper_actions_and_fixed_phase_lengths(monkeypatch
     assert np.array_equal(phases[clearance.RETRACT][-1], original[clearance.RETRACT][-1])
     assert all(before.shape == after.shape and np.array_equal(before[:, 7:], after[:, 7:])
                for before, after in zip(original, phases, strict=True))
+
+
+def test_guard_solves_repeated_clearance_gain_and_rejects_unseen_harm():
+    def row(signal, gain):
+        return {"features": [signal, *([0.] * (len(refine.SIGNALS) - 1))], "gain": gain,
+                "complete_delta": int(gain > 0), "unsafe": False}
+
+    groups = {name: [row(.002, 5), row(0., -4)] for name in ("first", "second", "third")}
+
+    fitted, metrics = refine.fit(groups, 1, "raise14")
+    assert metrics["admitted"] and all(fold["effect"]["gain"] == 5 for fold in metrics["heldout"].values())
+    assert fitted[0].activates(row(.002, 0)["features"])
+    assert not fitted[0].activates(row(0., 0)["features"])
+
+    groups["third"].append(row(.002, -4))
+    fitted, metrics = refine.fit(groups, 1, "raise14")
+    assert not fitted and not metrics["admitted"]
+    assert metrics["heldout"]["third"]["effect"]["harmed"] == 1

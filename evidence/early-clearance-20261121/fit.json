@@ -1,0 +1,183 @@
+{
+  "held_out": {
+    "routed-replication": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 2,
+        "complete_gain": 2,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 4
+      }
+    },
+    "release-confirmation": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 5,
+        "improved": 1,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 3
+      }
+    },
+    "release-replication": {
+      "gate": [
+        1,
+        0,
+        "inset4-raise14",
+        null,
+        null,
+        true
+      ],
+      "effect": {
+        "gain": 10,
+        "improved": 2,
+        "complete_gain": 2,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 4
+      }
+    }
+  },
+  "admitted": true,
+  "fold_predictions": [
+    {
+      "seed": 148423,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 1,
+      "unsafe": false
+    },
+    {
+      "seed": 148448,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 1,
+      "unsafe": false
+    },
+    {
+      "seed": 148410,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148414,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132123,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132103,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132108,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138030,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 1,
+      "unsafe": false
+    },
+    {
+      "seed": 138048,
+      "triggered": true,
+      "gain": 5,
+      "complete_gain": 1,
+      "unsafe": false
+    },
+    {
+      "seed": 138000,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138004,
+      "triggered": true,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    }
+  ],
+  "unconditional": {
+    "raise8": {
+      "gain": 0,
+      "improved": 0,
+      "complete_gain": 0,
+      "harmed": 0,
+      "unsafe": 0,
+      "activations": 11
+    },
+    "raise14": {
+      "gain": -5,
+      "improved": 0,
+      "complete_gain": 0,
+      "harmed": 1,
+      "unsafe": 0,
+      "activations": 11
+    },
+    "raise20": {
+      "gain": 10,
+      "improved": 4,
+      "complete_gain": 1,
+      "harmed": 1,
+      "unsafe": 0,
+      "activations": 11
+    },
+    "inset4-raise14": {
+      "gain": 25,
+      "improved": 5,
+      "complete_gain": 4,
+      "harmed": 0,
+      "unsafe": 0,
+      "activations": 11
+    }
+  },
+  "corrections": [
+    [
+      1,
+      0,
+      "inset4-raise14",
+      null,
+      null,
+      true
+    ]
+  ],
+  "dataset_sha256": "93bba867ca574f1b4339e99fa2c76f86371e173d18f07636603667e30e32b575"
+}

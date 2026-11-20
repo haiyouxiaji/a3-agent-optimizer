@@ -1,0 +1,294 @@
+{
+  "environment": {
+    "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+    "sim_config_sha256": {
+      "cookie_batch.yaml": "9aacbc7d098d8b9741276e54b6a78e1993da973a4b8eac57af4a0357c1ac43a8",
+      "randomization.yaml": "4f30648b5ac79150e942bef03b97c1b1517be03a48e8137b5d96c013292095df"
+    },
+    "packages": {
+      "mujoco": "3.16.0",
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0"
+    },
+    "python": "3.13.12",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "bc2_device": "cpu",
+    "bc2_torch_threads": 1
+  },
+  "incumbent": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "timing": [
+    4,
+    0.75
+  ],
+  "rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 5,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": false
+  },
+  "strict_rules": {
+    "task": "2x5",
+    "prompt_style": "task",
+    "max_steps": 500,
+    "success_hold_steps": 20,
+    "slot_tolerance_m": [
+      0.015,
+      0.005
+    ],
+    "wall_contact_tolerance_m": 0.03,
+    "complete_demonstrations": false,
+    "strict_policy_completion": true
+  },
+  "code_sha256": "033b1094fcca759bfe6344983a882cf28d2bc8ebc149779930b67124984dc0fc",
+  "reference_sha256": "c8167ebb1b28a9bb12e970436d5f9c0fed2bba1147a90a87d12c976831025c0f",
+  "checkpoint_sha256": "b106431cd01f2cab3cb85e6525f914b21d27d8a75f148566050c5e9d99f0b56b",
+  "dependency_sha256": {
+    "a3opt.placement_first_recovery": "879005afebdd980d008b9e1e73c5d988bba9e35ee2ff08efd8ff6277b9f80548",
+    "a3opt.placement_release_recovery": "9868a86c1553eea1f6947d0fac6e36d439f1ce98484a0c9491bfb550447ab8db",
+    "a3opt.placement_contact_feedback": "b64637ec3050cb9d0fdcec757f157b6f5c79ec2221d3ad2c8044a14b84d509d0",
+    "a3opt.placement_descent_agent": "396bf22d42e8405c796ede8071a0aff24abae6c731a1bbde667eada0adcbe0df",
+    "a3opt.placement_benchmark": "334b64b04e5b29f810c9275bf1fb8f666d70e86a2e032bb221569c5b2387915b",
+    "a3opt.placement_search": "3502123ef15a4ad5970a41c7c3cac0ff41ed1d8247510cd3a7c723306d0a7a96",
+    "a3opt.placement_train": "61f7c6b3154c9ed6847e975c7eaea6caf8772d995cac319d656227ed30a8b86d",
+    "a3opt.placement_early_clearance": "5e97cae7f096a516ca204fd303903689705ef80e1f7112f284bcb43a9e5502e3"
+  },
+  "parent_sha256": {
+    "protocol.json": "5e22cb634ff35464f46b54f851b0b0d606362141066c86d050be31f2f16b6bd8",
+    "result.json": "4e4b5617cbdbf50f9f988baf3a9b72f649f653b378a7e94cb94a92a655b8be66",
+    "fit.json": "ac1ab3b1c0d318893bae69d1da0e35158307bc9f37853555378d6eaf706986de",
+    "dataset.json": "93bba867ca574f1b4339e99fa2c76f86371e173d18f07636603667e30e32b575",
+    "results.json": "916ec0b2cd3783fe3b4fb33945543ce7f535bf9d849cc30a9dfe8c38fb33dc3f"
+  },
+  "late_recovery": [
+    [
+      2,
+      1,
+      "raise-then-outward",
+      2,
+      0.0010316189812705212
+    ]
+  ],
+  "scope": [
+    1,
+    0
+  ],
+  "parent_correction": [
+    1,
+    0,
+    "inset4-raise14",
+    null,
+    null,
+    true
+  ],
+  "schedule": {
+    "training": [
+      148423,
+      148448,
+      148410,
+      148414,
+      132123,
+      132103,
+      132108,
+      138030,
+      138048,
+      138000,
+      138004,
+      164800,
+      164805,
+      164808,
+      164813,
+      164817,
+      164823,
+      164824,
+      164830,
+      164833,
+      164837,
+      164843,
+      164845,
+      164848,
+      164854,
+      164859,
+      164863,
+      164867,
+      164868,
+      164874,
+      164876,
+      164882,
+      164885,
+      164889,
+      164892
+    ],
+    "development": [
+      165600,
+      165605,
+      165608,
+      165612,
+      165617,
+      165622,
+      165624,
+      165630,
+      165634,
+      165638,
+      165642,
+      165647,
+      165648,
+      165653,
+      165657,
+      165660,
+      165666,
+      165668,
+      165673,
+      165678,
+      165680,
+      165685,
+      165688,
+      165694
+    ],
+    "confirmation": [
+      166000,
+      166001,
+      166002,
+      166003,
+      166004,
+      166005,
+      166006,
+      166007,
+      166008,
+      166009,
+      166010,
+      166011,
+      166012,
+      166013,
+      166014,
+      166015,
+      166016,
+      166017,
+      166018,
+      166019,
+      166020,
+      166021,
+      166022,
+      166023,
+      166024,
+      166025,
+      166026,
+      166027,
+      166028,
+      166029,
+      166030,
+      166031,
+      166032,
+      166033,
+      166034,
+      166035,
+      166036,
+      166037,
+      166038,
+      166039,
+      166040,
+      166041,
+      166042,
+      166043,
+      166044,
+      166045,
+      166046,
+      166047,
+      166048,
+      166049,
+      166050,
+      166051,
+      166052,
+      166053,
+      166054,
+      166055,
+      166056,
+      166057,
+      166058,
+      166059,
+      166060,
+      166061,
+      166062,
+      166063
+    ]
+  },
+  "signals": [
+    "vertical_tracking_error_m",
+    "wall_axis_tracking_error_m",
+    "lateral_tracking_error_m",
+    "force_change_n",
+    "first_release_wall_axis_m",
+    "planned_batch_gap_m",
+    "target_yaw_rad",
+    "finger_opening"
+  ],
+  "confirmation_requires": [
+    "course_mean_above_9",
+    "positive_lower_bound_on_paired_gain_both_rules",
+    "no_major_losses",
+    "no_safety_or_wrong_source",
+    "no_success_count_regression"
+  ],
+  "training_groups": {
+    "routed-replication": [
+      148423,
+      148448,
+      148410,
+      148414
+    ],
+    "release-confirmation": [
+      132123,
+      132103,
+      132108
+    ],
+    "release-replication": [
+      138030,
+      138048,
+      138000,
+      138004
+    ],
+    "development-1": [
+      164800,
+      164805,
+      164808,
+      164813,
+      164817,
+      164823,
+      164824,
+      164830
+    ],
+    "development-2": [
+      164833,
+      164837,
+      164843,
+      164845,
+      164848,
+      164854,
+      164859,
+      164863
+    ],
+    "development-3": [
+      164867,
+      164868,
+      164874,
+      164876,
+      164882,
+      164885,
+      164889,
+      164892
+    ]
+  }
+}

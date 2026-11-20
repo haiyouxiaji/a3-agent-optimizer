@@ -35,6 +35,8 @@ Agent 冻结抬升后外移配方，按公开观测的末端高度启用。测�
 
 共享前缀执行与 12 次历史完整运行的回执比对一致。复验的 8 次原生运行均匹配步数、槽位、目标饼干身份、成功标记和命令与实际动作哈希。逐局回执解压后的 SHA-256 为 `afa23cb709c8ae0e3fcec966733adb3e945ba7c0840201a424c489681ae79ace`。 [共享前缀核对](replication-parity.json) · [逐局复验回执](replication-rollouts.json.gz) · [原生复跑](replication-native-replays.json.gz)
 
+设置下节的 `PYTHONPATH` 后，从仓库根目录运行 `python scripts/audit_release_replication.py evidence/release-recovery-20261121` 可复算两套规则的均分、配对区间和晋级决策，并核对归档的原生回执。
+
 ## 从公开检查点复跑
 
 在本仓库根目录运行。复跑使用协议记录的模拟器提交与依赖环境。检查点路径可按本机检出位置设置，加载时仍核对冻结 SHA-256。
