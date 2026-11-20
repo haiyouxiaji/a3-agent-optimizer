@@ -1,0 +1,430 @@
+{
+  "status": "reference_retained_after_replication",
+  "replication": {
+    "default": {
+      "episodes": 128,
+      "reference_mean": 9.1796875,
+      "mean": 9.21875,
+      "mean_ci95": [
+        8.8671875,
+        9.5390625
+      ],
+      "paired_count_delta": 0.0390625,
+      "paired_count_ci95": [
+        0.0,
+        0.1015625
+      ],
+      "reference_complete": 83,
+      "complete": 83,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 32,
+        "2": 32,
+        "3": 32,
+        "4": 32
+      },
+      "changes": [
+        {
+          "seed": 162118,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 162127,
+          "column": 2,
+          "reference": 3,
+          "selected": 5,
+          "delta": 2
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 32,
+          "means": [
+            9.09375,
+            9.09375
+          ],
+          "complete": [
+            24,
+            24
+          ]
+        },
+        "2": {
+          "episodes": 32,
+          "means": [
+            8.375,
+            8.53125
+          ],
+          "complete": [
+            6,
+            6
+          ]
+        },
+        "3": {
+          "episodes": 32,
+          "means": [
+            9.71875,
+            9.71875
+          ],
+          "complete": [
+            28,
+            28
+          ]
+        },
+        "4": {
+          "episodes": 32,
+          "means": [
+            9.53125,
+            9.53125
+          ],
+          "complete": [
+            25,
+            25
+          ]
+        }
+      }
+    },
+    "strict-500": {
+      "episodes": 128,
+      "reference_mean": 9.1796875,
+      "mean": 9.21875,
+      "mean_ci95": [
+        8.8671875,
+        9.5390625
+      ],
+      "paired_count_delta": 0.0390625,
+      "paired_count_ci95": [
+        0.0,
+        0.1015625
+      ],
+      "reference_complete": 83,
+      "complete": 83,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 32,
+        "2": 32,
+        "3": 32,
+        "4": 32
+      },
+      "changes": [
+        {
+          "seed": 162118,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 162127,
+          "column": 2,
+          "reference": 3,
+          "selected": 5,
+          "delta": 2
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 32,
+          "means": [
+            9.09375,
+            9.09375
+          ],
+          "complete": [
+            24,
+            24
+          ]
+        },
+        "2": {
+          "episodes": 32,
+          "means": [
+            8.375,
+            8.53125
+          ],
+          "complete": [
+            6,
+            6
+          ]
+        },
+        "3": {
+          "episodes": 32,
+          "means": [
+            9.71875,
+            9.71875
+          ],
+          "complete": [
+            28,
+            28
+          ]
+        },
+        "4": {
+          "episodes": 32,
+          "means": [
+            9.53125,
+            9.53125
+          ],
+          "complete": [
+            25,
+            25
+          ]
+        }
+      }
+    }
+  },
+  "pooled": {
+    "default": {
+      "episodes": 192,
+      "reference_mean": 9.09375,
+      "mean": 9.203125,
+      "mean_ci95": [
+        8.932291666666666,
+        9.453125
+      ],
+      "paired_count_delta": 0.109375,
+      "paired_count_ci95": [
+        0.03125,
+        0.203125
+      ],
+      "reference_complete": 118,
+      "complete": 118,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 48,
+        "2": 48,
+        "3": 48,
+        "4": 48
+      },
+      "changes": [
+        {
+          "seed": 159414,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 159428,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 159451,
+          "column": 2,
+          "reference": 6,
+          "selected": 9,
+          "delta": 3
+        },
+        {
+          "seed": 159456,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 162118,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 162127,
+          "column": 2,
+          "reference": 3,
+          "selected": 5,
+          "delta": 2
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 48,
+          "means": [
+            9.083333333333334,
+            9.083333333333334
+          ],
+          "complete": [
+            34,
+            34
+          ]
+        },
+        "2": {
+          "episodes": 48,
+          "means": [
+            8,
+            8.4375
+          ],
+          "complete": [
+            7,
+            7
+          ]
+        },
+        "3": {
+          "episodes": 48,
+          "means": [
+            9.8125,
+            9.8125
+          ],
+          "complete": [
+            43,
+            43
+          ]
+        },
+        "4": {
+          "episodes": 48,
+          "means": [
+            9.479166666666666,
+            9.479166666666666
+          ],
+          "complete": [
+            34,
+            34
+          ]
+        }
+      }
+    },
+    "strict-500": {
+      "episodes": 192,
+      "reference_mean": 9.09375,
+      "mean": 9.203125,
+      "mean_ci95": [
+        8.932291666666666,
+        9.453125
+      ],
+      "paired_count_delta": 0.109375,
+      "paired_count_ci95": [
+        0.03125,
+        0.203125
+      ],
+      "reference_complete": 118,
+      "complete": 118,
+      "paired_success_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "major_losses": 0,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "1": 48,
+        "2": 48,
+        "3": 48,
+        "4": 48
+      },
+      "changes": [
+        {
+          "seed": 159414,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 159428,
+          "column": 2,
+          "reference": 0,
+          "selected": 5,
+          "delta": 5
+        },
+        {
+          "seed": 159451,
+          "column": 2,
+          "reference": 6,
+          "selected": 9,
+          "delta": 3
+        },
+        {
+          "seed": 159456,
+          "column": 2,
+          "reference": 5,
+          "selected": 10,
+          "delta": 5
+        },
+        {
+          "seed": 162118,
+          "column": 2,
+          "reference": 7,
+          "selected": 10,
+          "delta": 3
+        },
+        {
+          "seed": 162127,
+          "column": 2,
+          "reference": 3,
+          "selected": 5,
+          "delta": 2
+        }
+      ],
+      "by_column": {
+        "1": {
+          "episodes": 48,
+          "means": [
+            9.083333333333334,
+            9.083333333333334
+          ],
+          "complete": [
+            34,
+            34
+          ]
+        },
+        "2": {
+          "episodes": 48,
+          "means": [
+            8,
+            8.4375
+          ],
+          "complete": [
+            7,
+            7
+          ]
+        },
+        "3": {
+          "episodes": 48,
+          "means": [
+            9.8125,
+            9.8125
+          ],
+          "complete": [
+            43,
+            43
+          ]
+        },
+        "4": {
+          "episodes": 48,
+          "means": [
+            9.479166666666666,
+            9.479166666666666
+          ],
+          "complete": [
+            34,
+            34
+          ]
+        }
+      }
+    }
+  },
+  "replication_sha256": "afa23cb709c8ae0e3fcec966733adb3e945ba7c0840201a424c489681ae79ace",
+  "target_lower_bound": false,
+  "candidate_suffixes": 4
+}

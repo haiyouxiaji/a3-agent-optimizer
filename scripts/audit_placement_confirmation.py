@@ -7,7 +7,8 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from statistics import mean
 
-from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_first_hover, placement_first_recovery
+from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_early_clearance
+from a3opt import placement_first_hover, placement_first_recovery
 from a3opt import placement_hover_agent, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_search
 from a3opt import placement_routed_agent, placement_sim, placement_slot_refine, slot_alignment_fit
@@ -99,6 +100,15 @@ def released_inputs(root, protocol, lock, fit, kind):
                 or groups != {name: group["failures"] + group["controls"] for name, group in protocol["sampling"].items()}
                 or any(fit[key] != value for key, value in metrics.items())):
             raise ValueError("the first-batch recovery fit differs from its training data")
+    if kind == "early-clearance":
+        panels = read_json(training)["panels"]
+        column, batch = protocol["scope"]
+        regenerated, metrics = placement_early_clearance.fit(panels, column)
+        groups = {name: [row["seed"] for row in rows] for name, rows in panels.items()}
+        if (batch != placement_early_clearance.BATCH or [item.record() for item in regenerated] != fitted_model
+                or groups != {name: group["failures"] + group["controls"] for name, group in protocol["sampling"].items()}
+                or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the early clearance fit differs from its training data")
     if kind == "release-router":
         panels = read_json(training)["panels"]
         regenerated, metrics = placement_release_router.fit(panels)
@@ -129,7 +139,7 @@ def released_inputs(root, protocol, lock, fit, kind):
 def supports_promotion(confirmation, kind):
     stricter_gate = ("first-hover", "hover-guard", "hover-guard-refine", "routed", "wall-clearance", "clearance-feedback",
                      "contact-feedback", "late-hover-gate", "staged-descent", "staged-gate", "release-hold", "release-recovery",
-                     "release-router", "first-recovery")
+                     "release-router", "first-recovery", "early-clearance")
     if kind in stricter_gate:
         return placement_first_hover.supports_confirmation(confirmation)
     if kind == "compose":
@@ -254,7 +264,7 @@ def replicate(source, output, kind, seed_start, episodes, workers, *, follow_up=
                  "strict_rules": STRICT_RULES, "schedule": {"replication": {"random": seeds}},
                  "reference_sha256": sha256(checkpoint), "timing": list(timing), "model": lock["corrections"],
                  **({"incumbent": incumbent} if kind in RELEASED_REFINEMENTS else {}),
-                 **({"late_recovery": lock["late_recovery"]} if kind == "first-recovery" else {}),
+                 **({"late_recovery": lock["late_recovery"]} if kind in ("first-recovery", "early-clearance") else {}),
                  "source_lock_sha256": sha256(lock_path), "source_results_sha256": origin["evaluation_sha256"],
                  "policy_code_sha256": sha256(policy_source(policy_type)), "audit_code_sha256": audit_hash,
                  "evaluator_sha256": sha256(Path(placement_benchmark.__file__)), "target_mean_strictly_above": placement_search.TARGET,

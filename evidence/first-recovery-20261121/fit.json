@@ -1,0 +1,119 @@
+{
+  "held_out": {
+    "routed-replication": {
+      "gate": null,
+      "effect": {
+        "gain": 0,
+        "improved": 0,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 0
+      }
+    },
+    "release-confirmation": {
+      "gate": null,
+      "effect": {
+        "gain": 0,
+        "improved": 0,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 0
+      }
+    },
+    "release-replication": {
+      "gate": null,
+      "effect": {
+        "gain": 0,
+        "improved": 0,
+        "complete_gain": 0,
+        "harmed": 0,
+        "unsafe": 0,
+        "activations": 0
+      }
+    }
+  },
+  "admitted": false,
+  "fold_predictions": [
+    {
+      "seed": 148423,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148448,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148410,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 148414,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132123,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132103,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 132108,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138030,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138048,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138000,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    },
+    {
+      "seed": 138004,
+      "triggered": false,
+      "gain": 0,
+      "complete_gain": 0,
+      "unsafe": false
+    }
+  ],
+  "corrections": [],
+  "dataset_sha256": "d30eb5e9a8c91848722a2d767906e36e7a43166edc6db20e9044a4d38d7bab97"
+}

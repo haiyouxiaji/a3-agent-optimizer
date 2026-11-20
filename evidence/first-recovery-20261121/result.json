@@ -1,0 +1,120 @@
+{
+  "status": "reference_retained_after_first_batch_training",
+  "fit": {
+    "held_out": {
+      "routed-replication": {
+        "gate": null,
+        "effect": {
+          "gain": 0,
+          "improved": 0,
+          "complete_gain": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 0
+        }
+      },
+      "release-confirmation": {
+        "gate": null,
+        "effect": {
+          "gain": 0,
+          "improved": 0,
+          "complete_gain": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 0
+        }
+      },
+      "release-replication": {
+        "gate": null,
+        "effect": {
+          "gain": 0,
+          "improved": 0,
+          "complete_gain": 0,
+          "harmed": 0,
+          "unsafe": 0,
+          "activations": 0
+        }
+      }
+    },
+    "admitted": false,
+    "fold_predictions": [
+      {
+        "seed": 148423,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 148448,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 148410,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 148414,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 132123,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 132103,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 132108,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 138030,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 138048,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 138000,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      },
+      {
+        "seed": 138004,
+        "triggered": false,
+        "gain": 0,
+        "complete_gain": 0,
+        "unsafe": false
+      }
+    ]
+  }
+}
