@@ -168,6 +168,9 @@ and uses held-out historical groups to test release recovery rules based on wris
 resamples missing stationary-release branches. The Agent learns when to choose stationary opening at the start of
 descent and when to keep contact recovery available. The development test compares a selected route with both the
 published policy and contact recovery alone.
+`python -m a3opt.placement_first_recovery --out <first-recovery-run>` targets the source column with the most first-batch
+descent losses across the historical groups. The Agent evaluates each branch through the end of both batches, using
+the confirmed second-batch recovery as its reference.
 `python scripts/replicate_release_hold.py <completed-confirmation-run> --out <replication-run>` repeats a frozen release
 policy on 128 fresh scenes, with 32 per source column. Pass `--policy-kind release-recovery` and a fresh seed block
 for the recovery policy. The evaluator checks shared-prefix rollouts against archived full episodes before starting.
@@ -178,7 +181,7 @@ The [feedback evidence bundle](evidence/feedback-20261120/README.md) contains th
 `python scripts/audit_placement_confirmation.py <run> --policy-kind hover` verifies a completed hover run from its
 freeze, individual rollouts, and native replay receipts. The other controller audit kinds are `row`, `compose`, `first-hover`,
 `hover-guard`, `hover-guard-refine`, `routed`, `wall-clearance`, `clearance-feedback`, `contact-feedback`, `late-hover-gate`,
-`staged-descent`, `staged-gate`, `release-hold`, `release-recovery`, and `release-router`.
+`staged-descent`, `staged-gate`, `release-hold`, `release-recovery`, `release-router`, and `first-recovery`.
 
 ### Real closed-loop experiments
 

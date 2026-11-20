@@ -13,6 +13,7 @@ src/a3opt/placement_staged_gate.py text eol=lf
 src/a3opt/placement_release_hold.py text eol=lf
 src/a3opt/placement_release_recovery.py text eol=lf
 src/a3opt/placement_release_router.py text eol=lf
+src/a3opt/placement_first_recovery.py text eol=lf
 scripts/audit_placement_confirmation.py text eol=lf
 scripts/replicate_release_hold.py text eol=lf
 evidence/advanced-20261120/*.json -text whitespace=cr-at-eol

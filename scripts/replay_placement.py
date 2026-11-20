@@ -16,7 +16,7 @@ from a3opt.cli import _run_lock
 from a3opt.difficulty_eval import RULES
 from a3opt.placement_sim import Correction, PlacementPolicy, PlacementTrace, audit
 from a3opt import placement_clearance_agent, placement_clearance_feedback, placement_compose, placement_contact_feedback
-from a3opt import placement_descent_agent, placement_first_hover
+from a3opt import placement_descent_agent, placement_first_hover, placement_first_recovery
 from a3opt import placement_hover_agent, placement_hover_guard, placement_hover_guard_refine, placement_retarget_agent
 from a3opt import placement_late_hover_gate, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_staged_descent, placement_staged_gate
@@ -36,10 +36,10 @@ class PlacementVideoTrace(VideoPolicy, PlacementTrace):
 
 RELEASED_REFINEMENTS = ("hover", "row", "compose", "first-hover", "hover-guard", "hover-guard-refine", "routed",
                         "wall-clearance", "clearance-feedback", "contact-feedback", "late-hover-gate", "staged-descent",
-                        "staged-gate", "release-hold", "release-recovery", "release-router")
+                        "staged-gate", "release-hold", "release-recovery", "release-router", "first-recovery")
 
 
-def decode_model(records, policy_kind, *, incumbent=()):
+def decode_model(records, policy_kind, *, incumbent=(), late_recovery=()):
     if policy_kind == "geometry":
         model = tuple(placement_visual_geometry.GeometryPlacement(column, recipe, tuple(center), tuple(scale), tuple(weights), intercept)
                       for column, recipe, center, scale, weights, intercept in records)
@@ -88,6 +88,14 @@ def decode_model(records, policy_kind, *, incumbent=()):
             if len(model) > 1 or [item.record() for item in model] != list(records):
                 raise ValueError("invalid release router model")
             return partial(placement_release_router.ReleaseRouterPolicy, incumbent=base), model
+        if policy_kind == "first-recovery":
+            fallback = tuple(placement_release_recovery.Recovery(*item[2:]) for item in late_recovery)
+            model = tuple(placement_first_recovery.FirstRecovery(column, placement_release_recovery.Recovery(*gate))
+                          for column, _, *gate in records)
+            if (len(fallback) != 1 or [item.record() for item in fallback] != list(late_recovery)
+                    or len(model) > 1 or [item.record() for item in model] != list(records)):
+                raise ValueError("invalid sequential recovery model")
+            return partial(placement_first_recovery.FirstRecoveryPolicy, incumbent=base, late_recovery=fallback), model
         if policy_kind == "routed":
             model = placement_routed_agent.decode(records) if records else ()
             if any(item.column == adaptation.column for item in base for adaptation in model):
@@ -158,6 +166,9 @@ def verify_policy_code(configuration, frozen, kind, constructor):
         raise ValueError("contact signal code differs from the frozen evaluation")
     if kind == "release-router" and placement_release_router.dependencies() != configuration["dependencies"]:
         raise ValueError("release router dependencies differ from the frozen evaluation")
+    if kind == "first-recovery" and (configuration["late_recovery"] != frozen["late_recovery"]
+            or configuration["dependency_sha256"] != placement_first_recovery.dependencies()):
+        raise ValueError("sequential recovery dependencies differ from the frozen evaluation")
 
 
 def upstream_policy():
@@ -168,7 +179,7 @@ def upstream_policy():
     protocol_path = lock_path.parent / "protocol.json"
     lock, protocol = read_json(lock_path), read_json(protocol_path)
     checkpoint = Path(os.environ.get("A3OPT_PLACEMENT_CHECKPOINT", lock["checkpoint"])).resolve(strict=True)
-    constructor, model = decode_model(lock["corrections"], kind, incumbent=lock["incumbent"])
+    constructor, model = decode_model(lock["corrections"], kind, incumbent=lock["incumbent"], late_recovery=lock.get("late_recovery", ()))
     if (sha256(protocol_path) != lock["protocol_sha256"] or sha256(checkpoint) != lock["checkpoint_sha256"]
             or protocol["environment"] != simulator_identity()):
         raise ValueError("the requested controller differs from the pre-evaluation lock")
@@ -176,13 +187,13 @@ def upstream_policy():
     return constructor(checkpoint, *lock["timing"], model)
 
 
-def record(checkpoint, timing, encoder, output, name, expected, policy_kind, incumbent=()):
+def record(checkpoint, timing, encoder, output, name, expected, policy_kind, incumbent=(), late_recovery=()):
     import cv2
     from a3_dual_arm_sim.workflows.benchmark import make_cookie_benchmark
 
     cv2.setNumThreads(1)
     seed, suite, strict = (expected[key] for key in ("seed", "suite", "strict"))
-    policy_type, corrections = decode_model(expected["corrections"], policy_kind, incumbent=incumbent)
+    policy_type, corrections = decode_model(expected["corrections"], policy_kind, incumbent=incumbent, late_recovery=late_recovery)
     audit((checkpoint, *timing, suite, seed, corrections, strict), expected)
     engine = make_cookie_benchmark(profile=expected["profile"], source_column=suite, **(STRICT_RULES if strict else RULES))
     env = engine.create_env(render_cameras=False)
@@ -285,8 +296,9 @@ def main():
             or sha256(checkpoint) != frozen["checkpoint_sha256"]):
         raise ValueError("replay does not match the frozen evaluation")
     incumbent = frozen.get("incumbent", ())
+    late_recovery = frozen.get("late_recovery", ())
     if args.policy_kind != "offset":
-        policy_type, _ = decode_model(frozen["corrections"], args.policy_kind, incumbent=incumbent)
+        policy_type, _ = decode_model(frozen["corrections"], args.policy_kind, incumbent=incumbent, late_recovery=late_recovery)
         verify_policy_code(configuration, frozen, args.policy_kind, policy_type)
     pair, results_digest = replay_pair(root, configuration, frozen, args.stage, args.policy_kind, args.seed, args.rule, args.reference_run)
     output = root / "videos" / args.rule
@@ -296,7 +308,7 @@ def main():
     encoder = args.ffmpeg.resolve(strict=True)
     with _run_lock(output):
         with ProcessPoolExecutor(max_workers=args.workers) as pool:
-            jobs = [pool.submit(record, checkpoint, timing, encoder, output, name, row, args.policy_kind, incumbent)
+            jobs = [pool.submit(record, checkpoint, timing, encoder, output, name, row, args.policy_kind, incumbent, late_recovery)
                     for name, row in pair.items()]
             evidence = [job.result() for job in jobs]
         write_json(output / f"{args.seed}-audit.json", {"stage": args.stage, "results_sha256": results_digest, "videos": evidence})

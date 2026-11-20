@@ -7,7 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from statistics import mean
 
-from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_first_hover
+from a3opt import placement_benchmark, placement_compose, placement_descent_agent, placement_first_hover, placement_first_recovery
 from a3opt import placement_hover_agent, placement_release_hold, placement_release_recovery, placement_release_router
 from a3opt import placement_search
 from a3opt import placement_routed_agent, placement_sim, placement_slot_refine, slot_alignment_fit
@@ -89,6 +89,16 @@ def released_inputs(root, protocol, lock, fit, kind):
                 or [item.record() for item in regenerated] != fitted_model
                 or any(fit[key] != value for key, value in metrics.items())):
             raise ValueError("the release recovery fit differs from the frozen training selection")
+    if kind == "first-recovery":
+        panels = read_json(training)["panels"]
+        gates, metrics = placement_release_recovery.fit(panels)
+        column, batch = protocol["scope"]
+        regenerated = [placement_first_recovery.FirstRecovery(column, gate).record() for gate in gates]
+        groups = {name: [row["seed"] for row in rows] for name, rows in panels.items()}
+        if (batch != placement_first_recovery.BATCH or regenerated != fitted_model
+                or groups != {name: group["failures"] + group["controls"] for name, group in protocol["sampling"].items()}
+                or any(fit[key] != value for key, value in metrics.items())):
+            raise ValueError("the first-batch recovery fit differs from its training data")
     if kind == "release-router":
         panels = read_json(training)["panels"]
         regenerated, metrics = placement_release_router.fit(panels)
@@ -119,7 +129,7 @@ def released_inputs(root, protocol, lock, fit, kind):
 def supports_promotion(confirmation, kind):
     stricter_gate = ("first-hover", "hover-guard", "hover-guard-refine", "routed", "wall-clearance", "clearance-feedback",
                      "contact-feedback", "late-hover-gate", "staged-descent", "staged-gate", "release-hold", "release-recovery",
-                     "release-router")
+                     "release-router", "first-recovery")
     if kind in stricter_gate:
         return placement_first_hover.supports_confirmation(confirmation)
     if kind == "compose":
@@ -157,7 +167,8 @@ def audit_confirmation(root, kind):
             or sha256(fit_path) != lock["fit_sha256"] or sha256(selection_path) != lock["selection_sha256"]
             or corrections != fitted_model):
         raise ValueError("the confirmation lock, splits, or inputs differ from the saved run")
-    policy_type, selected = decode_model(corrections, kind, incumbent=lock.get("incumbent", ()))
+    policy_type, selected = decode_model(corrections, kind, incumbent=lock.get("incumbent", ()),
+                                        late_recovery=lock.get("late_recovery", ()))
     verify_policy_code(protocol, lock, kind, policy_type)
     confirmation = root / "confirmation"
     request = read_json(confirmation / "rollouts" / "request.json")
@@ -235,13 +246,15 @@ def replicate(source, output, kind, seed_start, episodes, workers, *, follow_up=
             if path.parent != output and set(seeds).intersection(scheduled_seeds(read_json(path).get("schedule", {}))):
                 raise ValueError(f"replication overlaps a reserved panel: {path.parent}")
     incumbent = lock.get("incumbent", [])
-    policy_type, model = decode_model(lock["corrections"], kind, incumbent=incumbent)
+    policy_type, model = decode_model(lock["corrections"], kind, incumbent=incumbent,
+                                     late_recovery=lock.get("late_recovery", ()))
     audit_hash = (read_json(protocol_path)["audit_code_sha256"] if (output / "result.json").exists()
                   else sha256(Path(__file__)))
     _record_once(protocol_path, {"environment": simulator_identity(), "rules": RULES,
                  "strict_rules": STRICT_RULES, "schedule": {"replication": {"random": seeds}},
                  "reference_sha256": sha256(checkpoint), "timing": list(timing), "model": lock["corrections"],
                  **({"incumbent": incumbent} if kind in RELEASED_REFINEMENTS else {}),
+                 **({"late_recovery": lock["late_recovery"]} if kind == "first-recovery" else {}),
                  "source_lock_sha256": sha256(lock_path), "source_results_sha256": origin["evaluation_sha256"],
                  "policy_code_sha256": sha256(policy_source(policy_type)), "audit_code_sha256": audit_hash,
                  "evaluator_sha256": sha256(Path(placement_benchmark.__file__)), "target_mean_strictly_above": placement_search.TARGET,
