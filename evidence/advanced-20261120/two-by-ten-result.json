@@ -1,0 +1,145 @@
+{
+  "status": "retrieval_rejected_after_confirmation",
+  "development": {
+    "reference": {
+      "episodes": 20,
+      "mean_score": 1.9,
+      "mean_requested_score": 1.6,
+      "requested_score_ci95": [
+        0.55,
+        2.65
+      ],
+      "upstream_successes": 0,
+      "requested_successes": 0,
+      "success_ci95": [
+        0,
+        0.16112515805281938
+      ],
+      "wrong_source_episodes": 1,
+      "safety_stops": 0,
+      "first_grasp_counts": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+      },
+      "mean_planned_steps": 1013.35
+    },
+    "candidate": {
+      "episodes": 20,
+      "mean_score": 2.35,
+      "mean_requested_score": 2.35,
+      "requested_score_ci95": [
+        1.15,
+        3.55
+      ],
+      "upstream_successes": 0,
+      "requested_successes": 0,
+      "success_ci95": [
+        0,
+        0.16112515805281938
+      ],
+      "wrong_source_episodes": 0,
+      "safety_stops": 0,
+      "first_grasp_counts": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+      },
+      "mean_planned_steps": 1015.35
+    },
+    "mean_paired_gain": 0.75,
+    "paired_gain_ci95": [
+      -0.55,
+      2.05
+    ],
+    "new_safety_stops": 0,
+    "success_delta": 0,
+    "gain_count": 5,
+    "loss_count": 2
+  },
+  "confirmation": {
+    "reference": {
+      "episodes": 20,
+      "mean_score": 1.8,
+      "mean_requested_score": 1.8,
+      "requested_score_ci95": [
+        0.85,
+        2.75
+      ],
+      "upstream_successes": 0,
+      "requested_successes": 0,
+      "success_ci95": [
+        0,
+        0.16112515805281938
+      ],
+      "wrong_source_episodes": 0,
+      "safety_stops": 0,
+      "first_grasp_counts": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+      },
+      "mean_planned_steps": 1014.2
+    },
+    "candidate": {
+      "episodes": 20,
+      "mean_score": 3.15,
+      "mean_requested_score": 3.15,
+      "requested_score_ci95": [
+        2.15,
+        4.15
+      ],
+      "upstream_successes": 0,
+      "requested_successes": 0,
+      "success_ci95": [
+        0,
+        0.16112515805281938
+      ],
+      "wrong_source_episodes": 0,
+      "safety_stops": 0,
+      "first_grasp_counts": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+      },
+      "mean_planned_steps": 1011.65
+    },
+    "mean_paired_gain": 1.35,
+    "paired_gain_ci95": [
+      -0.35,
+      3.05
+    ],
+    "new_safety_stops": 0,
+    "success_delta": 0,
+    "gain_count": 7,
+    "loss_count": 4
+  }
+}

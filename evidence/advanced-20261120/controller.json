@@ -1,0 +1,24 @@
+{
+  "checkpoint": "policy.npz",
+  "checkpoint_sha256": "b106431cd01f2cab3cb85e6525f914b21d27d8a75f148566050c5e9d99f0b56b",
+  "sim_revision": "5fa24970648f53a24c0b5038d19bf6a14e1be5b9",
+  "timing": [
+    4,
+    0.75
+  ],
+  "corrections": [
+    [
+      1,
+      0,
+      "vertical"
+    ]
+  ],
+  "confirmation_lock_sha256": "539ba6a7c91bb0215c54d8ebdf13d9be3bb207d9fb3d7bcb2ae259d9c14e4ff8",
+  "confirmation_protocol_sha256": "bdf62ecba3ff9d0e58246c961cc4b3e961bd0cc27b931d70221798979a6222c9",
+  "policy_code_sha256": "396bf22d42e8405c796ede8071a0aff24abae6c731a1bbde667eada0adcbe0df",
+  "evaluator_sha256": "334b64b04e5b29f810c9275bf1fb8f666d70e86a2e032bb221569c5b2387915b",
+  "rollout_sha256": {
+    "confirmation-rollouts.json.gz": "4e94ada78f3e4fd69fb253c944472ff21bdfd457c1e81418c7c710a2d31eb433",
+    "replication-rollouts.json.gz": "15906a8fdd287617aaa61dcf3fda1f54b38b192089b9347b9d6265bf8ffeea46"
+  }
+}

@@ -9,11 +9,28 @@ The layer never re-implements the simulator, the expert controller, or the task 
 It drives an existing A3 simulation checkout and keeps the runtime chain
 `Observation -> Policy -> Action -> Environment -> Evaluation` unchanged.
 
+## Current architecture and result
+
+The frozen `branch-joint` policy with targeted first-batch descent scored **9.14/10**
+on 100 independent, paired `2×5 / advanced` scenes balanced across four source columns.
+The timed reference scored 8.79/10. The candidate's 95% balanced bootstrap interval is
+[8.77, 9.49]. The course-budget `2×10` experiment is tracked separately.
+
+- [当前 Agent 与模型架构](docs/A3_CURRENT_ARCHITECTURE.md)
+- [实验树、分支决策与运行统计](docs/A3_EXPERIMENT_TREE.md)
+- [冻结策略、逐场景评测证据与复现命令](evidence/advanced-20261120/README.md)
+
+## Earlier designs and experiments
+
 - Design document: [docs/architecture.md](docs/architecture.md)
 - Refinement and measured results: [docs/A3_REFINEMENT_REPORT.md](docs/A3_REFINEMENT_REPORT.md)
 - Advanced randomization, autonomous follow-up, and replay verification: [docs/A3_ADVANCED_AGENT.md](docs/A3_ADVANCED_AGENT.md)
 - Phase-aware grasp and placement search with paired confirmation: [docs/A3_ADAPTIVE_AGENT.md](docs/A3_ADAPTIVE_AGENT.md)
-- Upstream simulation project: `a3_dual_arm_sim` (course-provided checkout, not vendored here)
+- Second-batch release diagnosis and autonomous candidate evaluation: [docs/A3_SECOND_BATCH_OPTIMIZATION.md](docs/A3_SECOND_BATCH_OPTIMIZATION.md)
+- Upstream simulation project: [a3_dual_arm_sim](https://github.com/Eter0109/a3_dual_arm_sim) (separate checkout)
+
+Historical reports refer to generated `artifacts/` and `runs/` files and to course handouts.
+The public evidence linked above is available directly in this checkout.
 
 ## What it implements
 
@@ -35,7 +52,7 @@ The loop needs Python 3.10+. The real simulation backend additionally needs the 
 checkout with its own dependencies (`mujoco`, `gymnasium`, `opencv-python`, `scipy`) and `torch`.
 
 ```bash
-git clone <this-repository> a3_agent_optimizer
+git clone https://github.com/haiyouxiaji/a3-agent-optimizer.git a3_agent_optimizer
 cd a3_agent_optimizer
 python -m venv .venv
 .venv/Scripts/activate            # Windows; use .venv/bin/activate on Linux
@@ -70,6 +87,48 @@ each run configuration. The confirmation command binds the simulator, checkpoint
 and evaluator to the development selection. `--eager-replay` repeats the candidate with the
 upstream per-step camera rendering and checks action digests.
 
+### Native 2x10 experiment
+
+`python -m a3opt.two_by_ten_agent --out artifacts/two-by-ten --plan` previews the sampling budget and frozen seed splits.
+Run without `--plan` to collect demonstrations, fit mean and vision-conditioned policies, and evaluate frozen candidates
+through the upstream simulator. The run reports the 500-step snapshot and the native 3,200-step result for each episode.
+`python -m a3opt.two_by_ten_course_agent --source artifacts/two-by-ten --out artifacts/two-by-ten-course --workers 4`
+compares the frozen visual average and nearest-demonstration policies on fresh 500-step episodes. The native run's
+initial fit and dataset manifests supply both policies. The Agent opens a separate confirmation split only when the
+candidate meets the development gate.
+See [course alignment and evidence](docs/A3_COURSE_ALIGNMENT.md) for the benchmark rules and sampling controls.
+
+### First-release diagnostics
+
+Run `a3opt.release_feedback_agent` to fit and select a bounded correction using a frozen `branch-joint` run and the
+second-batch diagnosis. Once its development receipts are complete, run `a3opt.release_outcome_agent` with the
+same `--reference` and the release run as `--source`. It uses the paired receipts to test whether runtime features can
+choose among the three fixed controllers and opens a fresh confirmation split only after leave-one-seed-out validation.
+`a3opt.release_focus_eval` separately tests the locked release candidate on 20 fresh scenes from the active source column.
+`a3opt.release_completion_eval` verifies both action digests at the archived endpoint and then measures released
+cookies and sustained full-slot stability at step 500. Its separate audit receipt records the original score, end step,
+and gripper contacts alongside the stricter measurement.
+Use separate output directories per experiment. On Windows, begin with a small worker count. Runs validate and reuse
+completed receipts when resumed with the same protocol and a lower `--workers` value.
+
+### Release timing and balanced verification
+
+`python -m a3opt.release_timing_agent --reference <branch-run> --diagnosis <release-audit> --out <timing-run>`
+uses the frozen `branch-joint` checkpoint and its original confirmation replays to select a timing intervention.
+The run locks the screened speed before evaluating the fixed-column confirmation split.
+`python -m a3opt.release_timing_random_eval --reference <branch-run> --timing <timing-run> --out <random-audit>`
+evaluates 20 new balanced random-column scenarios. Unaffected scenes share a simulation only after both policies match
+every action. `python scripts/audit_timing_course.py --timing <timing-run> --random <random-audit> --out <course-audit>`
+re-evaluates the active column on the upstream default scoring contract.
+
+### Two-batch placement search
+
+The placement agents compare both course endpoint counts and released counts at step 500 on paired advanced scenes.
+Training can observe simulator geometry to label rollouts; the policy uses task instructions and public robot observations.
+`a3opt.placement_visual_feedback` captures front-camera image pairs on locked training scenes, and
+`a3opt.placement_visual_geometry` learns a second-batch gate from their spatial features. See
+[placement experiments and receipts](docs/A3_PLACEMENT_SEARCH.md) for the exact splits and rollback decisions.
+
 ### Real closed-loop experiments
 
 1. Install the upstream simulation repository and its dependencies into the same environment
@@ -84,8 +143,8 @@ python scripts/local_backend_smoke.py --stage eval       # closed-loop scores on
 ```
 
 Real artifacts land in `artifacts/real_runs/summary.json`, `artifacts/datasets/`, and
-`artifacts/candidates/`. Datasets and checkpoints are intentionally not committed; the scripts
-regenerate them.
+`artifacts/candidates/`. The scripts regenerate the training datasets and exploratory checkpoints.
+The frozen `branch-joint` checkpoint used for the published paired evaluation is under `evidence/`.
 
 3. Run the agent loop against the real backend. The dataset recorded above is reused:
 

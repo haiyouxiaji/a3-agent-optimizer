@@ -1,0 +1,53 @@
+{
+  "profile": "vertical",
+  "profile_support": {
+    "vertical": {
+      "110113": 5,
+      "110002": 5,
+      "110114": 3,
+      "110010": 5
+    },
+    "midpoint": {
+      "110113": 5,
+      "110002": 1
+    },
+    "align-early": {
+      "110002": 1
+    },
+    "align-raised": {}
+  },
+  "column": 1,
+  "candidate_columns": {
+    "1": {
+      "all_failure_count": 3,
+      "failure_cookies": 15,
+      "seeds": [
+        131001,
+        131028,
+        131045,
+        131005,
+        131009,
+        131012
+      ]
+    },
+    "4": {
+      "all_failure_count": 2,
+      "failure_cookies": 10,
+      "seeds": [
+        131015,
+        131016,
+        131003,
+        131006,
+        131023
+      ]
+    }
+  },
+  "training_seeds": [
+    131001,
+    131028,
+    131045,
+    131005,
+    131009,
+    131012
+  ]
+}
