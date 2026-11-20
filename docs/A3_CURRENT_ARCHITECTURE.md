@@ -39,6 +39,8 @@ flowchart LR
 | 候选筛选 | [`placement_search.py`](../src/a3opt/placement_search.py)、[`acceptance.py`](../src/a3opt/acceptance.py) | 通用循环比较配对增益、非劣比例和成本。放置分支要求两种计分均有正向配对增益、完整成功数至少持平，并核对错列、安全停止和单局少计至少 4 块的事件。 |
 | 实验证据 | [`memory.py`](../src/a3opt/memory.py)、[`placement_benchmark.py`](../src/a3opt/placement_benchmark.py)、[`audit_placement_confirmation.py`](../scripts/audit_placement_confirmation.py) | 通用循环用 JSONL 保存状态、指标、成本和候选 ID。专项流程分别保存协议、采集计划、逐局回执、冻结记录和原生复跑核对。 |
 | 下降轨迹调优 | [`tune_landing_path.py`](../scripts/tune_landing_path.py) | Agent 从两批已结束的回执选择失败场景及满分对照，用同一专家落点比较保留原下降曲线与先横向对齐再下降，并在新开发场景检验候选。 |
+| 下降轨迹切换 | [`tune_landing_gate.py`](../scripts/tune_landing_gate.py) | Agent 重放决策前缀，读取公开的末端运动和力信号，以配对终局结果标注切换增益。留组训练通过后用新开发场景检验。 |
+| 专家下降轨迹 | [`tune_expert_insertion.py`](../scripts/tune_expert_insertion.py) | Agent 配对采样下降失分和满分场景，调用上游专家采集示范，从关节动作重建目标盒坐标内的轨迹，比较位置与腕部姿态两种控制方式。 |
 
 人负责设定候选空间、预算和验收规则。项目 Agent 完成场景选择、模拟器采集、数据整理、拟合与选模。最佳下降分支在第 1 列复采三局失分与三局满分对照，比较首批、第二批及两批干预，再打开独立开发集。确认种子只用于冻结后的验证。 [自动采集实现](../src/a3opt/placement_descent_refine.py) · [采集计划](../evidence/advanced-20261120/acquisition-plan.json)
 
@@ -74,6 +76,6 @@ flowchart LR
 | 冻结复验 `138000–138059` | 60 | 8.87 → 9.20 | 8.87 → 9.20 | 39 → 41 |
 | 合并 | 100 | **8.79 → 9.14** | **8.79 → 9.14** | **59 → 65** |
 
-第 500 步的诊断口径要求已释放入槽并连续 20 步满足完整成功条件。合并样本的分层配对增益 95% 区间为 **[+0.15, +0.60]**，均分区间为 **[8.77, 9.49]**，因此证据支持配对提升，9 分是点估计达到的门槛。两批各抽四列、分别核验两套规则，共 16 次原生复跑匹配。第 1 列从 7.80 升至 9.20，第 2 列保持 8.32。 [汇总](../evidence/advanced-20261120/replication-result.json) · [逐局得分](../evidence/advanced-20261120/paired-endpoints.csv)
+第 500 步按已释放的指定来源饼干计分。严格完整成功额外要求槽位、贴壁与连续 20 步稳定。合并样本的分层配对增益 95% 区间为 **[+0.15, +0.60]**，均分区间为 **[8.77, 9.49]**，因此证据支持配对提升，9 分是点估计达到的门槛。两批各抽四列、分别核验两套规则，共 16 次原生复跑匹配。第 1 列从 7.80 升至 9.20，第 2 列保持 8.32。 [汇总](../evidence/advanced-20261120/replication-result.json) · [逐局得分](../evidence/advanced-20261120/paired-endpoints.csv)
 
 `2×10 / advanced` 使用独立的原生四批策略与 500 步评测。最近示范检索在固定第 1 列的 20 对独立场景中从 1.80 升至 3.15/20，配对区间跨零，两侧完整成功均为 0/20，Agent 保留加权平均参考。历史六组网格及课程对照见专项报告。 [原生 2×10 结果](../evidence/advanced-20261120/two-by-ten-result.json) · [课程对齐](A3_COURSE_ALIGNMENT.md)

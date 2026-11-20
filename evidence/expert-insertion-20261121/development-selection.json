@@ -1,0 +1,86 @@
+{
+  "default": {
+    "episodes": 12,
+    "reference_mean": 8.75,
+    "mean": 8.75,
+    "mean_ci95": [
+      7.5,
+      10.0
+    ],
+    "paired_count_delta": 0.0,
+    "paired_count_ci95": [
+      -1.25,
+      1.25
+    ],
+    "reference_complete": 9,
+    "complete": 9,
+    "paired_success_rate_ci95": [
+      -0.25,
+      0.25
+    ],
+    "major_losses": 1,
+    "safety_stops": 0,
+    "wrong_source": 0,
+    "scored_pairs_by_column": {
+      "2": 12
+    },
+    "changes": [
+      {
+        "seed": 177000,
+        "column": 2,
+        "reference": 10,
+        "selected": 5,
+        "delta": -5
+      },
+      {
+        "seed": 177036,
+        "column": 2,
+        "reference": 5,
+        "selected": 10,
+        "delta": 5
+      }
+    ]
+  },
+  "strict-500": {
+    "episodes": 12,
+    "reference_mean": 8.75,
+    "mean": 8.75,
+    "mean_ci95": [
+      7.5,
+      10.0
+    ],
+    "paired_count_delta": 0.0,
+    "paired_count_ci95": [
+      -1.25,
+      1.25
+    ],
+    "reference_complete": 9,
+    "complete": 9,
+    "paired_success_rate_ci95": [
+      -0.25,
+      0.25
+    ],
+    "major_losses": 1,
+    "safety_stops": 0,
+    "wrong_source": 0,
+    "scored_pairs_by_column": {
+      "2": 12
+    },
+    "changes": [
+      {
+        "seed": 177000,
+        "column": 2,
+        "reference": 10,
+        "selected": 5,
+        "delta": -5
+      },
+      {
+        "seed": 177036,
+        "column": 2,
+        "reference": 5,
+        "selected": 10,
+        "delta": 5
+      }
+    ]
+  }
+}

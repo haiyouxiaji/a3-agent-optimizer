@@ -1,0 +1,52 @@
+{
+  "held_out": {
+    "parent": {
+      "gate": [
+        2,
+        0,
+        1,
+        0.034259694823676794,
+        true
+      ],
+      "net_gain": 5,
+      "losses": 0,
+      "activations": 2,
+      "improvements": 1
+    },
+    "source": {
+      "gate": [
+        2,
+        0,
+        3,
+        -0.000523271523202605,
+        false
+      ],
+      "net_gain": 0,
+      "losses": 0,
+      "activations": 0,
+      "improvements": 0
+    },
+    "development": {
+      "gate": [
+        2,
+        0,
+        1,
+        0.033903300220322105,
+        true
+      ],
+      "net_gain": 10,
+      "losses": 0,
+      "activations": 2,
+      "improvements": 1
+    }
+  },
+  "admitted": true,
+  "gate": [
+    2,
+    0,
+    1,
+    0.034259694823676794,
+    true
+  ],
+  "dataset_sha256": "76c08ca0dc362c1f4ab5be1f73df0f7d12325dc05056451c07c1fecd1db475e6"
+}

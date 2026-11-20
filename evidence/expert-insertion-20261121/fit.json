@@ -1,0 +1,303 @@
+{
+  "dataset_sha256": "661300077d30fd28ca001f430452d17d93db3ce0c38a63670452005749fcfbdd",
+  "curves": {
+    "expert-position": [
+      2,
+      0,
+      [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          -6.856107670402331e-05,
+          1.9974044356606816e-05,
+          0.16760307453706053
+        ],
+        [
+          -0.00011576342097827791,
+          3.8572171447727566e-05,
+          0.33516531972790065
+        ],
+        [
+          -0.0001486021225834376,
+          4.989061362318794e-05,
+          0.5026382621643227
+        ],
+        [
+          -0.00016098699583433698,
+          5.1468494789436815e-05,
+          0.6699988736206908
+        ],
+        [
+          -0.00013793282096619813,
+          4.1488572447596534e-05,
+          0.8077459984618522
+        ],
+        [
+          -0.00010002219116620262,
+          2.9777984192434923e-05,
+          0.8766077238265053
+        ],
+        [
+          -5.499160582523102e-05,
+          1.590256281230299e-05,
+          0.9438285287730059
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      []
+    ],
+    "expert-pose": [
+      2,
+      0,
+      [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          -6.856107670402331e-05,
+          1.9974044356606816e-05,
+          0.16760307453706053
+        ],
+        [
+          -0.00011576342097827791,
+          3.8572171447727566e-05,
+          0.33516531972790065
+        ],
+        [
+          -0.0001486021225834376,
+          4.989061362318794e-05,
+          0.5026382621643227
+        ],
+        [
+          -0.00016098699583433698,
+          5.1468494789436815e-05,
+          0.6699988736206908
+        ],
+        [
+          -0.00013793282096619813,
+          4.1488572447596534e-05,
+          0.8077459984618522
+        ],
+        [
+          -0.00010002219116620262,
+          2.9777984192434923e-05,
+          0.8766077238265053
+        ],
+        [
+          -5.499160582523102e-05,
+          1.590256281230299e-05,
+          0.9438285287730059
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        0.4303497058424159,
+        -0.43052718250401867,
+        0.5610106208924539,
+        -0.5609924768233184
+      ]
+    ]
+  },
+  "training": {
+    "expert-position": {
+      "default": {
+        "episodes": 10,
+        "reference_mean": 7.5,
+        "mean": 8.5,
+        "mean_ci95": [
+          7.0,
+          10.0
+        ],
+        "paired_count_delta": 1.0,
+        "paired_count_ci95": [
+          0.0,
+          2.5
+        ],
+        "reference_complete": 5,
+        "complete": 6,
+        "paired_success_rate_ci95": [
+          0.0,
+          0.3
+        ],
+        "major_losses": 0,
+        "safety_stops": 0,
+        "wrong_source": 0,
+        "scored_pairs_by_column": {
+          "2": 10
+        },
+        "changes": [
+          {
+            "seed": 171656,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          },
+          {
+            "seed": 167610,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          }
+        ]
+      },
+      "strict-500": {
+        "episodes": 10,
+        "reference_mean": 7.5,
+        "mean": 8.5,
+        "mean_ci95": [
+          7.0,
+          10.0
+        ],
+        "paired_count_delta": 1.0,
+        "paired_count_ci95": [
+          0.0,
+          2.5
+        ],
+        "reference_complete": 5,
+        "complete": 6,
+        "paired_success_rate_ci95": [
+          0.0,
+          0.3
+        ],
+        "major_losses": 0,
+        "safety_stops": 0,
+        "wrong_source": 0,
+        "scored_pairs_by_column": {
+          "2": 10
+        },
+        "changes": [
+          {
+            "seed": 171656,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          },
+          {
+            "seed": 167610,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          }
+        ]
+      }
+    },
+    "expert-pose": {
+      "default": {
+        "episodes": 10,
+        "reference_mean": 7.5,
+        "mean": 8.4,
+        "mean_ci95": [
+          6.8,
+          10.0
+        ],
+        "paired_count_delta": 0.9,
+        "paired_count_ci95": [
+          -0.2,
+          2.4
+        ],
+        "reference_complete": 5,
+        "complete": 6,
+        "paired_success_rate_ci95": [
+          0.0,
+          0.3
+        ],
+        "major_losses": 0,
+        "safety_stops": 0,
+        "wrong_source": 0,
+        "scored_pairs_by_column": {
+          "2": 10
+        },
+        "changes": [
+          {
+            "seed": 171628,
+            "column": 2,
+            "reference": 5,
+            "selected": 4,
+            "delta": -1
+          },
+          {
+            "seed": 171656,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          },
+          {
+            "seed": 167610,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          }
+        ]
+      },
+      "strict-500": {
+        "episodes": 10,
+        "reference_mean": 7.5,
+        "mean": 8.4,
+        "mean_ci95": [
+          6.8,
+          10.0
+        ],
+        "paired_count_delta": 0.9,
+        "paired_count_ci95": [
+          -0.2,
+          2.4
+        ],
+        "reference_complete": 5,
+        "complete": 6,
+        "paired_success_rate_ci95": [
+          0.0,
+          0.3
+        ],
+        "major_losses": 0,
+        "safety_stops": 0,
+        "wrong_source": 0,
+        "scored_pairs_by_column": {
+          "2": 10
+        },
+        "changes": [
+          {
+            "seed": 171628,
+            "column": 2,
+            "reference": 5,
+            "selected": 4,
+            "delta": -1
+          },
+          {
+            "seed": 171656,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          },
+          {
+            "seed": 167610,
+            "column": 2,
+            "reference": 5,
+            "selected": 10,
+            "delta": 5
+          }
+        ]
+      }
+    }
+  },
+  "selected": "expert-position"
+}

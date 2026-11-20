@@ -1,0 +1,90 @@
+{
+  "status": "reference_retained_after_landing_path_development",
+  "development": {
+    "default": {
+      "episodes": 12,
+      "reference_mean": 9.166666666666666,
+      "mean": 9.583333333333334,
+      "mean_ci95": [
+        8.75,
+        10.0
+      ],
+      "paired_count_delta": 0.4166666666666667,
+      "paired_count_ci95": [
+        -1.25,
+        2.5
+      ],
+      "reference_complete": 11,
+      "complete": 11,
+      "paired_success_rate_ci95": [
+        -0.25,
+        0.25
+      ],
+      "major_losses": 1,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 12
+      },
+      "changes": [
+        {
+          "seed": 173043,
+          "column": 2,
+          "reference": 10,
+          "selected": 5,
+          "delta": -5
+        },
+        {
+          "seed": 173044,
+          "column": 2,
+          "reference": 0,
+          "selected": 10,
+          "delta": 10
+        }
+      ]
+    },
+    "strict-500": {
+      "episodes": 12,
+      "reference_mean": 9.166666666666666,
+      "mean": 9.583333333333334,
+      "mean_ci95": [
+        8.75,
+        10.0
+      ],
+      "paired_count_delta": 0.4166666666666667,
+      "paired_count_ci95": [
+        -1.25,
+        2.5
+      ],
+      "reference_complete": 11,
+      "complete": 11,
+      "paired_success_rate_ci95": [
+        -0.25,
+        0.25
+      ],
+      "major_losses": 1,
+      "safety_stops": 0,
+      "wrong_source": 0,
+      "scored_pairs_by_column": {
+        "2": 12
+      },
+      "changes": [
+        {
+          "seed": 173043,
+          "column": 2,
+          "reference": 10,
+          "selected": 5,
+          "delta": -5
+        },
+        {
+          "seed": 173044,
+          "column": 2,
+          "reference": 0,
+          "selected": 10,
+          "delta": 10
+        }
+      ]
+    }
+  },
+  "recipe": "align-before-lowering"
+}
