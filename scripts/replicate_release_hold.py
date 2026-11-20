@@ -9,11 +9,13 @@ from functools import partial
 from pathlib import Path
 
 from a3opt import placement_benchmark, placement_first_hover, placement_hover_agent
+from a3opt.placement_expert_grasp import Grasp
 from a3opt.placement_expert_landing import Landing
 from a3opt.placement_release_recovery import Recovery
+from a3opt.placement_source_guard import SourceGuard
 from a3opt import placement_routed_agent, placement_sim, placement_search
 from a3opt.advanced_agent import _jobs, _record_once
-from a3opt.backends.adaptive_phase import PLACE
+from a3opt.backends.adaptive_phase import CLOSE, PLACE, PRE_CLOSE
 from a3opt.backends.advanced_trajectory import pose_label
 from a3opt.cli import _run_lock
 from a3opt.difficulty_eval import RULES
@@ -39,13 +41,16 @@ class PairedTrace(placement_benchmark.CombinedTrace):
         self.env = env
 
     def act(self, observation, task):
-        if self.forked is None and self.column == self.model.column and not self.policy.retry_remaining:
+        if self.model is not None and self.forked is None and self.column == self.model.column and not self.policy.retry_remaining:
             if isinstance(self.model, Recovery):
                 signals = self.policy.signal(observation, task)
                 diverges = signals is not None and self.model.activates(signals)
             elif isinstance(self.model, Landing):
                 diverges = self.policy.actions is not None and self.policy.cursor == (
                     self.model.batch, PLACE, max(1, len(self.policy.actions[self.model.batch][PLACE]) // 4))
+            elif isinstance(self.model, (Grasp, SourceGuard)):
+                stage = PRE_CLOSE if isinstance(self.model, Grasp) else CLOSE
+                diverges = self.policy.actions is not None and self.policy.cursor == (self.model.batch, stage, 0)
             else:
                 diverges = self.policy.actions is not None and self.policy.cursor == (self.model.batch, PLACE, 0)
             if diverges:
@@ -62,6 +67,10 @@ class PairedTrace(placement_benchmark.CombinedTrace):
             controller.recovery = self.model
         elif isinstance(self.model, Landing):
             controller.landing = self.model
+        elif isinstance(self.model, Grasp):
+            controller.grasp = self.model
+        elif isinstance(self.model, SourceGuard):
+            controller.guard = self.model
         else:
             controller.release_hold = self.model
         trace = placement_benchmark.CombinedTrace(controller)
@@ -83,6 +92,7 @@ class PairedTrace(placement_benchmark.CombinedTrace):
 
 def paired_episode(checkpoint, timing, policy_type, model, seed):
     import cv2
+    from a3_dual_arm_sim.sim.randomization import choose_column
     from a3_dual_arm_sim.workflows.benchmark import make_cookie_benchmark
 
     cv2.setNumThreads(1)
@@ -90,8 +100,16 @@ def paired_episode(checkpoint, timing, policy_type, model, seed):
     env = engine.create_env(render_cameras=False)
     try:
         env.task_config = replace(env.task_config, terminate_on_success=False)
-        reference_options = {"probe": True} if isinstance(model, Recovery) else {}
-        trace = PairedTrace(policy_type(checkpoint, *timing, **reference_options), model)
+        models = model if isinstance(model, tuple) else (model,)
+        column = choose_column("random", seed)
+        active = [item for item in models if item.column == column]
+        if len(active) > 1:
+            return {"reference": placement_benchmark.episode(checkpoint, *timing, seed, (), policy_type=policy_type),
+                    "selected": placement_benchmark.episode(checkpoint, *timing, seed, models, policy_type=policy_type),
+                    "shared_complete_rollout": False}
+        current = active[0] if active else None
+        reference_options = {"probe": True} if isinstance(current, Recovery) else {}
+        trace = PairedTrace(policy_type(checkpoint, *timing, **reference_options), current)
         started = time.monotonic()
         result = engine.run_episode(trace, seed=seed, env=env, diagnostic=trace)
         if trace.course is None or trace.released is None or trace.step != result.steps:
@@ -104,7 +122,7 @@ def paired_episode(checkpoint, timing, policy_type, model, seed):
                   "initial_pose": pose_label(meta).tolist(), "estimated_pose": trace.policy.pose.tolist(),
                   "task_prompt": engine._episode_task(result.source_column, seed), "wall_seconds": time.monotonic() - started}
         pairs = {}
-        for label, arm, corrections in (("reference", trace, []), ("selected", trace.forked or trace, [model.record()])):
+        for label, arm, corrections in (("reference", trace, []), ("selected", trace.forked or trace, [item.record() for item in models])):
             pairs[label] = {}
             for rule, terminal in (("default", arm.course), ("strict-500", arm.released)):
                 stages = [{key: event for key, event in batch.items() if event["step"] <= terminal["steps"]} for batch in arm.stages]
@@ -117,9 +135,10 @@ def paired_episode(checkpoint, timing, policy_type, model, seed):
 
 def check_pair(job, row):
     checkpoint, timing, _, model, seed = job
-    for name, correction in (("reference", ()), ("selected", (model,))):
+    models = model if isinstance(model, tuple) else (model,)
+    for name, correction in (("reference", ()), ("selected", models)):
         placement_benchmark.check((checkpoint, *timing, seed, correction), row[name])
-    if row["reference"]["default"]["column"] != model.column and not row["shared_complete_rollout"]:
+    if row["reference"]["default"]["column"] not in {item.column for item in models} and not row["shared_complete_rollout"]:
         raise ValueError("unexpected candidate branch outside the trained source column")
 
 
