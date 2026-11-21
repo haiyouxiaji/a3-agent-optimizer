@@ -1,6 +1,42 @@
 # A3 实验树与策略演进
 
-项目包含通用候选搜索树，以及 `2×5` 和 `2×10` 专项 Agent 留下的实验谱系。统计快照为 2026 年 11 月 20 日。 [Agent 和模型架构](A3_CURRENT_ARCHITECTURE.md) · [运行目录索引](../evidence/advanced-20261120/run-index.csv)
+项目包含通用候选搜索树，以及 `2×5` 和 `2×10` 专项 Agent 留下的实验谱系。 [Agent 和模型架构](A3_CURRENT_ARCHITECTURE.md) · [课程规则核查](A3_COURSE_COMPLIANCE.md)
+
+## 实验总览
+
+截至 2026 年 11 月 21 日。实线表示策略或实验的继承，虚线连接证据复用与评测。配对分数按「参考 → 候选」排列，每对包含同一场景下两套策略各一次运行。较早的同类试验已合并显示。
+
+```mermaid
+flowchart TD
+    models["BC／BC2 与 ACT-style 探索"] --> phases["高难位姿条件示范<br/>九阶段对齐、抓取与放置"]
+    phases --> joint["branch-joint<br/>随机来源列 8.60／10"]
+    phases -.-> ten["2×10 四批策略 · 500 步<br/>最近示范 20 对 1.80 → 3.15／20<br/>保留加权平均参考"]
+
+    joint --> timing["第 4 列第二批缩时至 0.75×<br/>诊断失分并自动复采"]
+    timing --> broad["较宽的垂直下降<br/>40 对 9.175 → 8.15 · 回退"]
+    timing --> release[["发布策略 · 第 1 列首批定向垂直下降<br/>100 对高难 8.79 → 9.14／10"]]
+
+    release --> routing["按来源列组合落点修正<br/>首次确认 9.59，独立复验 8.53 · 回退"]
+    routing -.-> sensing["盒边、腕相机、下降接触反馈<br/>独立开发或留出回退"]
+    release --> hold["第 2 列第二批定点开爪<br/>128 对 8.969 → 9.063 · 通过门槛"]
+    release --> recovery["第 2 列第二批接触恢复<br/>首次确认 8.922 → 9.172 · 晋级<br/>128 对复验增益区间下界为 0 · 保留参考"]
+
+    recovery --> expert["第 2 列首批专家开爪<br/>64 对 9.172 → 9.531<br/>两套策略在同一局均夹带邻列饼干 · 回退"]
+    expert --> grasp["第 2 列第二批专家抓取<br/>64 对 9.344 → 9.328 · 回退"]
+    expert --> guard["第 3 列第二批闭爪横移 3 mm<br/>修复错列，另一局少搬 5 块 · 回退"]
+    guard --> frozen["冻结组合<br/>第 2 列首批专家开爪<br/>＋第 3 列第二批闭爪横移 0.75 mm"]
+
+    frozen --> paths["下降路径 → 路径切换 → 专家下降轨迹<br/>三轮独立开发均回退"]
+    frozen -.-> paired(["64 对 · 配对晋级评测<br/>8.844 → 9.031 · 回退<br/>增益区间跨零，一局少搬 5 块"])
+    frozen -.-> absolute(["192 局 · 高难绝对计分复核<br/>9.323／10 · 严格完整成功 158／192<br/>95% 区间 [9.036, 9.583]<br/>终局零错列、零安全停机"])
+    paired -.-> pooled["合看同一候选的 256 局<br/>均分 9.25／10<br/>95% 区间 [8.992, 9.484]"]
+    absolute -.-> pooled
+
+    classDef key stroke-width:3px
+    class release,absolute key
+```
+
+[发布版 100 对配对](../evidence/advanced-20261120/README.md) · [冻结组合 64 对确认](../evidence/source-guard-refine-20261121/README.md) · [192 局绝对计分及 256 局合看](../evidence/source-score-20261121/README.md)
 
 ## 代码中的候选搜索树
 
@@ -56,7 +92,7 @@ flowchart TD
     BEST --> HOLD["第 2 列第二批定点开爪 · 首次四列确认 8.75→9.00"]
     HOLD --> HOLDREP["128 对冻结复验 · 8.969→9.063 · 通过配对门槛"]
     BEST --> RECOVERY["第 2 列第二批接触恢复 · 四列确认 8.922→9.172 · 晋级"]
-    RECOVERY --> RECOVERYREP["冻结复验 · 128 对 · 9.180→9.219 · 配对区间含零"]
+    RECOVERY --> RECOVERYREP["冻结复验 · 128 对 · 9.180→9.219 · 配对区间下界为零 · 保留参考"]
     HOLD -.->|合并已审计的轨迹分支| RELEASEGATE["按计划位置分流 · 整组留出净少 1 块 · 回退"]
     RECOVERY -.->|保留下降后段接触恢复| RELEASEGATE
     RECOVERY --> FIRSTREC["第 1 列首批接触恢复 · 11 个训练场景无增分 · 回退"]
@@ -68,7 +104,7 @@ flowchart TD
     EXPERTCONF --> SOURCEGUARD["第 3 列抓取避让 · 消除错列的一支导致对照少搬 5 块 · 回退"]
     SOURCEGUARD --> GUARDREFINE["闭爪横移 0.75 mm · 64 对 8.84→9.03 · 首批下降回退"]
     GUARDREFINE --> LANDINGPATH["专家落点前的下降路径 · 开发 9.17→9.58 · 单局回退"]
-    GUARDREFINE --> SCORES["冻结组合的 192 局计分复核 · 9.323 · 95% 区间下界 9.036"]
+    GUARDREFINE -.->|同一冻结候选| SCORES["192 局绝对计分复核 · 9.323 · 95% 区间下界 9.036"]
     LANDINGPATH --> LANDINGGATE["下降路径切换 · 22 个决策前缀 · 16 对开发持平回退"]
     LANDINGGATE --> INSERTION["专家下降轨迹 · 10 次示范 · 12 对开发持平回退"]
     EXPERTLAND --> EXPERTGRASP["第 2 列第二批专家抓取 · 开发 8.69→9.25"]
@@ -77,7 +113,7 @@ flowchart TD
     TEN --> TR["加权平均对最近示范 · 20 对确认 1.80→3.15/20 · 回退"]
 ```
 
-实线表示策略或实验流程的继承，虚线表示复用训练证据、候选或接口。图中历史分数对应各自的种子、时限和评分设置。通用 UCT 的 `tree.json` 覆盖通用后端轮次，专项 Agent 的分支、回退和复验由其协议及回执记录。 [分阶段方案](A3_ADAPTIVE_AGENT.md) · [放置搜索](A3_PLACEMENT_SEARCH.md) · [课程与 2×10](A3_COURSE_ALIGNMENT.md)
+实线表示策略或实验流程的继承，虚线表示复用训练证据、候选或接口，以及对冻结候选的单独计分复核。图中历史分数对应各自的种子、时限和评分设置。通用 UCT 的 `tree.json` 覆盖通用后端轮次，专项 Agent 的分支、回退和复验由其协议及回执记录。 [分阶段方案](A3_ADAPTIVE_AGENT.md) · [放置搜索](A3_PLACEMENT_SEARCH.md) · [课程与 2×10](A3_COURSE_ALIGNMENT.md)
 
 | 分支 | 配对证据与决策 |
 | --- | --- |
@@ -128,6 +164,8 @@ flowchart TD
 | 通用树已执行节点 | 9 | 每轮 3 个节点，含 3 个参考节点与 6 个候选节点。 |
 | 发布快照的专项运行目录 | 66 | `artifacts/` 下名称后缀为 `-20261119` 或 `-20261120` 的运行目录。 |
 | 发布快照中带根目录结果的专项运行 | 54 | 51 个 `result.json` 与 3 个仅有 `results.json` 的目录。其余 12 个目录保留中间记录或不同名称的汇总。 |
+| 截至 11 月 21 日本地带日期后缀的专项运行目录 | 105 | `artifacts/` 的直接子目录，后缀为 `-20261119`、`-20261120` 或 `-20261121`。 |
+| 上述 105 个目录中带根目录结果的运行 | 88 | 目录根级含有 `result.json` 或 `results.json`，每个目录最多计一次。 |
 | 发布策略的独立确认 | 100 对 | 40 对首次确认加 60 对冻结复验。每对含参考与候选各一局，对应 200 局物理执行，另有 16 次原生复跑核对。 |
 
-目录数量包括采集、预检、恢复、候选筛选、确认和复验。同一目录可对应多个候选和种子，组合搜索也可复用候选。 [逐目录状态](../evidence/advanced-20261120/run-index.csv)
+目录数量包括采集、预检、恢复、候选筛选、确认和复验。一个目录可含多个候选和种子，同一运行的本地复核副本也按目录计入。 [11 月 20 日发布快照](../evidence/advanced-20261120/run-index.csv)
