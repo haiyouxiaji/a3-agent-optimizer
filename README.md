@@ -11,6 +11,12 @@ It drives an existing A3 simulation checkout and keeps the runtime chain
 
 ## Current architecture and result
 
+The frozen expert-release and source-separation policy scored **9.323/10** on 192 new
+`2×5 / advanced` scenes, with a stratified 95% interval of **[9.036, 9.583]** and
+strict completion in **158/192** scenes. The earlier paired comparison recorded
+one five-cookie regression and resulted in a rollback. Across both panels the
+policy scored **9.25/10**, with a 95% interval of **[8.992, 9.484]**.
+
 The frozen `branch-joint` policy with targeted first-batch descent scored **9.14/10**
 on 100 independent, paired `2×5 / advanced` scenes balanced across four source columns.
 The timed reference scored 8.79/10. The candidate's 95% balanced bootstrap interval is
@@ -26,6 +32,7 @@ gain kept the Agent's reference policy in place.
 - [冻结策略、逐场景评测证据与复现命令](evidence/advanced-20261120/README.md)
 - [专家开爪位置的 64 对高难确认与错列审计](evidence/expert-landing-20261121/README.md)
 - [专家开爪与来源避让组合的独立确认](evidence/source-guard-refine-20261121/README.md)
+- [192 局高难计分复核、逐列指标与原生复跑](evidence/source-score-20261121/README.md)
 
 ## Earlier designs and experiments
 

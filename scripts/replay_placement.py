@@ -220,13 +220,14 @@ def upstream_policy():
     return constructor(checkpoint, *lock["timing"], model)
 
 
-def record(checkpoint, timing, encoder, output, name, expected, policy_kind, incumbent=(), late_recovery=()):
+def record(checkpoint, timing, encoder, output, name, expected, policy_kind, incumbent=(), late_recovery=(), *, controller=None):
     import cv2
     from a3_dual_arm_sim.workflows.benchmark import make_cookie_benchmark
 
     cv2.setNumThreads(1)
     seed, suite, strict = (expected[key] for key in ("seed", "suite", "strict"))
-    policy_type, corrections = decode_model(expected["corrections"], policy_kind, incumbent=incumbent, late_recovery=late_recovery)
+    policy_type, corrections = controller if controller is not None else decode_model(
+        expected["corrections"], policy_kind, incumbent=incumbent, late_recovery=late_recovery)
     audit((checkpoint, *timing, suite, seed, corrections, strict), expected)
     engine = make_cookie_benchmark(profile=expected["profile"], source_column=suite, **(STRICT_RULES if strict else RULES))
     env = engine.create_env(render_cameras=False)
