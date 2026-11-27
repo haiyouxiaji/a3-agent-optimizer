@@ -1,0 +1,85 @@
+{
+  "task": "variable-prefill",
+  "seed": 430708,
+  "policy": "V7",
+  "media": "Archived diagnostic stills",
+  "source_audit_sha256": "1fcffb0c32c236e0d6e5170a015d4d6c96f5d73a21b345ec887bca87b3aef133",
+  "archive_matches": {
+    "scene": true,
+    "prefix_length": true,
+    "all_video_frames": true,
+    "move_allocations": true,
+    "scoring": true,
+    "simulator_rows": true
+  },
+  "frames": [
+    {
+      "size_px": [
+        256,
+        256
+      ],
+      "after_step": 0,
+      "source_npy_sha256": "b528ed32a7b3592b6d34817eed686fff9c3a0852a1e0773d037812924a6f1cb0",
+      "raw_rgb_sha256": "a3038a1c4e086efdc7af283f9a5bf317f87288d8934485e76dcc39366ee0f02f",
+      "official_scored_columns": [
+        1,
+        0
+      ],
+      "archive_png_sha256": "6f380323553ea6909aa962005bd57f83384f32552eb144d0634c4cc4b1e10f82",
+      "archive_png_bytes": 38441,
+      "archived_source_npy": "artifacts/course-30-runner-audit-20261126/low-prefill-rgb-430708-20261127-044655/front-after-0000.npy"
+    },
+    {
+      "size_px": [
+        256,
+        256
+      ],
+      "after_step": 291,
+      "source_npy_sha256": "15c81c94ae46212897ff511291c030989ee5b4241571aa485b1dc8496ff91a6c",
+      "raw_rgb_sha256": "bd6fc897c8997d52f7c8544710ae4bba1735546398594ac996b6031b99def541",
+      "official_scored_columns": [
+        1,
+        5
+      ],
+      "archive_png_sha256": "142f30dd20343f29ea916129cee6bc378ef309a22ecf67a9501bd59be89ac2f7",
+      "archive_png_bytes": 42718,
+      "archived_source_npy": "artifacts/course-30-runner-audit-20261126/low-prefill-rgb-430708-20261127-044655/front-after-0291.npy"
+    },
+    {
+      "size_px": [
+        256,
+        256
+      ],
+      "after_step": 582,
+      "source_npy_sha256": "2493a393c8aff2c4bada5280419d2134b1b5fe3c65dcbdc25aa1a17be76fce46",
+      "raw_rgb_sha256": "c9ea7cb888bf08c353f94ccc87ed8c5876cdf415f3ae3f5573de9a92adf30dd3",
+      "official_scored_columns": [
+        1,
+        5
+      ],
+      "archive_png_sha256": "bafb221ac040c3d0d1d3d8201f447ac98ec7f9543571f594ccbdec25d0b7cc7d",
+      "archive_png_bytes": 42883,
+      "archived_source_npy": "artifacts/course-30-runner-audit-20261126/low-prefill-rgb-430708-20261127-044655/front-after-0582.npy"
+    }
+  ],
+  "triptych": {
+    "file": "media/430708-prefill-contact.png",
+    "bytes": 213915,
+    "sha256": "3f016ec43849a1f86daeda0de07803b7505983a23bab653f590ee7ae6967437e",
+    "pixels": [
+      1272,
+      492
+    ],
+    "frame_steps": [
+      0,
+      291,
+      582
+    ],
+    "descriptions": [
+      "开局保留 1 片",
+      "首批放稳，正侧计 5 片",
+      "第二批 4 片靠近外长壁"
+    ]
+  },
+  "archived_source_audit": "artifacts/course-30-runner-audit-20261126/low-prefill-rgb-430708-20261127-044655/audit.json"
+}

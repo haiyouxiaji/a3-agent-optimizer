@@ -1,0 +1,151 @@
+{
+  "scope": "Same-seed replays of development-policy episodes",
+  "simulator_revision": "2c36be484fe4f3eb5abc1c73c03597a887ef68fd",
+  "presentation": "Free-camera rendering from saved MuJoCo states with scoring overlays",
+  "runs": [
+    {
+      "seed": 430670,
+      "policy": "v10",
+      "case": "2x10@advanced",
+      "reference_receipt_sha256": "615a2196dc5723de99ee8ff951037aad3a73d4db0978d2d120fd5e0c11492305",
+      "reference_manifest_sha256": "6d764988364b72f44deeee8a678e1a80cd3461225803e46d18e1e71c69917280",
+      "replay_capture_sha256": "c32200afd3f204aefcbc66039ffb1975304c9fadfee4fab80f33c3e1d7902403",
+      "comparison_with_archive": {
+        "outcome": true,
+        "initial_scene_sha256": true,
+        "action_sha256": true,
+        "camera_sha256": true,
+        "camera_frames": true,
+        "policy_moves": true,
+        "plan_finished_step": true,
+        "final_lane_counts": true,
+        "success": true,
+        "steps": true,
+        "score": true,
+        "max_score": true,
+        "cookies_in_target": true,
+        "cookies_in_source": true
+      },
+      "episode": {
+        "steps": 1799,
+        "success": true,
+        "score": 20,
+        "max_score": 20
+      },
+      "return_step_interval": [
+        1148,
+        1327
+      ],
+      "fps": 30,
+      "video_codec": "H.264",
+      "resolution": [
+        1080,
+        720
+      ],
+      "duration_s": 32.36666666666667,
+      "files": {
+        "media/430670-long-return.mp4": {
+          "bytes": 1953093,
+          "sha256": "fac1a7ec71472375d0c5911a154845696ef2af5871191604b393384216442a31"
+        },
+        "media/430670-long-return.png": {
+          "bytes": 205334,
+          "sha256": "4d778abc4abce1a0267a82169dad220461cf37a2d92a3c0312586ae6fbe5aab1",
+          "simulation_step": 1238,
+          "size_px": [
+            1080,
+            720
+          ]
+        },
+        "media/430670-long-finish.png": {
+          "bytes": 268913,
+          "sha256": "746029d01d32ae931cfa44f328419cdd3fdb91149e5e154c1e8109c564a9fcea",
+          "simulation_step": 1799,
+          "size_px": [
+            1080,
+            720
+          ]
+        }
+      }
+    },
+    {
+      "seed": 430448,
+      "policy": "v10",
+      "case": "sparse-exact-ten",
+      "reference_receipt_sha256": "4e3a035c014f366e83a2d5d17301b743589dab0bb14c0be0e3a769eaef9d6bd5",
+      "reference_manifest_sha256": "053c4f29f5f6fe638b0784ef7a37e980e3dee5be4aec9730f9113a93d292e9f6",
+      "replay_capture_sha256": "fd273757bea9b19bd5cb518a5b0d67aca52aacea1fff9ac9cc937f5fc749a115",
+      "comparison_with_archive": {
+        "initial_scene_sha256": true,
+        "outcome": true,
+        "action_sha256": true,
+        "camera_sha256": true,
+        "camera_frames": true,
+        "policy_moves": true,
+        "success": true,
+        "steps": true,
+        "score": true,
+        "max_score": true,
+        "scenario_metrics": true
+      },
+      "episode": {
+        "success": true,
+        "steps": 1171,
+        "score": 10,
+        "max_score": 10,
+        "scenario_metrics": {
+          "initial_source_count": 10,
+          "remaining_per_column": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "expected_source_count": 0,
+          "target_counts": [
+            10
+          ],
+          "target_column_counts": [
+            5,
+            5
+          ],
+          "new_target_counts": [
+            10
+          ],
+          "new_correct_cookies": 10,
+          "prefilled_remaining": 0,
+          "cookies_in_source": 0,
+          "cookies_outside_containers": 0,
+          "outside_cookie_ids": [],
+          "disturbed_source_cookie_count": 0,
+          "disturbed_source_cookie_ids": [],
+          "disturbance_position_threshold_m": 0.01,
+          "disturbance_tilt_threshold_deg": 15.0
+        }
+      },
+      "fps": 30,
+      "video_codec": "H.264",
+      "resolution": [
+        1080,
+        720
+      ],
+      "duration_s": 21.733333333333334,
+      "files": {
+        "media/430448-sparse.mp4": {
+          "bytes": 1426308,
+          "sha256": "51ce7e93f6176ec372c4e8ec1509349579417e673b5f36207509d30f4e6b44cc"
+        },
+        "media/430448-sparse.png": {
+          "bytes": 131865,
+          "sha256": "1d2f4201f82005893cb88fff556699afe17e4da22b659993d1b3cddc8855d3f6",
+          "simulation_step": 1171,
+          "size_px": [
+            1080,
+            720
+          ]
+        }
+      }
+    }
+  ],
+  "archived_430708_stills": "low-prefill-frames.json"
+}

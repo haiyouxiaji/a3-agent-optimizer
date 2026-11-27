@@ -11,6 +11,8 @@ It drives an existing A3 simulation checkout and keeps the runtime chain
 
 ## Current architecture and result
 
+- [AI305 A3 课程评测进展、模拟回放和关键帧（2026-11-27）](evidence/course-v1-20261127/README.md)
+
 The frozen expert-release and source-separation policy scored **9.323/10** on 192 new
 `2×5 / advanced` scenes, with a stratified 95% interval of **[9.036, 9.583]** and
 strict completion in **158/192** scenes. The earlier paired comparison recorded
